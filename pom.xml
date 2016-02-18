@@ -29,6 +29,7 @@
     <!-- Dependency versions -->
     <findbugs.annotations.version>3.0.1</findbugs.annotations.version>
     <findbugs.jsr305.version>3.0.1</findbugs.jsr305.version>
+    <hibernate.jpa.version>1.0.0.Final</hibernate.jpa.version>
     <testng.version>6.9.10</testng.version>
 
     <!-- Plugin versions -->
@@ -91,11 +92,6 @@
       <groupId>com.google.code.findbugs</groupId>
       <artifactId>jsr305</artifactId>
     </dependency>
-    <dependency>
-      <groupId>org.testng</groupId>
-      <artifactId>testng</artifactId>
-      <scope>test</scope>
-    </dependency>
   </dependencies>
 
   <dependencyManagement>
@@ -109,6 +105,11 @@
         <groupId>com.google.code.findbugs</groupId>
         <artifactId>jsr305</artifactId>
         <version>${findbugs.jsr305.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.hibernate.javax.persistence</groupId>
+        <artifactId>hibernate-jpa-2.1-api</artifactId>
+        <version>${hibernate.jpa.version}</version>
       </dependency>
       <dependency>
         <groupId>org.testng</groupId>
