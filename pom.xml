@@ -164,7 +164,6 @@
         <artifactId>maven-scm-publish-plugin</artifactId>
         <configuration>
           <scmBranch>gh-pages</scmBranch>
-          <skipCheckin>true</skipCheckin>
         </configuration>
         <executions>
           <execution>
