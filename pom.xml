@@ -164,6 +164,7 @@
         <artifactId>maven-scm-publish-plugin</artifactId>
         <configuration>
           <scmBranch>gh-pages</scmBranch>
+          <skipDeletedFiles>true</skipDeletedFiles>
         </configuration>
         <executions>
           <execution>
