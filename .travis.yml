@@ -8,7 +8,7 @@ install:
   - git config --global user.name "travis-ci"
 script: mvn clean install
 after_success:
-  - '[ "${TRAVIS_PULL_REQUEST}" = "false" ] && mvn post-site scm-publish:publish-scm || false'
+  - '[ "${TRAVIS_PULL_REQUEST}" = "false" ] && mvn -Dscmpublish.skipCheckin=true post-site scm-publish:publish-scm || false'
   - '[ "${TRAVIS_PULL_REQUEST}" = "false" ] && cd target/scmpublish-checkout || false'
   - '[ "${TRAVIS_PULL_REQUEST}" = "false" ] && git commit -a -m "Automatic created documentation" || false'
   - '[ "${TRAVIS_PULL_REQUEST}" = "false" ] && git push -fq https://${GH_TOKEN}@github.com/sw4j-org/tool-jpa-processor.git gh-pages:gh-pages || false'
