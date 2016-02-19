@@ -597,13 +597,13 @@
 
   <scm>
     <url>https://github.com/sw4j-org/tool-jpa-processor</url>
-    <developerConnection>scm:git:ssh://git@github.com/sw4j-org/tool-jpa-processor.git</developerConnection>
+    <developerConnection>scm:git:ssh://git@github.com:sw4j-org/tool-jpa-processor.git</developerConnection>
   </scm>
 
   <distributionManagement>
     <site>
       <id>github</id>
-      <url>scm:git:ssh://git@github.com/sw4j-org/tool-jpa-processor.git</url>
+      <url>scm:git:https://github.com/sw4j-org/tool-jpa-processor.git</url>
     </site>
   </distributionManagement>
 
