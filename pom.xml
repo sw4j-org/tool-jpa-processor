@@ -590,6 +590,11 @@
 
   <url>https://sw4j-org.github.io/tool-jpa-processor/</url>
 
+  <issueManagement>
+    <system>GitHub</system>
+    <url>https://github.com/sw4j-org/tool-jpa-processor/issues</url>
+  </issueManagement>
+
   <scm>
     <url>https://github.com/sw4j-org/tool-jpa-processor</url>
     <developerConnection>scm:git:ssh://git@github.com/sw4j-org/tool-jpa-processor.git</developerConnection>
