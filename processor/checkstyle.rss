@@ -20,7 +20,7 @@ under the License.
 <rss version="0.91">
   <channel>
     <title>JPA Annotation Processor - Checkstyle report</title>
-    <link>${project.url}</link>
+    <link>https://sw4j-org.github.io/tool-jpa-processor/processor/</link>
     <description>JPA Annotation Processor - Checkstyle report</description>
     <language>en-us</language>
     <copyright>&#169;2016</copyright>
@@ -30,9 +30,9 @@ under the License.
              Warnings: 3,
              Infos: 2
       </title>
-            <link>${project.url}/checkstyle.html</link>
+            <link>https://sw4j-org.github.io/tool-jpa-processor/processor//checkstyle.html</link>
       <description>
-        <p>Click <a href="${project.url}/checkstyle.html">here</a> for the full Checkstyle report.</p>
+        <p>Click <a href="https://sw4j-org.github.io/tool-jpa-processor/processor//checkstyle.html">here</a> for the full Checkstyle report.</p>
 
         <table summary="Files" boder="1">
           <thead>
@@ -46,7 +46,7 @@ under the License.
           <tbody>
                           <tr>
                 <td>
-                  <a href="${project.url}/checkstyle.html#org.sw4j.tool.annotation.jpa.processor.AnnotationProcessor.java">org/sw4j/tool/annotation/jpa/processor/AnnotationProcessor.java</a>
+                  <a href="https://sw4j-org.github.io/tool-jpa-processor/processor//checkstyle.html#org.sw4j.tool.annotation.jpa.processor.AnnotationProcessor.java">org/sw4j/tool/annotation/jpa/processor/AnnotationProcessor.java</a>
                 </td>
                 <td>
                   2
