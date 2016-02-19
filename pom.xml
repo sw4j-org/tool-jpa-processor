@@ -588,6 +588,8 @@
     </plugins>
   </reporting>
 
+  <url>https://sw4j-org.github.io/tool-jpa-processor/</url>
+
   <scm>
     <url>https://github.com/sw4j-org/tool-jpa-processor</url>
     <developerConnection>scm:git:ssh://git@github.com/sw4j-org/tool-jpa-processor.git</developerConnection>
