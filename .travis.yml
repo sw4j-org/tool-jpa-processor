@@ -1,0 +1,14 @@
+env:
+  global:
+    secure: "Hgf2fE1xxuchnRvfQb439xG+uYAJbsz7Vd8SJ7ld0HFwl2Ma3mZwBVmZfmzE0TWT5mp0S3YjqPRB1GAfgAKUkyX6/c4UNxBIDIJC8QO6E8VfaQ+0j2rsd9GDNcgp2TJauzqjmAoogzIUWn7RjdxzxzQcukfnMYOsev2KG4FieLQQDMZr7hsbYPpRvRdcKkiIX4a+ZzMSERsKygJYlbg6NmeMwdd05rUCaGviyqQ173DIRmIhEygs8N5Ib8IXhm0pQZJDmxBQhcs3pSImft2nyLUzIFPLW9hWNPh3weQQYHTSkkmrYs1q8VxzOFZD0e8lQ6aIBkuC0CEWNfXDZturw0K2+8D6H+LVeGXK8ONm4qiSc4Ei6KNtEQWY0wHI+hsbJAuH5f4H7dXXuN0ArgFnCiRO0a52I859KXhjrE1VVIVJ/8VubGGIbKQ0I/IBLsdLzDf7ZHijT0QfkgSMqPOFd+c+fI3bBffvxun28gc8vhTWETDPUQDcX7pZfk+c28jq66IbS2qIK8rmRyf8J2fx1f5LNHmtRHJN71/X+5neefnv3fZ18qhmQ7QJ/1xBpK5lAaf2dMhteQK8no0BV8+7jdm6JZV3bZZpOC4wUgSilfAc2y+2Nv2B6+c/FpbkN+zA5WdcdHWhzqsvZqTbPHPLtg5S78eycJ+Y+mT9Q1oSDzU="
+language: java
+jdk: openjdk7
+install:
+  - git config --global user.email "travis@sw4j.org"
+  - git config --global user.name "travis-ci"
+script: mvn clean install
+after_success:
+  - mvn post-site scm-publish:publish-scm
+  - cd target/scmpublish-checkout
+  - git commit -a -m "Automatic created documentation"
+  - git push -fq https://${GH_TOKEN}@github.com/sw4j-org/api-sniffer.git gh-pages:gh-pages
