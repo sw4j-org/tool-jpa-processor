@@ -1,3 +1,7 @@
 /nb-configuration.xml
 /sample/nb-configuration.xml
 /processor/nb-configuration.xml
+/target/
+/processor/target/
+/sample/target/
+/nbactions.xml

@@ -164,6 +164,7 @@
         <artifactId>maven-scm-publish-plugin</artifactId>
         <configuration>
           <scmBranch>gh-pages</scmBranch>
+          <skipDeletedFiles>true</skipDeletedFiles>
         </configuration>
         <executions>
           <execution>
@@ -410,45 +411,6 @@
         </configuration>
       </plugin>
       <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>taglist-maven-plugin</artifactId>
-        <version>${taglist.plugin.version}</version>
-        <configuration>
-          <tagListOptions>
-            <tagClasses>
-              <tagClass>
-                <displayName>Work To Do</displayName>
-                <tags>
-                  <tag>
-                    <matchString>@?(TODO|todo)</matchString>
-                    <matchType>regEx</matchType>
-                  </tag>
-                </tags>
-              </tagClass>
-              <tagClass>
-                <displayName>This code is broken</displayName>
-                <tags>
-                  <tag>
-                    <matchString>@?BROKEN</matchString>
-                    <matchType>regEx</matchType>
-                  </tag>
-                </tags>
-              </tagClass>
-              <tagClass>
-                <displayName>Fixes to make</displayName>
-                <tags>
-                  <tag>
-                    <matchString>@?FIXME</matchString>
-                    <matchType>regEx</matchType>
-                  </tag>
-                </tags>
-              </tagClass>
-            </tagClasses>
-          </tagListOptions>
-          <skipTestSources>true</skipTestSources>
-        </configuration>
-      </plugin>
-      <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
         <version>${javadoc.plugin.version}</version>
@@ -553,6 +515,45 @@
       </plugin>
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
+        <artifactId>taglist-maven-plugin</artifactId>
+        <version>${taglist.plugin.version}</version>
+        <configuration>
+          <tagListOptions>
+            <tagClasses>
+              <tagClass>
+                <displayName>Work To Do</displayName>
+                <tags>
+                  <tag>
+                    <matchString>@?(TODO|todo)</matchString>
+                    <matchType>regEx</matchType>
+                  </tag>
+                </tags>
+              </tagClass>
+              <tagClass>
+                <displayName>This code is broken</displayName>
+                <tags>
+                  <tag>
+                    <matchString>@?BROKEN</matchString>
+                    <matchType>regEx</matchType>
+                  </tag>
+                </tags>
+              </tagClass>
+              <tagClass>
+                <displayName>Fixes to make</displayName>
+                <tags>
+                  <tag>
+                    <matchString>@?FIXME</matchString>
+                    <matchType>regEx</matchType>
+                  </tag>
+                </tags>
+              </tagClass>
+            </tagClasses>
+          </tagListOptions>
+          <skipTestSources>true</skipTestSources>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
         <artifactId>versions-maven-plugin</artifactId>
         <version>${versions.plugin.version}</version>
         <configuration>
@@ -586,6 +587,13 @@
       </plugin>
     </plugins>
   </reporting>
+
+  <url>https://sw4j-org.github.io/tool-jpa-processor/</url>
+
+  <issueManagement>
+    <system>GitHub</system>
+    <url>https://github.com/sw4j-org/tool-jpa-processor/issues</url>
+  </issueManagement>
 
   <scm>
     <url>https://github.com/sw4j-org/tool-jpa-processor</url>
