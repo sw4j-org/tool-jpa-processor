@@ -194,6 +194,7 @@
             </goals>
             <configuration>
               <skipDeploy>false</skipDeploy>
+              <stagingDirectory>${session.topLevelProject.basedir}/target/staging/${project.version}</stagingDirectory>
             </configuration>
           </execution>
         </executions>
