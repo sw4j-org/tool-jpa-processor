@@ -54,14 +54,26 @@
             <id>process-test-resources</id>
             <phase>generate-test-resources</phase>
             <goals>
-              <goal>compile</goal>
+              <goal>testCompile</goal>
             </goals>
             <configuration>
               <!-- We process the test classes only with the created annotation processor here -->
               <proc>only</proc>
+              <fork>true</fork>
+              <verbose>true</verbose>
+              <compilerArgs>
+                <arg>-J${jacoco.agent}</arg>
+              </compilerArgs>
             </configuration>
           </execution>
         </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.jacoco</groupId>
+        <artifactId>jacoco-maven-plugin</artifactId>
+        <configuration>
+          <propertyName>jacoco.agent</propertyName>
+        </configuration>
       </plugin>
     </plugins>
   </build>
