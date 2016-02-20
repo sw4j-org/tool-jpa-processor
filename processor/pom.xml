@@ -46,6 +46,7 @@
               <goal>compile</goal>
             </goals>
             <configuration>
+              <!-- No annotation processors are executed as we are creating one -->
               <proc>none</proc>
             </configuration>
           </execution>
@@ -56,6 +57,7 @@
               <goal>compile</goal>
             </goals>
             <configuration>
+              <!-- We process the test classes only with the created annotation processor here -->
               <proc>only</proc>
             </configuration>
           </execution>
