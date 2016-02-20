@@ -19,6 +19,9 @@ package org.sw4j.tool.annotation.jpa.processor;
 import java.util.Set;
 import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.RoundEnvironment;
+import javax.annotation.processing.SupportedAnnotationTypes;
+import javax.annotation.processing.SupportedSourceVersion;
+import javax.lang.model.SourceVersion;
 import javax.lang.model.element.TypeElement;
 
 /**
@@ -26,6 +29,11 @@ import javax.lang.model.element.TypeElement;
  *
  * @author Uwe Plonus
  */
+@SupportedAnnotationTypes({
+    "javax.persistence.Entity",
+    "javax.persistence.Embedded"
+})
+@SupportedSourceVersion(SourceVersion.RELEASE_7)
 public class AnnotationProcessor extends AbstractProcessor {
 
     /**
@@ -34,10 +42,10 @@ public class AnnotationProcessor extends AbstractProcessor {
      * @param annotations the annotations that are handled.
      * @param roundEnv the round environment to handle annotations.
      * @return always {@code false} because this processor never claims an annotation.
-     * @TODO implement the processor.
      */
     @Override
-    public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
+    public boolean process(final Set<? extends TypeElement> annotations,
+            final RoundEnvironment roundEnv) {
         return false;
     }
 
