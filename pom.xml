@@ -608,4 +608,9 @@
     </site>
   </distributionManagement>
 
+  <ciManagement>
+    <system>travis-ci</system>
+    <url>https://travis-ci.org/sw4j-org/tool-jpa-processor</url>
+  </ciManagement>
+
 </project>
