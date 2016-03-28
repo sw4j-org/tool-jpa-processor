@@ -30,8 +30,7 @@ import javax.lang.model.element.TypeElement;
  * @author Uwe Plonus
  */
 @SupportedAnnotationTypes({
-    "javax.persistence.Entity",
-    "javax.persistence.Embedded"
+    "javax.persistence.Entity"
 })
 @SupportedSourceVersion(SourceVersion.RELEASE_7)
 public class AnnotationProcessor extends AbstractProcessor {
