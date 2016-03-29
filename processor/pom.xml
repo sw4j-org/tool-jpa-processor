@@ -13,7 +13,7 @@
   <artifactId>processor</artifactId>
   <packaging>jar</packaging>
 
-  <name>JPA Annotation Processor</name>
+  <name>JPA Annotation Processor (Annotation Processor)</name>
   <description>This is the JPA annotation processor.</description>
 
   <properties>
@@ -22,8 +22,8 @@
 
   <dependencies>
     <dependency>
-      <groupId>org.hibernate.javax.persistence</groupId>
-      <artifactId>hibernate-jpa-2.1-api</artifactId>
+      <groupId>org.eclipse.persistence</groupId>
+      <artifactId>javax.persistence</artifactId>
       <scope>provided</scope>
     </dependency>
     <dependency>
@@ -51,18 +51,15 @@
             </configuration>
           </execution>
           <execution>
-            <id>process-test-resources</id>
-            <phase>generate-test-resources</phase>
+            <id>default-testCompile</id>
+            <phase>test-compile</phase>
             <goals>
               <goal>testCompile</goal>
             </goals>
             <configuration>
-              <!-- We process the test classes only with the created annotation processor here -->
-              <proc>only</proc>
-              <fork>true</fork>
-              <compilerArgs>
-                <arg>-J${jacoco.agent}</arg>
-              </compilerArgs>
+              <!-- No annotation processors are executed as we are creating one -->
+              <proc>none</proc>
+              <!--<fork>true</fork>-->
             </configuration>
           </execution>
         </executions>
@@ -70,9 +67,6 @@
       <plugin>
         <groupId>org.jacoco</groupId>
         <artifactId>jacoco-maven-plugin</artifactId>
-        <configuration>
-          <propertyName>jacoco.agent</propertyName>
-        </configuration>
       </plugin>
     </plugins>
   </build>

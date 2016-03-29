@@ -16,13 +16,17 @@
  */
 package org.sw4j.tool.annotation.jpa.processor;
 
+import org.sw4j.tool.annotation.jpa.generator.GeneratorService;
+import java.util.ServiceLoader;
 import java.util.Set;
 import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.RoundEnvironment;
 import javax.annotation.processing.SupportedAnnotationTypes;
+import javax.annotation.processing.SupportedOptions;
 import javax.annotation.processing.SupportedSourceVersion;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.TypeElement;
+import javax.tools.Diagnostic;
 
 /**
  * An annotation processor to handle annotations.
@@ -33,6 +37,9 @@ import javax.lang.model.element.TypeElement;
     "javax.persistence.Entity"
 })
 @SupportedSourceVersion(SourceVersion.RELEASE_7)
+@SupportedOptions({
+    "tool.jpa.output"
+})
 public class AnnotationProcessor extends AbstractProcessor {
 
     /**
@@ -45,6 +52,10 @@ public class AnnotationProcessor extends AbstractProcessor {
     @Override
     public boolean process(final Set<? extends TypeElement> annotations,
             final RoundEnvironment roundEnv) {
+        ServiceLoader<GeneratorService> generatorService =
+                ServiceLoader.load(GeneratorService.class);
+        this.processingEnv.getMessager().printMessage(Diagnostic.Kind.NOTE,
+                this.processingEnv.getOptions().get("tool.jpa.output"));
         return false;
     }
 
