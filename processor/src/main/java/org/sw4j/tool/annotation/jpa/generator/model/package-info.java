@@ -14,22 +14,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.sw4j.tool.annotation.jpa.generator.model;
-
-import javax.xml.bind.annotation.XmlRootElement;
 
 /**
- * This is a model that contains all elements needed to create a schema for JPA entities.
- *
- * @author Uwe Plonus
+ * This package contains a output independent model of the entities.
  */
-@XmlRootElement
-public class Model {
-
-    /**
-     * Default constructor.
-     */
-    public Model() {
-    }
-
-}
+package org.sw4j.tool.annotation.jpa.generator.model;

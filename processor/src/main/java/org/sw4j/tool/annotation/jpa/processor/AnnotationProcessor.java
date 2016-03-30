@@ -38,17 +38,19 @@ import org.sw4j.tool.annotation.jpa.generator.model.Model;
  *
  * @author Uwe Plonus
  */
-@SupportedAnnotationTypes({
-    "javax.persistence.Entity"
-})
+@SupportedAnnotationTypes("javax.persistence.Entity")
 @SupportedSourceVersion(SourceVersion.RELEASE_7)
-@SupportedOptions({
-    AnnotationProcessor.OUTPUT_OPTION
-})
+@SupportedOptions(AnnotationProcessor.OUTPUT_OPTION)
 public class AnnotationProcessor extends AbstractProcessor {
 
     /** The option of the annotation processor to set output directory. */
     public static final String OUTPUT_OPTION = "tool.jpa.output";
+
+    /**
+     * The default constructor.
+     */
+    public AnnotationProcessor() {
+    }
 
     /**
      * Processes the annotations given in the {@code annotations} variable.
