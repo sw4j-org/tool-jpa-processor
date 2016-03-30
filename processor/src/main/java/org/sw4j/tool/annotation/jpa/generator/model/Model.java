@@ -19,6 +19,7 @@ package org.sw4j.tool.annotation.jpa.generator.model;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
+ * This is a model that contains all elements needed to create a schema for JPA entities.
  *
  * @author Uwe Plonus
  */

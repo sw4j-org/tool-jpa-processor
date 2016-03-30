@@ -16,9 +16,11 @@
  */
 package org.sw4j.tool.annotation.jpa.generator;
 
+import java.io.IOException;
 import org.sw4j.tool.annotation.jpa.generator.model.Model;
 
 /**
+ * The {@code GeneratorService} is a service interface to output a model into a generic format.
  *
  * @author Uwe Plonus
  */
@@ -52,7 +54,8 @@ public interface GeneratorService {
      * The model to process and to output.
      *
      * @param model the model to process.
+     * @throws IOException if the output cannot be written.
      */
-    void process(Model model);
+    void process(Model model) throws IOException;
 
 }

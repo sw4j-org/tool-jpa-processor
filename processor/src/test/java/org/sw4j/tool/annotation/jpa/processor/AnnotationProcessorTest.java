@@ -16,64 +16,56 @@
  */
 package org.sw4j.tool.annotation.jpa.processor;
 
-import java.io.File;
-import java.nio.charset.Charset;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
-import javax.tools.JavaCompiler;
-import javax.tools.JavaFileObject;
-import javax.tools.StandardJavaFileManager;
-import javax.tools.ToolProvider;
 import org.testng.Assert;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.Test;
+import org.w3c.dom.Document;
 
 /**
+ * Class to testResultFile the {@link AnnotationProcessor}.
  *
  * @author Uwe Plonus
  */
 public class AnnotationProcessorTest {
 
-    private static final String ENTITY_PACKAGE = "src/test/java/org/sw4j/tool/annotation/jpa/entity/";
+    /** The folder that contains all JPA classes to process. */
+    private static final String ENTITY_PACKAGE =
+            "src/test/java/org/sw4j/tool/annotation/jpa/entity/";
 
-    private static final String ANNOTATION_PROCESSOR_OPTION =
-            "-Atool.jpa.output=test=target/tool-jpa/example.xml";
+    /** The file to write the result to. */
+    private static final String TEST_XML = "target/result/tool-jpa/test.xml";
 
+    /** The option prefix for the generator output. */
+    private static final String ANNOTATION_PROCESSOR_OPTION = "-Atool.jpa.output=test=" + TEST_XML;
+
+    /** The utility class of the testResultFile. */
+    private static AnnotationProcessorTestUtil testUtil;
+
+    /** The document that is used to testResultFile the result. */
+    private static Document resultDocument;
+
+    /** Default constructor. */
     public AnnotationProcessorTest() {
     }
 
-    @BeforeClass
-    public static void setUpClass() throws Exception {
-        File entityFolder = new File(ENTITY_PACKAGE);
-        List<File> files = new LinkedList<>();
-        getFiles(entityFolder, files);
+    /**
+     * Set up the test suite.
+     *
+     * @throws Exception if any exception occurs during set up.
+     */
+    @BeforeSuite
+    public static void setUpSuite() throws Exception {
+        testUtil = new AnnotationProcessorTestUtil();
+        testUtil.compileClasses(ENTITY_PACKAGE,
+                new String[]{
+                    ANNOTATION_PROCESSOR_OPTION
+                });
 
-        JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
-        Assert.assertNotNull(compiler, "Need a java compiler for executing the tests.");
-        StandardJavaFileManager fileManager = compiler.getStandardFileManager(null, null,
-                Charset.forName("UTF-8"));
-
-        Iterable<? extends JavaFileObject> entities =
-                fileManager.getJavaFileObjectsFromFiles(files);
-        String[] options = new String[]{
-            ANNOTATION_PROCESSOR_OPTION
-        };
-        compiler.getTask(null, fileManager, null, Arrays.asList(options), null, entities).call();
-    }
-
-    private static void getFiles(File path, List<File> javaFiles) {
-        if (path.isDirectory()) {
-            File[] files = path.listFiles();
-            for (File file: files) {
-                getFiles(file, javaFiles);
-            }
-        } else if (path.getName().endsWith(".java")) {
-            javaFiles.add(path);
-        }
+        resultDocument = testUtil.readXMLResult(TEST_XML);
     }
 
     @AfterClass
@@ -89,8 +81,10 @@ public class AnnotationProcessorTest {
     }
 
     @Test
-    public void test() {
-        Assert.assertTrue(true);
+    public void testResultFile() {
+        Assert.assertNotNull(resultDocument.getDocumentElement(), "Expected a document to be read.");
+        Assert.assertEquals(resultDocument.getDocumentElement().getNodeName(), "model",
+                "Expected the root element to be named \"model\".");
     }
 
 }

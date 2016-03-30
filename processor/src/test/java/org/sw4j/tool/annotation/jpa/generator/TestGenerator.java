@@ -16,27 +16,62 @@
  */
 package org.sw4j.tool.annotation.jpa.generator;
 
+import java.io.File;
+import java.io.IOException;
+import javax.xml.bind.JAXB;
 import org.sw4j.tool.annotation.jpa.generator.model.Model;
 
 /**
+ * An implementation of the {@link GeneratorService} used for testing. It writes the model to a XML
+ * file.
  *
  * @author Uwe Plonus
  */
 public class TestGenerator implements GeneratorService {
 
+    /** The prefix of the generator. */
     private static final String PREFIX = "test";
 
+    /** The file name for the output if no filename is given. */
+    private static final String DEFAULT_NAME = "test.xml";
+
+    /** The file to write the model to. */
+    private File outputFile;
+
+    /**
+     * Returns the prefix of this Generator.
+     *
+     * @return the prefix.
+     */
     @Override
     public String getPrefix() {
         return PREFIX;
     }
 
+    /**
+     * Sets the output of the generator.
+     *
+     * @param output the output.
+     */
     @Override
     public void setOutput(String output) {
+        File outFile = new File(output);
+        if (outFile.isDirectory()) {
+            outFile = new File(outFile, DEFAULT_NAME);
+        }
+        outputFile = outFile;
     }
 
+    /**
+     * Processes the model and writes it to the output.
+     *
+     * @param model the model to process.
+     * @throws IOException when an error occurs during the output.
+     */
     @Override
-    public void process(Model model) {
+    public void process(Model model) throws IOException {
+        outputFile.getParentFile().mkdirs();
+        JAXB.marshal(model, outputFile);
     }
 
 }

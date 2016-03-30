@@ -16,7 +16,10 @@
  */
 package org.sw4j.tool.annotation.jpa.processor;
 
-import org.sw4j.tool.annotation.jpa.generator.GeneratorService;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.ServiceLoader;
 import java.util.Set;
 import javax.annotation.processing.AbstractProcessor;
@@ -27,9 +30,11 @@ import javax.annotation.processing.SupportedSourceVersion;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.TypeElement;
 import javax.tools.Diagnostic;
+import org.sw4j.tool.annotation.jpa.generator.GeneratorService;
+import org.sw4j.tool.annotation.jpa.generator.model.Model;
 
 /**
- * An annotation processor to handle annotations.
+ * An annotation processor to handle JPA annotations.
  *
  * @author Uwe Plonus
  */
@@ -38,12 +43,15 @@ import javax.tools.Diagnostic;
 })
 @SupportedSourceVersion(SourceVersion.RELEASE_7)
 @SupportedOptions({
-    "tool.jpa.output"
+    AnnotationProcessor.OUTPUT_OPTION
 })
 public class AnnotationProcessor extends AbstractProcessor {
 
+    /** The option of the annotation processor to set output directory. */
+    public static final String OUTPUT_OPTION = "tool.jpa.output";
+
     /**
-     * Processes the annotations given in the {@code annotation} variable.
+     * Processes the annotations given in the {@code annotations} variable.
      *
      * @param annotations the annotations that are handled.
      * @param roundEnv the round environment to handle annotations.
@@ -52,10 +60,38 @@ public class AnnotationProcessor extends AbstractProcessor {
     @Override
     public boolean process(final Set<? extends TypeElement> annotations,
             final RoundEnvironment roundEnv) {
+        String outputOption = this.processingEnv.getOptions().get(OUTPUT_OPTION);
+        Map<String, String> outputParts = new HashMap<>();
+        for (String o: outputOption.split(",")) {
+            String[] singleOption = o.split("=");
+            if (singleOption.length == 2) {
+                outputParts.put(singleOption[0], singleOption[1]);
+            }
+        }
+
         ServiceLoader<GeneratorService> generatorService =
                 ServiceLoader.load(GeneratorService.class);
-        this.processingEnv.getMessager().printMessage(Diagnostic.Kind.NOTE,
-                this.processingEnv.getOptions().get("tool.jpa.output"));
+        Iterator<GeneratorService> generators = generatorService.iterator();
+        while (generators.hasNext()) {
+            GeneratorService generator = generators.next();
+            if (outputParts.containsKey(generator.getPrefix())) {
+                generator.setOutput(outputParts.get(generator.getPrefix()));
+            }
+        }
+
+        Model model = new Model();
+
+        generators = generatorService.iterator();
+        while (generators.hasNext()) {
+            GeneratorService generator = generators.next();
+            try {
+                generator.process(model);
+            } catch (IOException ioex) {
+                this.processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR,
+                        ioex.toString());
+            }
+        }
+
         return false;
     }
 
