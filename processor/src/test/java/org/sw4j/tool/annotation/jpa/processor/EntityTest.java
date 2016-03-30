@@ -23,27 +23,23 @@ import org.testng.annotations.Test;
 import org.w3c.dom.Node;
 
 /**
- * Class to testResultFile the {@link AnnotationProcessor}.
+ * This class contains tests for the annotation {@code @Entity}.
  *
  * @author Uwe Plonus
  */
-public class AnnotationProcessorTest extends TestSuperclass {
+public class EntityTest extends TestSuperclass {
 
     /** Default constructor. */
-    public AnnotationProcessorTest() {
+    public EntityTest() {
     }
 
     @Test
-    public void testRootElement() {
-        Assert.assertNotNull(getRootElement(), "Expected a document to be read.");
-        Assert.assertEquals(getRootElement().getNodeName(), "model",
-                "Expected the root element to be named \"model\".");
-    }
-
-    @Test
-    public void testEntities() throws XPathExpressionException {
-        Node element = getNode("/model/entities");
-        Assert.assertNotNull(element, "Expected the model to contain an element \"entities\".");
+    public void testSimpleEntity() throws XPathExpressionException {
+        Node entity = getNode("/model/entities/entity[@name=\"SimpleEntity\"]");
+        Assert.assertNotNull(entity, "Expected an entity with name \"SimpleEntity\" to exist.");
+        Assert.assertEquals(entity.getNodeType(), Node.ELEMENT_NODE, "Expected an element.");
+        Assert.assertEquals(entity.getAttributes().getNamedItem("name").getNodeValue(),
+                "SimpleEntity", "Expected the entity name to be \"SimpleEntity\"");
     }
 
 }

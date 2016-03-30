@@ -28,9 +28,11 @@ import javax.annotation.processing.SupportedAnnotationTypes;
 import javax.annotation.processing.SupportedOptions;
 import javax.annotation.processing.SupportedSourceVersion;
 import javax.lang.model.SourceVersion;
+import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
 import javax.tools.Diagnostic;
 import org.sw4j.tool.annotation.jpa.generator.GeneratorService;
+import org.sw4j.tool.annotation.jpa.generator.model.Entity;
 import org.sw4j.tool.annotation.jpa.generator.model.Model;
 
 /**
@@ -46,10 +48,13 @@ public class AnnotationProcessor extends AbstractProcessor {
     /** The option of the annotation processor to set output directory. */
     public static final String OUTPUT_OPTION = "tool.jpa.output";
 
+    private final Model model;
+
     /**
      * The default constructor.
      */
     public AnnotationProcessor() {
+        model = new Model();
     }
 
     /**
@@ -81,20 +86,46 @@ public class AnnotationProcessor extends AbstractProcessor {
             }
         }
 
-        Model model = new Model();
+        Set<? extends Element> elements = roundEnv.getRootElements();
+        for (Element element: elements) {
+            javax.persistence.Entity entity = element.getAnnotation(javax.persistence.Entity.class);
+            if (entity != null) {
+                processEntity(element, model);
+            }
+        }
 
-        generators = generatorService.iterator();
-        while (generators.hasNext()) {
-            GeneratorService generator = generators.next();
-            try {
-                generator.process(model);
-            } catch (IOException ioex) {
-                this.processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR,
-                        ioex.toString());
+        if (roundEnv.processingOver()) {
+            generators = generatorService.iterator();
+            while (generators.hasNext()) {
+                GeneratorService generator = generators.next();
+                try {
+                    generator.process(model);
+                } catch (IOException ioex) {
+                    this.processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR,
+                            ioex.toString());
+                }
             }
         }
 
         return false;
+    }
+
+    /**
+     * Process a single entity annotated with {@code @Entity}.
+     *
+     * @param element the element to process (must be an {@code @Entity}.
+     * @param model the model where the final entity is added to.
+     */
+    private void processEntity(Element element, Model model) {
+        javax.persistence.Entity entityAnnotation =
+                element.getAnnotation(javax.persistence.Entity.class);
+        Entity entity = new Entity();
+        if ("".equals(entityAnnotation.name())) {
+            entity.setName(element.getSimpleName().toString());
+        } else {
+            entity.setName(entityAnnotation.name());
+        }
+        model.addEntity(entity);
     }
 
 }

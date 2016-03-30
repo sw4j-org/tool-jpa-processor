@@ -16,42 +16,45 @@
  */
 package org.sw4j.tool.annotation.jpa.generator.model;
 
-import java.util.LinkedList;
-import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElementWrapper;
-import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlAttribute;
 
 /**
- * This is a model that contains all elements needed to create a schema for JPA entities.
+ * This class represents an entity. Via the entity you can access the attributes and tables assigned
+ * to the entity.
  *
  * @author Uwe Plonus
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlRootElement
-public class Model {
+public class Entity {
 
-    /** The entities of the model. */
-    @XmlElementWrapper(name = "entities")
-    @XmlElement(name = "entity")
-    private final List<Entity> entities;
+    /** The name of the entity. */
+    @XmlAttribute
+    private String name;
 
     /**
      * Default constructor.
      */
-    public Model() {
-        entities = new LinkedList<>();
+    public Entity() {
     }
 
     /**
-     * Adds an entity to the model.
+     * Returns the name of the entity.
      *
-     * @param entity the entity to add.
+     * @return the name.
      */
-    public void addEntity(Entity entity) {
-        entities.add(entity);
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * Sets the name of the entity.
+     *
+     * @param name the name.
+     */
+    public void setName(String name) {
+        this.name = name;
     }
 
 }

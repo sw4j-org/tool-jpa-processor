@@ -14,14 +14,16 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.sw4j.tool.annotation.jpa.processor;
+package org.sw4j.tool.annotation.jpa.util;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 import javax.tools.JavaCompiler;
 import javax.tools.JavaFileObject;
 import javax.tools.StandardJavaFileManager;
@@ -29,8 +31,15 @@ import javax.tools.ToolProvider;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
 import org.testng.Assert;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 /**
@@ -38,20 +47,35 @@ import org.xml.sax.SAXException;
  *
  * @author Uwe Plonus
  */
-public class AnnotationProcessorTestUtil {
+public class TestUtil {
 
     /** The target folder for the compiled classes. */
     private static final String TARGET_FOLDER = "target/jpa-classes/";
 
+    /** The document that is used to testResultFile the result. */
+    private Document resultDocument;
+
+    private static Set<Node> visitedNodes;
+
+    public TestUtil() {
+        visitedNodes = new HashSet<>();
+    }
+
     /**
      * Method to compile all classes in the given folder. The generated classes are placed in the
-     * folder {@code target/jpa-classes/}.
+     * folder {@code target/jpa-classes/}. After compilation the resulting XML file will be read.
      *
      * @param folder the folder that contains the JPA classes to process.
+     * @param resultFile the resulting file of the generator. Must match the option of the
+     *  annotation processor.
      * @param options the options for the compiling (primary the options for the annotation
      *  processor).
+     * @throws ParserConfigurationException when the parser cannot be created.
+     * @throws SAXException when the parsing fails.
+     * @throws IOException when the IO fails.
      */
-    public void compileClasses(String folder, String[] options) {
+    public void compileClasses(String folder, String resultFile, String[] options)
+            throws ParserConfigurationException, SAXException, IOException {
         File entityFolder = new File(folder);
         List<File> files = new LinkedList<>();
         getFiles(entityFolder, files);
@@ -71,6 +95,9 @@ public class AnnotationProcessorTestUtil {
         opts.add(TARGET_FOLDER);
         opts.addAll(Arrays.asList(options));
         compiler.getTask(null, fileManager, null, opts, null, entities).call();
+
+        DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+        resultDocument = builder.parse(new File(resultFile));
     }
 
     /**
@@ -91,19 +118,34 @@ public class AnnotationProcessorTestUtil {
         }
     }
 
-    /**
-     * This method reads in the given XML file and returns the DOM of it.
-     *
-     * @param xmlFile the XML file to read in.
-     * @return the DOM of the read file.
-     * @throws ParserConfigurationException when the parser cannot be created.
-     * @throws SAXException when the parsing fails.
-     * @throws IOException when the IO fails.
-     */
-    public Document readXMLResult(String xmlFile) throws ParserConfigurationException,
-            SAXException, IOException {
-        DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-        return builder.parse(new File(xmlFile));
+    public void checkVisitedNodes() {
+        checkVisitedNodes(resultDocument.getDocumentElement());
+    }
+
+    private void checkVisitedNodes(Element node) {
+        Assert.assertTrue(visitedNodes.contains(node),
+                new StringBuilder("Expected the node \"").append(node.getTagName())
+                        .append("\" to be tested.").toString());
+        NodeList children = node.getChildNodes();
+        for (int i = 0; i < children.getLength(); i++) {
+            Node child = children.item(i);
+            if (child.getNodeType() == Node.ELEMENT_NODE) {
+                checkVisitedNodes((Element)child);
+            }
+        }
+    }
+
+    public Element getRootElement() {
+        Element root = resultDocument.getDocumentElement();
+        visitedNodes.add(root);
+        return root;
+    }
+
+    public Node getNode(String path) throws XPathExpressionException {
+        XPath xpath = XPathFactory.newInstance().newXPath();
+        Node result = (Node)xpath.evaluate(path, resultDocument, XPathConstants.NODE);
+        visitedNodes.add(result);
+        return result;
     }
 
 }
