@@ -14,18 +14,17 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.sw4j.tool.annotation.jpa.entity.field;
+package org.sw4j.tool.annotation.jpa.entity;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
 /**
- * A simple entity containing only an {@code @Id} field.
  *
  * @author Uwe Plonus
  */
-@Entity
-public class SimpleEntity {
+@Entity(name = "NamedEntity")
+public class SimpleNamedEntity {
 
     @Id
     private int id;

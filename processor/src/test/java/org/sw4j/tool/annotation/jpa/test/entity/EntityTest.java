@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.sw4j.tool.annotation.jpa.processor;
+package org.sw4j.tool.annotation.jpa.test.entity;
 
 import javax.xml.xpath.XPathExpressionException;
 import org.sw4j.tool.annotation.jpa.util.TestSuperclass;
@@ -35,11 +35,20 @@ public class EntityTest extends TestSuperclass {
 
     @Test
     public void testSimpleEntity() throws XPathExpressionException {
-        Node entity = getNode("/model/entities/entity[@name=\"SimpleEntity\"]");
-        Assert.assertNotNull(entity, "Expected an entity with name \"SimpleEntity\" to exist.");
+        Node entity = getNode("/model/entities/entity[@name=\"SimpleFieldEntity\"]");
+        Assert.assertNotNull(entity, "Expected an entity with name \"SimpleFieldEntity\" to exist.");
         Assert.assertEquals(entity.getNodeType(), Node.ELEMENT_NODE, "Expected an element.");
         Assert.assertEquals(entity.getAttributes().getNamedItem("name").getNodeValue(),
-                "SimpleEntity", "Expected the entity name to be \"SimpleEntity\"");
+                "SimpleFieldEntity", "Expected the entity name to be \"SimpleFieldEntity\"");
+    }
+
+    @Test
+    public void testNamedEntity() throws XPathExpressionException {
+        Node entity = getNode("/model/entities/entity[@name=\"NamedEntity\"]");
+        Assert.assertNotNull(entity, "Expected an entity with name \"NamedEntity\" to exist.");
+        Assert.assertEquals(entity.getNodeType(), Node.ELEMENT_NODE, "Expected an element.");
+        Assert.assertEquals(entity.getAttributes().getNamedItem("name").getNodeValue(),
+                "NamedEntity", "Expected the entity name to be \"NamedEntity\"");
     }
 
 }

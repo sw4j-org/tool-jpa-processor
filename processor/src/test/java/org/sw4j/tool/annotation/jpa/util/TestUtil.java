@@ -38,6 +38,7 @@ import javax.xml.xpath.XPathFactory;
 import org.testng.Assert;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
@@ -123,8 +124,35 @@ public class TestUtil {
     }
 
     private void checkVisitedNodes(Element node) {
+        if (!visitedNodes.contains(node)) {
+            StringBuilder path = new StringBuilder();
+            NamedNodeMap attributes = node.getAttributes();
+            if (attributes.getLength() > 0) {
+                path.append("[");
+                for (int i = 0; i < attributes.getLength(); i++) {
+                    if (i > 0) {
+                        path.append(" and ");
+                    }
+                    Node attribute = attributes.item(i);
+                    path.append("@").append(attribute.getNodeName()).append("='")
+                            .append(attribute.getNodeValue()).append("'");
+                }
+                path.append("]");
+            }
+            path.insert(0, node.getNodeName());
+            Node parent = node.getParentNode();
+            while (parent != null) {
+                path.insert(0, "/");
+                if (parent.getNodeType() != Node.DOCUMENT_NODE) {
+                    path.insert(0, parent.getNodeName());
+                }
+                parent = parent.getParentNode();
+            }
+            Assert.fail(new StringBuilder("Expected the node \"").append(path)
+                        .append("\" to be tested.").toString());
+        }
         Assert.assertTrue(visitedNodes.contains(node),
-                new StringBuilder("Expected the node \"").append(node.getTagName())
+                new StringBuilder("Expected the node \"").append(node.toString())
                         .append("\" to be tested.").toString());
         NodeList children = node.getChildNodes();
         for (int i = 0; i < children.getLength(); i++) {
