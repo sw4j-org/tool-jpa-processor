@@ -14,43 +14,36 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.sw4j.tool.annotation.jpa.processor;
+package org.sw4j.tool.annotation.jpa.test.processor;
 
+import javax.xml.xpath.XPathExpressionException;
+import org.sw4j.tool.annotation.jpa.util.TestSuperclass;
 import org.testng.Assert;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+import org.w3c.dom.Node;
 
 /**
+ * Class to testResultFile the {@link AnnotationProcessor}.
  *
  * @author Uwe Plonus
  */
-public class AnnotationProcessorTest {
+public class AnnotationProcessorTest extends TestSuperclass {
 
+    /** Default constructor. */
     public AnnotationProcessorTest() {
     }
 
-    @BeforeClass
-    public static void setUpClass() throws Exception {
-    }
-
-    @AfterClass
-    public static void tearDownClass() throws Exception {
-    }
-
-    @BeforeMethod
-    public void setUpMethod() throws Exception {
-    }
-
-    @AfterMethod
-    public void tearDownMethod() throws Exception {
+    @Test
+    public void testRootElement() {
+        Assert.assertNotNull(getRootElement(), "Expected a document to be read.");
+        Assert.assertEquals(getRootElement().getNodeName(), "model",
+                "Expected the root element to be named \"model\".");
     }
 
     @Test
-    public void test() {
-        Assert.assertTrue(true);
+    public void testEntities() throws XPathExpressionException {
+        Node element = getNode("/model/entities");
+        Assert.assertNotNull(element, "Expected the model to contain an element \"entities\".");
     }
 
 }

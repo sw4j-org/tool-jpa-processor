@@ -13,7 +13,7 @@
   <artifactId>processor</artifactId>
   <packaging>jar</packaging>
 
-  <name>JPA Annotation Processor</name>
+  <name>JPA Annotation Processor (Annotation Processor)</name>
   <description>This is the JPA annotation processor.</description>
 
   <properties>
@@ -22,8 +22,18 @@
 
   <dependencies>
     <dependency>
-      <groupId>org.hibernate.javax.persistence</groupId>
-      <artifactId>hibernate-jpa-2.1-api</artifactId>
+      <groupId>com.google.code.findbugs</groupId>
+      <artifactId>findbugs-annotations</artifactId>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>com.google.code.findbugs</groupId>
+      <artifactId>jsr305</artifactId>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.persistence</groupId>
+      <artifactId>javax.persistence</artifactId>
       <scope>provided</scope>
     </dependency>
     <dependency>
@@ -46,20 +56,27 @@
               <goal>compile</goal>
             </goals>
             <configuration>
+              <!-- No annotation processors are executed as we are creating one -->
               <proc>none</proc>
             </configuration>
           </execution>
           <execution>
-            <id>process-test-resources</id>
-            <phase>generate-test-resources</phase>
+            <id>default-testCompile</id>
+            <phase>test-compile</phase>
             <goals>
-              <goal>compile</goal>
+              <goal>testCompile</goal>
             </goals>
             <configuration>
-              <proc>only</proc>
+              <!-- No annotation processors are executed as we are creating one -->
+              <proc>none</proc>
+              <!--<fork>true</fork>-->
             </configuration>
           </execution>
         </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.jacoco</groupId>
+        <artifactId>jacoco-maven-plugin</artifactId>
       </plugin>
     </plugins>
   </build>
