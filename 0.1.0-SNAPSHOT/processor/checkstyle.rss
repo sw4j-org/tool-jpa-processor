@@ -19,16 +19,16 @@ under the License.
 -->
 <rss version="0.91">
   <channel>
-    <title>JPA Annotation Processor - Checkstyle report</title>
+    <title>JPA Annotation Processor (Annotation Processor) - Checkstyle report</title>
     <link>https://sw4j-org.github.io/tool-jpa-processor/processor/</link>
-    <description>JPA Annotation Processor - Checkstyle report</description>
+    <description>JPA Annotation Processor (Annotation Processor) - Checkstyle report</description>
     <language>en-us</language>
     <copyright>&#169;2016</copyright>
     <item>
-      <title>File: 1,
+      <title>File: 7,
              Errors: 0,
-             Warnings: 3,
-             Infos: 2
+             Warnings: 6,
+             Infos: 0
       </title>
             <link>https://sw4j-org.github.io/tool-jpa-processor/processor//checkstyle.html</link>
       <description>
@@ -46,13 +46,97 @@ under the License.
           <tbody>
                           <tr>
                 <td>
+                  <a href="https://sw4j-org.github.io/tool-jpa-processor/processor//checkstyle.html#org.sw4j.tool.annotation.jpa.processor.package-info.java">org/sw4j/tool/annotation/jpa/processor/package-info.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://sw4j-org.github.io/tool-jpa-processor/processor//checkstyle.html#org.sw4j.tool.annotation.jpa.generator.package-info.java">org/sw4j/tool/annotation/jpa/generator/package-info.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://sw4j-org.github.io/tool-jpa-processor/processor//checkstyle.html#org.sw4j.tool.annotation.jpa.generator.model.package-info.java">org/sw4j/tool/annotation/jpa/generator/model/package-info.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://sw4j-org.github.io/tool-jpa-processor/processor//checkstyle.html#org.sw4j.tool.annotation.jpa.generator.GeneratorService.java">org/sw4j/tool/annotation/jpa/generator/GeneratorService.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://sw4j-org.github.io/tool-jpa-processor/processor//checkstyle.html#org.sw4j.tool.annotation.jpa.generator.model.Model.java">org/sw4j/tool/annotation/jpa/generator/model/Model.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  1
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
                   <a href="https://sw4j-org.github.io/tool-jpa-processor/processor//checkstyle.html#org.sw4j.tool.annotation.jpa.processor.AnnotationProcessor.java">org/sw4j/tool/annotation/jpa/processor/AnnotationProcessor.java</a>
                 </td>
                 <td>
-                  2
+                  0
                 </td>
                 <td>
-                  3
+                  4
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://sw4j-org.github.io/tool-jpa-processor/processor//checkstyle.html#org.sw4j.tool.annotation.jpa.generator.model.Entity.java">org/sw4j/tool/annotation/jpa/generator/model/Entity.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  1
                 </td>
                 <td>
                   0
