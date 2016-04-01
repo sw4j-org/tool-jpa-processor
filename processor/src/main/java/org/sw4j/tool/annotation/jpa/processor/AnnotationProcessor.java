@@ -16,10 +16,12 @@
  */
 package org.sw4j.tool.annotation.jpa.processor;
 
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Properties;
 import java.util.ServiceLoader;
 import java.util.Set;
 import javax.annotation.processing.AbstractProcessor;
@@ -46,7 +48,7 @@ import org.sw4j.tool.annotation.jpa.generator.model.Model;
 public class AnnotationProcessor extends AbstractProcessor {
 
     /** The option of the annotation processor to set output directory. */
-    public static final String OUTPUT_OPTION = "tool.jpa.output";
+    public static final String OUTPUT_OPTION = "tool.jpa.properties";
 
     private final Model model;
 
@@ -68,11 +70,18 @@ public class AnnotationProcessor extends AbstractProcessor {
     public boolean process(final Set<? extends TypeElement> annotations,
             final RoundEnvironment roundEnv) {
         String outputOption = this.processingEnv.getOptions().get(OUTPUT_OPTION);
-        Map<String, String> outputParts = new HashMap<>();
+        Map<String, Properties> outputParts = new HashMap<>();
         for (String o: outputOption.split(",")) {
             String[] singleOption = o.split("=");
             if (singleOption.length == 2) {
-                outputParts.put(singleOption[0], singleOption[1]);
+                Properties properties = new Properties();
+                try {
+                    properties.load(new FileInputStream(singleOption[1]));
+                } catch (IOException ioex) {
+                    this.processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR,
+                            ioex.toString());
+                }
+                outputParts.put(singleOption[0], properties);
             }
         }
 
@@ -82,7 +91,7 @@ public class AnnotationProcessor extends AbstractProcessor {
         while (generators.hasNext()) {
             GeneratorService generator = generators.next();
             if (outputParts.containsKey(generator.getPrefix())) {
-                generator.setOutput(outputParts.get(generator.getPrefix()));
+                generator.setProperties(outputParts.get(generator.getPrefix()));
             }
         }
 

@@ -16,7 +16,9 @@
  */
 package org.sw4j.tool.annotation.jpa.util;
 
+import java.io.FileInputStream;
 import java.util.HashSet;
+import java.util.Properties;
 import java.util.Set;
 import javax.xml.xpath.XPathExpressionException;
 import org.testng.annotations.AfterSuite;
@@ -35,10 +37,11 @@ public abstract class TestSuperclass {
             "src/test/java/org/sw4j/tool/annotation/jpa/entity/";
 
     /** The file to write the result to. */
-    private static final String TEST_XML = "target/result/tool-jpa/test.xml";
+    private static final String TEST_PROPERTIES = "src/test/resources/test.properties";
 
     /** The option prefix for the generator output. */
-    private static final String ANNOTATION_PROCESSOR_OPTION = "-Atool.jpa.output=test=" + TEST_XML;
+    private static final String ANNOTATION_PROCESSOR_OPTION =
+            "-Atool.jpa.properties=test=" + TEST_PROPERTIES;
 
     /** The utility class of the testResultFile. */
     private static TestUtil testUtil;
@@ -57,7 +60,9 @@ public abstract class TestSuperclass {
     @BeforeSuite
     public static void setUpSuite() throws Exception {
         testUtil = new TestUtil();
-        testUtil.compileClasses(ENTITY_PACKAGE, TEST_XML,
+        Properties properties = new Properties();
+        properties.load(new FileInputStream(TEST_PROPERTIES));
+        testUtil.compileClasses(ENTITY_PACKAGE, properties.getProperty("outFile"),
                 new String[]{
                     ANNOTATION_PROCESSOR_OPTION
                 });
