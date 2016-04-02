@@ -26,11 +26,11 @@ import javax.xml.bind.annotation.XmlAttribute;
  *
  * @author Uwe Plonus
  */
-@XmlAccessorType(XmlAccessType.FIELD)
+@XmlAccessorType(XmlAccessType.NONE)
 public class Entity {
 
     /** The name of the entity. */
-    @XmlAttribute
+    @XmlAttribute(name = "name")
     private String name;
 
     /**
