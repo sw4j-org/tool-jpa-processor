@@ -1,4 +1,4 @@
-# JPA Annotation Processor
+# Introduction
 
 This project contains a JPA annotation processor to handle JPA annotations and generate scripts (or
 similar) to create the schema needed.
@@ -8,7 +8,7 @@ The project consists of different modules.
 The major modules are
 
 * the [processor](./processor/index.html)
-* the generators (to be done)
+* the [generators](./generator/index.html)
 
 ## Generation of schemas
 
