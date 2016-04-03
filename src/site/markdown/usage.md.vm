@@ -1,0 +1,4 @@
+# Usage
+
+To use the annotation processor you have to add the annotation processor and a generator to the
+classpath during compilation.
