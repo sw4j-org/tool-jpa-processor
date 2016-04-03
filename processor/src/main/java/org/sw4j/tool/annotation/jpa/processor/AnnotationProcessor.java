@@ -44,11 +44,11 @@ import org.sw4j.tool.annotation.jpa.generator.model.Model;
  */
 @SupportedAnnotationTypes("javax.persistence.Entity")
 @SupportedSourceVersion(SourceVersion.RELEASE_7)
-@SupportedOptions(AnnotationProcessor.OUTPUT_OPTION)
+@SupportedOptions(AnnotationProcessor.PROPERTIES_OPTION)
 public class AnnotationProcessor extends AbstractProcessor {
 
     /** The option of the annotation processor to set output directory. */
-    public static final String OUTPUT_OPTION = "tool.jpa.properties";
+    public static final String PROPERTIES_OPTION = "tool.jpa.properties";
 
     private final Model model;
 
@@ -69,7 +69,7 @@ public class AnnotationProcessor extends AbstractProcessor {
     @Override
     public boolean process(final Set<? extends TypeElement> annotations,
             final RoundEnvironment roundEnv) {
-        String outputOption = this.processingEnv.getOptions().get(OUTPUT_OPTION);
+        String outputOption = this.processingEnv.getOptions().get(PROPERTIES_OPTION);
         Map<String, Properties> outputParts = new HashMap<>();
         for (String o: outputOption.split(",")) {
             String[] singleOption = o.split("=");
