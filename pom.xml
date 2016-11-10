@@ -608,7 +608,7 @@
     </plugins>
   </reporting>
 
-  <url>https://sw4j-org.github.io/tool-jpa-processor/</url>
+  <url>https://sw4j-org.github.io/tool-jpa-processor/${project.version}/</url>
 
   <issueManagement>
     <system>GitHub</system>
