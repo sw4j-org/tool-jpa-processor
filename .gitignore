@@ -5,3 +5,5 @@
 /processor/target/
 /sample/target/
 /nbactions.xml
+/generator/liquibase-3.4/target/
+/generator/target/

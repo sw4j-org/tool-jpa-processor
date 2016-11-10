@@ -36,6 +36,7 @@ public class EntityTest extends TestSuperclass {
     @Test
     public void testSimpleEntity() throws XPathExpressionException {
         Node entity = getNode("/model/entities/entity[@name=\"SimpleFieldEntity\"]");
+
         Assert.assertNotNull(entity, "Expected an entity with name \"SimpleFieldEntity\" to exist.");
         Assert.assertEquals(entity.getNodeType(), Node.ELEMENT_NODE, "Expected an element.");
         Assert.assertEquals(entity.getAttributes().getNamedItem("name").getNodeValue(),
@@ -45,6 +46,7 @@ public class EntityTest extends TestSuperclass {
     @Test
     public void testNamedEntity() throws XPathExpressionException {
         Node entity = getNode("/model/entities/entity[@name=\"NamedEntity\"]");
+
         Assert.assertNotNull(entity, "Expected an entity with name \"NamedEntity\" to exist.");
         Assert.assertEquals(entity.getNodeType(), Node.ELEMENT_NODE, "Expected an element.");
         Assert.assertEquals(entity.getAttributes().getNamedItem("name").getNodeValue(),

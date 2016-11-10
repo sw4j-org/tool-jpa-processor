@@ -16,10 +16,12 @@
  */
 package org.sw4j.tool.annotation.jpa.processor;
 
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Properties;
 import java.util.ServiceLoader;
 import java.util.Set;
 import javax.annotation.processing.AbstractProcessor;
@@ -32,7 +34,6 @@ import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
 import javax.tools.Diagnostic;
 import org.sw4j.tool.annotation.jpa.generator.GeneratorService;
-import org.sw4j.tool.annotation.jpa.generator.model.Entity;
 import org.sw4j.tool.annotation.jpa.generator.model.Model;
 
 /**
@@ -42,13 +43,17 @@ import org.sw4j.tool.annotation.jpa.generator.model.Model;
  */
 @SupportedAnnotationTypes("javax.persistence.Entity")
 @SupportedSourceVersion(SourceVersion.RELEASE_7)
-@SupportedOptions(AnnotationProcessor.OUTPUT_OPTION)
+@SupportedOptions(AnnotationProcessor.PROPERTIES_OPTION)
 public class AnnotationProcessor extends AbstractProcessor {
 
     /** The option of the annotation processor to set output directory. */
-    public static final String OUTPUT_OPTION = "tool.jpa.output";
+    public static final String PROPERTIES_OPTION = "tool.jpa.properties";
 
+    /** The generated entity model. */
     private final Model model;
+
+    /** The processor to handle entities. */
+    private final EntityProcessor entityProcessor = new EntityProcessor();
 
     /**
      * The default constructor.
@@ -67,12 +72,19 @@ public class AnnotationProcessor extends AbstractProcessor {
     @Override
     public boolean process(final Set<? extends TypeElement> annotations,
             final RoundEnvironment roundEnv) {
-        String outputOption = this.processingEnv.getOptions().get(OUTPUT_OPTION);
-        Map<String, String> outputParts = new HashMap<>();
+        String outputOption = this.processingEnv.getOptions().get(PROPERTIES_OPTION);
+        Map<String, Properties> outputParts = new HashMap<>();
         for (String o: outputOption.split(",")) {
             String[] singleOption = o.split("=");
             if (singleOption.length == 2) {
-                outputParts.put(singleOption[0], singleOption[1]);
+                Properties properties = new Properties();
+                try {
+                    properties.load(new FileInputStream(singleOption[1]));
+                } catch (IOException ioex) {
+                    this.processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR,
+                            ioex.toString());
+                }
+                outputParts.put(singleOption[0], properties);
             }
         }
 
@@ -82,7 +94,7 @@ public class AnnotationProcessor extends AbstractProcessor {
         while (generators.hasNext()) {
             GeneratorService generator = generators.next();
             if (outputParts.containsKey(generator.getPrefix())) {
-                generator.setOutput(outputParts.get(generator.getPrefix()));
+                generator.setProperties(outputParts.get(generator.getPrefix()));
             }
         }
 
@@ -90,7 +102,7 @@ public class AnnotationProcessor extends AbstractProcessor {
         for (Element element: elements) {
             javax.persistence.Entity entity = element.getAnnotation(javax.persistence.Entity.class);
             if (entity != null) {
-                processEntity(element, model);
+                entityProcessor.process(element, model);
             }
         }
 
@@ -108,24 +120,6 @@ public class AnnotationProcessor extends AbstractProcessor {
         }
 
         return false;
-    }
-
-    /**
-     * Process a single entity annotated with {@code @Entity}.
-     *
-     * @param element the element to process (must be an {@code @Entity}.
-     * @param model the model where the final entity is added to.
-     */
-    private void processEntity(Element element, Model model) {
-        javax.persistence.Entity entityAnnotation =
-                element.getAnnotation(javax.persistence.Entity.class);
-        Entity entity = new Entity();
-        if ("".equals(entityAnnotation.name())) {
-            entity.setName(element.getSimpleName().toString());
-        } else {
-            entity.setName(entityAnnotation.name());
-        }
-        model.addEntity(entity);
     }
 
 }

@@ -56,7 +56,8 @@ public class TestUtil {
     /** The document that is used to testResultFile the result. */
     private Document resultDocument;
 
-    private static Set<Node> visitedNodes;
+    /** */
+    private final Set<Node> visitedNodes;
 
     public TestUtil() {
         visitedNodes = new HashSet<>();
@@ -83,8 +84,7 @@ public class TestUtil {
 
         JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
         Assert.assertNotNull(compiler, "Need a java compiler for executing the tests.");
-        StandardJavaFileManager fileManager = compiler.getStandardFileManager(null, null,
-                Charset.forName("UTF-8"));
+        StandardJavaFileManager fileManager = compiler.getStandardFileManager(null, null, Charset.forName("UTF-8"));
 
         File classesFolder = new File(TARGET_FOLDER);
         classesFolder.mkdirs();
@@ -119,10 +119,20 @@ public class TestUtil {
         }
     }
 
+    /**
+     * Traverses the complete DOM and checks that every node is retrieved with {@link #getNode(java.lang.String)}. The
+     * check is done with {@link Assert}.
+     */
     public void checkVisitedNodes() {
         checkVisitedNodes(resultDocument.getDocumentElement());
     }
 
+    /**
+     * Check that the given node is tested with the method {@link #getNode(java.lang.String)}. If the current node is an
+     * element then each embedded element will recursively be checked.
+     *
+     * @param node the node to check.
+     */
     private void checkVisitedNodes(Element node) {
         if (!visitedNodes.contains(node)) {
             StringBuilder path = new StringBuilder();
@@ -163,12 +173,24 @@ public class TestUtil {
         }
     }
 
+    /**
+     * Returns the root element of the document.
+     *
+     * @return the root element.
+     */
     public Element getRootElement() {
         Element root = resultDocument.getDocumentElement();
         visitedNodes.add(root);
         return root;
     }
 
+    /**
+     * Returns the node with the given XPath.
+     *
+     * @param path the XPath of the node to retrieve.
+     * @return the node denoted by the XPath.
+     * @throws XPathExpressionException if the XPath expression is invalid.
+     */
     public Node getNode(String path) throws XPathExpressionException {
         XPath xpath = XPathFactory.newInstance().newXPath();
         Node result = (Node)xpath.evaluate(path, resultDocument, XPathConstants.NODE);

@@ -17,6 +17,7 @@
 package org.sw4j.tool.annotation.jpa.generator;
 
 import java.io.IOException;
+import java.util.Properties;
 import org.sw4j.tool.annotation.jpa.generator.model.Model;
 
 /**
@@ -34,21 +35,12 @@ public interface GeneratorService {
     String getPrefix();
 
     /**
-     * Sets the output of the generator. This may be a directory or a file.
+     * Sets the properties of the generator. The properties are used to configure the generator. The
+     * recognized properties are generator dependent and must be described at the generator.
      *
-     * <p>
-     * Each generator must be prepared to get a directory instead of a file. In this case the
-     * generator should append a default file name.
-     * </p>
-     *
-     * <p>
-     * If the generator needs a directory and gets a file then it should remove the file name and
-     * use the remaining directory.
-     * </p>
-     *
-     * @param output the directory or file to use for the output.
+     * @param properties the properties used to configure the generator.
      */
-    void setOutput(String output);
+    void setProperties(Properties properties);
 
     /**
      * The model to process and to output.

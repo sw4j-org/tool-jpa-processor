@@ -23,14 +23,18 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
 
 /**
  * This is a model that contains all elements needed to create a schema for JPA entities.
  *
  * @author Uwe Plonus
  */
-@XmlAccessorType(XmlAccessType.FIELD)
-@XmlRootElement
+@XmlAccessorType(XmlAccessType.NONE)
+@XmlRootElement(name = "model")
+@XmlType(name = "", propOrder = {
+    "entities",
+})
 public class Model {
 
     /** The entities of the model. */

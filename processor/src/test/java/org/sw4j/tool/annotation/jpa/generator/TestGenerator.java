@@ -18,10 +18,8 @@ package org.sw4j.tool.annotation.jpa.generator;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Properties;
 import javax.xml.bind.JAXB;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
 import org.sw4j.tool.annotation.jpa.generator.model.Model;
 
 /**
@@ -34,9 +32,6 @@ public class TestGenerator implements GeneratorService {
 
     /** The prefix of the generator. */
     private static final String PREFIX = "test";
-
-    /** The file name for the output if no filename is given. */
-    private static final String DEFAULT_NAME = "test.xml";
 
     /** The file to write the model to. */
     private File outputFile;
@@ -52,17 +47,13 @@ public class TestGenerator implements GeneratorService {
     }
 
     /**
-     * Sets the output of the generator.
+     * Sets the properties of the generator.
      *
-     * @param output the output.
+     * @param properties the properties.
      */
     @Override
-    public void setOutput(String output) {
-        File outFile = new File(output);
-        if (outFile.isDirectory()) {
-            outFile = new File(outFile, DEFAULT_NAME);
-        }
-        outputFile = outFile;
+    public void setProperties(Properties properties) {
+        outputFile = new File(properties.getProperty("outFile"));
     }
 
     /**

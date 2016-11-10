@@ -16,7 +16,7 @@
  */
 
 /**
- * This package contains the infrastructure used to access a generator that creates the schema
- * description (e.g. DDL scripts).
+ * This package contains the infrastructure used to access a generator that creates the schema description (e.g. DDL
+ * scripts).
  */
 package org.sw4j.tool.annotation.jpa.generator;

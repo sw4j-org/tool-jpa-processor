@@ -20,6 +20,7 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 
 /**
+ * An entity with a overridden name.
  *
  * @author Uwe Plonus
  */

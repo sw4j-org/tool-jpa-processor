@@ -16,7 +16,7 @@
  */
 
 /**
- * This package contains the annotation processor which processes the JPA annotations and forwards
- * the generated model to the generator.
+ * This package contains the annotation processor which processes the JPA annotations and forwards the generated model
+ * to the generator.
  */
 package org.sw4j.tool.annotation.jpa.processor;
