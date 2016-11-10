@@ -21,8 +21,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 
 /**
- * This class represents an entity. Via the entity you can access the attributes and tables assigned
- * to the entity.
+ * This class represents an entity. Via the entity you can access the attributes and tables assigned to the entity.
  *
  * @author Uwe Plonus
  */

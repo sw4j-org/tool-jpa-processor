@@ -34,7 +34,6 @@ import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
 import javax.tools.Diagnostic;
 import org.sw4j.tool.annotation.jpa.generator.GeneratorService;
-import org.sw4j.tool.annotation.jpa.generator.model.Entity;
 import org.sw4j.tool.annotation.jpa.generator.model.Model;
 
 /**
@@ -50,7 +49,11 @@ public class AnnotationProcessor extends AbstractProcessor {
     /** The option of the annotation processor to set output directory. */
     public static final String PROPERTIES_OPTION = "tool.jpa.properties";
 
+    /** The generated entity model. */
     private final Model model;
+
+    /** The processor to handle entities. */
+    private final EntityProcessor entityProcessor = new EntityProcessor();
 
     /**
      * The default constructor.
@@ -99,7 +102,7 @@ public class AnnotationProcessor extends AbstractProcessor {
         for (Element element: elements) {
             javax.persistence.Entity entity = element.getAnnotation(javax.persistence.Entity.class);
             if (entity != null) {
-                processEntity(element, model);
+                entityProcessor.process(element, model);
             }
         }
 
@@ -117,24 +120,6 @@ public class AnnotationProcessor extends AbstractProcessor {
         }
 
         return false;
-    }
-
-    /**
-     * Process a single entity annotated with {@code @Entity}.
-     *
-     * @param element the element to process (must be an {@code @Entity}.
-     * @param model the model where the final entity is added to.
-     */
-    private void processEntity(Element element, Model model) {
-        javax.persistence.Entity entityAnnotation =
-                element.getAnnotation(javax.persistence.Entity.class);
-        Entity entity = new Entity();
-        if ("".equals(entityAnnotation.name())) {
-            entity.setName(element.getSimpleName().toString());
-        } else {
-            entity.setName(entityAnnotation.name());
-        }
-        model.addEntity(entity);
     }
 
 }

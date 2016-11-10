@@ -33,9 +33,6 @@ public class TestGenerator implements GeneratorService {
     /** The prefix of the generator. */
     private static final String PREFIX = "test";
 
-    /** The file name for the output if no filename is given. */
-    private static final String DEFAULT_NAME = "test.xml";
-
     /** The file to write the model to. */
     private File outputFile;
 

@@ -17,9 +17,7 @@
 package org.sw4j.tool.annotation.jpa.util;
 
 import java.io.FileInputStream;
-import java.util.HashSet;
 import java.util.Properties;
-import java.util.Set;
 import javax.xml.xpath.XPathExpressionException;
 import org.testng.annotations.AfterSuite;
 import org.testng.annotations.BeforeSuite;
@@ -33,20 +31,16 @@ import org.w3c.dom.Node;
 public abstract class TestSuperclass {
 
     /** The folder that contains all JPA classes to process. */
-    private static final String ENTITY_PACKAGE =
-            "src/test/java/org/sw4j/tool/annotation/jpa/entity/";
+    private static final String ENTITY_PACKAGE = "src/test/java/org/sw4j/tool/annotation/jpa/entity/";
 
     /** The file to write the result to. */
     private static final String TEST_PROPERTIES = "src/test/resources/test.properties";
 
     /** The option prefix for the generator output. */
-    private static final String ANNOTATION_PROCESSOR_OPTION =
-            "-Atool.jpa.properties=test=" + TEST_PROPERTIES;
+    private static final String ANNOTATION_PROCESSOR_OPTION = "-Atool.jpa.properties=test=" + TEST_PROPERTIES;
 
     /** The utility class of the testResultFile. */
     private static TestUtil testUtil;
-
-    private static Set<Node> visitedNodes;
 
     /** Default constructor. */
     public TestSuperclass() {
@@ -66,8 +60,6 @@ public abstract class TestSuperclass {
                 new String[]{
                     ANNOTATION_PROCESSOR_OPTION
                 });
-
-        visitedNodes = new HashSet<>();
     }
 
     /**
@@ -80,10 +72,22 @@ public abstract class TestSuperclass {
         testUtil.checkVisitedNodes();
     }
 
+    /**
+     * Returns the root element of the model.
+     *
+     * @return the root element.
+     */
     public Element getRootElement() {
         return testUtil.getRootElement();
     }
 
+    /**
+     * Returns the node for the given XPath from the model.
+     *
+     * @param path the XPath expression.
+     * @return the node with the given path.
+     * @throws XPathExpressionException if the XPath expression is invalid.
+     */
     public Node getNode(String path) throws XPathExpressionException {
         return testUtil.getNode(path);
     }

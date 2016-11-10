@@ -36,6 +36,7 @@ public class AnnotationProcessorTest extends TestSuperclass {
     @Test
     public void testRootElement() {
         Assert.assertNotNull(getRootElement(), "Expected a document to be read.");
+
         Assert.assertEquals(getRootElement().getNodeName(), "model",
                 "Expected the root element to be named \"model\".");
     }
@@ -43,6 +44,7 @@ public class AnnotationProcessorTest extends TestSuperclass {
     @Test
     public void testEntities() throws XPathExpressionException {
         Node element = getNode("/model/entities");
+
         Assert.assertNotNull(element, "Expected the model to contain an element \"entities\".");
     }
 

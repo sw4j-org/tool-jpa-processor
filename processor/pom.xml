@@ -69,7 +69,6 @@
             <configuration>
               <!-- No annotation processors are executed as we are creating one -->
               <proc>none</proc>
-              <!--<fork>true</fork>-->
             </configuration>
           </execution>
         </executions>
