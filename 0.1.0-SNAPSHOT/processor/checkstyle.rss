@@ -25,10 +25,10 @@ under the License.
     <language>en-us</language>
     <copyright>&#169;2016</copyright>
     <item>
-      <title>File: 7,
+      <title>File: 8,
              Errors: 0,
              Warnings: 6,
-             Infos: 0
+             Infos: 2
       </title>
             <link>https://sw4j-org.github.io/tool-jpa-processor/processor//checkstyle.html</link>
       <description>
@@ -102,10 +102,24 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://sw4j-org.github.io/tool-jpa-processor/processor//checkstyle.html#org.sw4j.tool.annotation.jpa.generator.model.Model.java">org/sw4j/tool/annotation/jpa/generator/model/Model.java</a>
+                  <a href="https://sw4j-org.github.io/tool-jpa-processor/processor//checkstyle.html#org.sw4j.tool.annotation.jpa.processor.EntityProcessor.java">org/sw4j/tool/annotation/jpa/processor/EntityProcessor.java</a>
+                </td>
+                <td>
+                  1
+                </td>
+                <td>
+                  3
                 </td>
                 <td>
                   0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://sw4j-org.github.io/tool-jpa-processor/processor//checkstyle.html#org.sw4j.tool.annotation.jpa.generator.model.Model.java">org/sw4j/tool/annotation/jpa/generator/model/Model.java</a>
+                </td>
+                <td>
+                  1
                 </td>
                 <td>
                   1
@@ -122,7 +136,7 @@ under the License.
                   0
                 </td>
                 <td>
-                  4
+                  1
                 </td>
                 <td>
                   0

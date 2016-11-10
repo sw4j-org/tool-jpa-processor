@@ -16,10 +16,12 @@
  */
 package org.sw4j.tool.annotation.jpa.processor;
 
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Properties;
 import java.util.ServiceLoader;
 import java.util.Set;
 import javax.annotation.processing.AbstractProcessor;
@@ -32,7 +34,6 @@ import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
 import javax.tools.Diagnostic;
 import org.sw4j.tool.annotation.jpa.generator.GeneratorService;
-import org.sw4j.tool.annotation.jpa.generator.model.Entity;
 import org.sw4j.tool.annotation.jpa.generator.model.Model;
 
 /**
@@ -42,20 +43,24 @@ import org.sw4j.tool.annotation.jpa.generator.model.Model;
  */
 @SupportedAnnotationTypes(&quot;javax.persistence.Entity&quot;)
 @SupportedSourceVersion(SourceVersion.RELEASE_7)
-@SupportedOptions(AnnotationProcessor.OUTPUT_OPTION)
+@SupportedOptions(AnnotationProcessor.PROPERTIES_OPTION)
 public class AnnotationProcessor extends AbstractProcessor {
 
     /** The option of the annotation processor to set output directory. */
-    public static final String OUTPUT_OPTION = &quot;tool.jpa.output&quot;;
+    public static final String PROPERTIES_OPTION = &quot;tool.jpa.properties&quot;;
 
+    /** The generated entity model. */
     private final Model model;
+
+    /** The processor to handle entities. */
+<span class="fc" id="L56">    private final EntityProcessor entityProcessor = new EntityProcessor();</span>
 
     /**
      * The default constructor.
      */
-<span class="fc" id="L56">    public AnnotationProcessor() {</span>
-<span class="fc" id="L57">        model = new Model();</span>
-<span class="fc" id="L58">    }</span>
+<span class="fc" id="L61">    public AnnotationProcessor() {</span>
+<span class="fc" id="L62">        model = new Model();</span>
+<span class="fc" id="L63">    }</span>
 
     /**
      * Processes the annotations given in the {@code annotations} variable.
@@ -67,66 +72,55 @@ public class AnnotationProcessor extends AbstractProcessor {
     @Override
     public boolean process(final Set&lt;? extends TypeElement&gt; annotations,
             final RoundEnvironment roundEnv) {
-<span class="fc" id="L70">        String outputOption = this.processingEnv.getOptions().get(OUTPUT_OPTION);</span>
-<span class="fc" id="L71">        Map&lt;String, String&gt; outputParts = new HashMap&lt;&gt;();</span>
-<span class="fc bfc" id="L72" title="All 2 branches covered.">        for (String o: outputOption.split(&quot;,&quot;)) {</span>
-<span class="fc" id="L73">            String[] singleOption = o.split(&quot;=&quot;);</span>
-<span class="pc bpc" id="L74" title="1 of 2 branches missed.">            if (singleOption.length == 2) {</span>
-<span class="fc" id="L75">                outputParts.put(singleOption[0], singleOption[1]);</span>
-            }
-        }
-
-<span class="fc" id="L79">        ServiceLoader&lt;GeneratorService&gt; generatorService =</span>
-                ServiceLoader.load(GeneratorService.class);
-<span class="fc" id="L81">        Iterator&lt;GeneratorService&gt; generators = generatorService.iterator();</span>
-<span class="fc bfc" id="L82" title="All 2 branches covered.">        while (generators.hasNext()) {</span>
-<span class="fc" id="L83">            GeneratorService generator = generators.next();</span>
-<span class="pc bpc" id="L84" title="1 of 2 branches missed.">            if (outputParts.containsKey(generator.getPrefix())) {</span>
-<span class="fc" id="L85">                generator.setOutput(outputParts.get(generator.getPrefix()));</span>
-            }
-<span class="fc" id="L87">        }</span>
-
-<span class="fc" id="L89">        Set&lt;? extends Element&gt; elements = roundEnv.getRootElements();</span>
-<span class="fc bfc" id="L90" title="All 2 branches covered.">        for (Element element: elements) {</span>
-<span class="fc" id="L91">            javax.persistence.Entity entity = element.getAnnotation(javax.persistence.Entity.class);</span>
-<span class="pc bpc" id="L92" title="1 of 2 branches missed.">            if (entity != null) {</span>
-<span class="fc" id="L93">                processEntity(element, model);</span>
-            }
-<span class="fc" id="L95">        }</span>
-
-<span class="fc bfc" id="L97" title="All 2 branches covered.">        if (roundEnv.processingOver()) {</span>
-<span class="fc" id="L98">            generators = generatorService.iterator();</span>
-<span class="fc bfc" id="L99" title="All 2 branches covered.">            while (generators.hasNext()) {</span>
-<span class="fc" id="L100">                GeneratorService generator = generators.next();</span>
+<span class="fc" id="L75">        String outputOption = this.processingEnv.getOptions().get(PROPERTIES_OPTION);</span>
+<span class="fc" id="L76">        Map&lt;String, Properties&gt; outputParts = new HashMap&lt;&gt;();</span>
+<span class="fc bfc" id="L77" title="All 2 branches covered.">        for (String o: outputOption.split(&quot;,&quot;)) {</span>
+<span class="fc" id="L78">            String[] singleOption = o.split(&quot;=&quot;);</span>
+<span class="pc bpc" id="L79" title="1 of 2 branches missed.">            if (singleOption.length == 2) {</span>
+<span class="fc" id="L80">                Properties properties = new Properties();</span>
                 try {
-<span class="fc" id="L102">                    generator.process(model);</span>
-<span class="nc" id="L103">                } catch (IOException ioex) {</span>
-<span class="nc" id="L104">                    this.processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR,</span>
+<span class="fc" id="L82">                    properties.load(new FileInputStream(singleOption[1]));</span>
+<span class="nc" id="L83">                } catch (IOException ioex) {</span>
+<span class="nc" id="L84">                    this.processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR,</span>
                             ioex.toString());
-<span class="fc" id="L106">                }</span>
-<span class="fc" id="L107">            }</span>
+<span class="fc" id="L86">                }</span>
+<span class="fc" id="L87">                outputParts.put(singleOption[0], properties);</span>
+            }
         }
 
-<span class="fc" id="L110">        return false;</span>
+<span class="fc" id="L91">        ServiceLoader&lt;GeneratorService&gt; generatorService =</span>
+                ServiceLoader.load(GeneratorService.class);
+<span class="fc" id="L93">        Iterator&lt;GeneratorService&gt; generators = generatorService.iterator();</span>
+<span class="fc bfc" id="L94" title="All 2 branches covered.">        while (generators.hasNext()) {</span>
+<span class="fc" id="L95">            GeneratorService generator = generators.next();</span>
+<span class="pc bpc" id="L96" title="1 of 2 branches missed.">            if (outputParts.containsKey(generator.getPrefix())) {</span>
+<span class="fc" id="L97">                generator.setProperties(outputParts.get(generator.getPrefix()));</span>
+            }
+<span class="fc" id="L99">        }</span>
+
+<span class="fc" id="L101">        Set&lt;? extends Element&gt; elements = roundEnv.getRootElements();</span>
+<span class="fc bfc" id="L102" title="All 2 branches covered.">        for (Element element: elements) {</span>
+<span class="fc" id="L103">            javax.persistence.Entity entity = element.getAnnotation(javax.persistence.Entity.class);</span>
+<span class="pc bpc" id="L104" title="1 of 2 branches missed.">            if (entity != null) {</span>
+<span class="fc" id="L105">                entityProcessor.process(element, model);</span>
+            }
+<span class="fc" id="L107">        }</span>
+
+<span class="fc bfc" id="L109" title="All 2 branches covered.">        if (roundEnv.processingOver()) {</span>
+<span class="fc" id="L110">            generators = generatorService.iterator();</span>
+<span class="fc bfc" id="L111" title="All 2 branches covered.">            while (generators.hasNext()) {</span>
+<span class="fc" id="L112">                GeneratorService generator = generators.next();</span>
+                try {
+<span class="fc" id="L114">                    generator.process(model);</span>
+<span class="nc" id="L115">                } catch (IOException ioex) {</span>
+<span class="nc" id="L116">                    this.processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR,</span>
+                            ioex.toString());
+<span class="fc" id="L118">                }</span>
+<span class="fc" id="L119">            }</span>
+        }
+
+<span class="fc" id="L122">        return false;</span>
     }
-
-    /**
-     * Process a single entity annotated with {@code @Entity}.
-     *
-     * @param element the element to process (must be an {@code @Entity}.
-     * @param model the model where the final entity is added to.
-     */
-    private void processEntity(Element element, Model model) {
-<span class="fc" id="L120">        javax.persistence.Entity entityAnnotation =</span>
-                element.getAnnotation(javax.persistence.Entity.class);
-<span class="fc" id="L122">        Entity entity = new Entity();</span>
-<span class="fc bfc" id="L123" title="All 2 branches covered.">        if (&quot;&quot;.equals(entityAnnotation.name())) {</span>
-<span class="fc" id="L124">            entity.setName(element.getSimpleName().toString());</span>
-        } else {
-<span class="fc" id="L126">            entity.setName(entityAnnotation.name());</span>
-        }
-<span class="fc" id="L128">        model.addEntity(entity);</span>
-<span class="fc" id="L129">    }</span>
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

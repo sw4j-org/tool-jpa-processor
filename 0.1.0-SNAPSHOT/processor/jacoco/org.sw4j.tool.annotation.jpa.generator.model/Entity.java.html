@@ -21,23 +21,22 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 
 /**
- * This class represents an entity. Via the entity you can access the attributes and tables assigned
- * to the entity.
+ * This class represents an entity. Via the entity you can access the attributes and tables assigned to the entity.
  *
  * @author Uwe Plonus
  */
-@XmlAccessorType(XmlAccessType.FIELD)
+@XmlAccessorType(XmlAccessType.NONE)
 public class Entity {
 
     /** The name of the entity. */
-    @XmlAttribute
+    @XmlAttribute(name = &quot;name&quot;)
     private String name;
 
     /**
      * Default constructor.
      */
-<span class="fc" id="L39">    public Entity() {</span>
-<span class="fc" id="L40">    }</span>
+<span class="fc" id="L38">    public Entity() {</span>
+<span class="fc" id="L39">    }</span>
 
     /**
      * Returns the name of the entity.
@@ -45,7 +44,7 @@ public class Entity {
      * @return the name.
      */
     public String getName() {
-<span class="nc" id="L48">        return name;</span>
+<span class="nc" id="L47">        return name;</span>
     }
 
     /**
@@ -54,8 +53,8 @@ public class Entity {
      * @param name the name.
      */
     public void setName(String name) {
-<span class="fc" id="L57">        this.name = name;</span>
-<span class="fc" id="L58">    }</span>
+<span class="fc" id="L56">        this.name = name;</span>
+<span class="fc" id="L57">    }</span>
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

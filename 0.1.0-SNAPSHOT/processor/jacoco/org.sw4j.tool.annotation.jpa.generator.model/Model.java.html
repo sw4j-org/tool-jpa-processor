@@ -23,14 +23,18 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
 
 /**
  * This is a model that contains all elements needed to create a schema for JPA entities.
  *
  * @author Uwe Plonus
  */
-@XmlAccessorType(XmlAccessType.FIELD)
-@XmlRootElement
+@XmlAccessorType(XmlAccessType.NONE)
+@XmlRootElement(name = &quot;model&quot;)
+@XmlType(name = &quot;&quot;, propOrder = {
+    &quot;entities&quot;,
+})
 public class Model {
 
     /** The entities of the model. */
@@ -41,9 +45,9 @@ public class Model {
     /**
      * Default constructor.
      */
-<span class="fc" id="L44">    public Model() {</span>
-<span class="fc" id="L45">        entities = new LinkedList&lt;&gt;();</span>
-<span class="fc" id="L46">    }</span>
+<span class="fc" id="L48">    public Model() {</span>
+<span class="fc" id="L49">        entities = new LinkedList&lt;&gt;();</span>
+<span class="fc" id="L50">    }</span>
 
     /**
      * Adds an entity to the model.
@@ -51,8 +55,8 @@ public class Model {
      * @param entity the entity to add.
      */
     public void addEntity(Entity entity) {
-<span class="fc" id="L54">        entities.add(entity);</span>
-<span class="fc" id="L55">    }</span>
+<span class="fc" id="L58">        entities.add(entity);</span>
+<span class="fc" id="L59">    }</span>
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>
