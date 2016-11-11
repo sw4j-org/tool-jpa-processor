@@ -21,10 +21,18 @@ import org.sw4j.tool.annotation.jpa.generator.model.Entity;
 import org.sw4j.tool.annotation.jpa.generator.model.Model;
 
 /**
+ * This is a processor to handle classes with an @Entity annotation.
  *
  * @author Uwe Plonus
  */
 public class EntityProcessor {
+
+    /**
+     * Default constructor for the entity processor.
+     *
+     */
+    public EntityProcessor() {
+    }
 
     /**
      * Process a single entity annotated with {@code @Entity}.
@@ -32,7 +40,7 @@ public class EntityProcessor {
      * @param element the element to process (must be an {@code @Entity}.
      * @param model the model where the final entity is added to.
      */
-    public void process(Element element, Model model) {
+    public void process(final Element element, final Model model) {
         javax.persistence.Entity entityAnnotation = element.getAnnotation(javax.persistence.Entity.class);
         Entity entity = new Entity();
         if ("".equals(entityAnnotation.name())) {

@@ -1,1 +1,2 @@
 org.sw4j.tool.annotation.jpa.generator.TestGenerator
+org.sw4j.tool.annotation.jpa.generator.FailedTestGenerator

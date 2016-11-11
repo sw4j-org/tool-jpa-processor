@@ -37,7 +37,8 @@ public abstract class TestSuperclass {
     private static final String TEST_PROPERTIES = "src/test/resources/test.properties";
 
     /** The option prefix for the generator output. */
-    private static final String ANNOTATION_PROCESSOR_OPTION = "-Atool.jpa.properties=test=" + TEST_PROPERTIES;
+    private static final String ANNOTATION_PROCESSOR_OPTION = "-Atool.jpa.properties=test=" + TEST_PROPERTIES
+            + ",test2";
 
     /** The utility class of the testResultFile. */
     private static TestUtil testUtil;

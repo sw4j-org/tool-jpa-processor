@@ -32,9 +32,10 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.NONE)
 @XmlRootElement(name = "model")
-@XmlType(name = "", propOrder = {
-    "entities",
-})
+@XmlType(name = "",
+        propOrder = {
+            "entities",
+        })
 public class Model {
 
     /** The entities of the model. */
@@ -54,7 +55,7 @@ public class Model {
      *
      * @param entity the entity to add.
      */
-    public void addEntity(Entity entity) {
+    public void addEntity(final Entity entity) {
         entities.add(entity);
     }
 

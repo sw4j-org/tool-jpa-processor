@@ -18,6 +18,7 @@ package org.sw4j.tool.annotation.jpa.processor;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -70,33 +71,9 @@ public class AnnotationProcessor extends AbstractProcessor {
      * @return always {@code false} because this processor never claims an annotation.
      */
     @Override
-    public boolean process(final Set<? extends TypeElement> annotations,
-            final RoundEnvironment roundEnv) {
+    public boolean process(final Set<? extends TypeElement> annotations, final RoundEnvironment roundEnv) {
         String outputOption = this.processingEnv.getOptions().get(PROPERTIES_OPTION);
-        Map<String, Properties> outputParts = new HashMap<>();
-        for (String o: outputOption.split(",")) {
-            String[] singleOption = o.split("=");
-            if (singleOption.length == 2) {
-                Properties properties = new Properties();
-                try {
-                    properties.load(new FileInputStream(singleOption[1]));
-                } catch (IOException ioex) {
-                    this.processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR,
-                            ioex.toString());
-                }
-                outputParts.put(singleOption[0], properties);
-            }
-        }
-
-        ServiceLoader<GeneratorService> generatorService =
-                ServiceLoader.load(GeneratorService.class);
-        Iterator<GeneratorService> generators = generatorService.iterator();
-        while (generators.hasNext()) {
-            GeneratorService generator = generators.next();
-            if (outputParts.containsKey(generator.getPrefix())) {
-                generator.setProperties(outputParts.get(generator.getPrefix()));
-            }
-        }
+        ServiceLoader<GeneratorService> generatorService = setupGenerators(outputOption);
 
         Set<? extends Element> elements = roundEnv.getRootElements();
         for (Element element: elements) {
@@ -107,7 +84,7 @@ public class AnnotationProcessor extends AbstractProcessor {
         }
 
         if (roundEnv.processingOver()) {
-            generators = generatorService.iterator();
+            Iterator<GeneratorService> generators = generatorService.iterator();
             while (generators.hasNext()) {
                 GeneratorService generator = generators.next();
                 try {
@@ -120,6 +97,37 @@ public class AnnotationProcessor extends AbstractProcessor {
         }
 
         return false;
+    }
+
+    /**
+     * Load all available generators and set them up with their properties.
+     *
+     * @param outputOption the configuration string provided to the annotation processor.
+     * @return the configured generators.
+     */
+    private ServiceLoader<GeneratorService> setupGenerators(final String outputOption) {
+        Map<String, Properties> outputParts = new HashMap<>();
+        for (String o: outputOption.split(",")) {
+            String[] singleOption = o.split("=");
+            if (singleOption.length == 2) {
+                Properties properties = new Properties();
+                try (InputStream is = new FileInputStream(singleOption[1])) {
+                    properties.load(is);
+                } catch (IOException ioex) {
+                    this.processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, ioex.toString());
+                }
+                outputParts.put(singleOption[0], properties);
+            }
+        }
+        ServiceLoader<GeneratorService> generatorService = ServiceLoader.load(GeneratorService.class);
+        Iterator<GeneratorService> generators = generatorService.iterator();
+        while (generators.hasNext()) {
+            GeneratorService generator = generators.next();
+            if (outputParts.containsKey(generator.getPrefix())) {
+                generator.setProperties(outputParts.get(generator.getPrefix()));
+            }
+        }
+        return generatorService;
     }
 
 }
