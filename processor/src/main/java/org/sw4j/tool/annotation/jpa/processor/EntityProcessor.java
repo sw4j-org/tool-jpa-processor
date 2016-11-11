@@ -16,6 +16,7 @@
  */
 package org.sw4j.tool.annotation.jpa.processor;
 
+import javax.annotation.Nonnull;
 import javax.lang.model.element.Element;
 import org.sw4j.tool.annotation.jpa.generator.model.Entity;
 import org.sw4j.tool.annotation.jpa.generator.model.Model;
@@ -40,13 +41,13 @@ public class EntityProcessor {
      * @param element the element to process (must be an {@code @Entity}.
      * @param model the model where the final entity is added to.
      */
-    public void process(final Element element, final Model model) {
+    public void process(@Nonnull final Element element, @Nonnull final Model model) {
         javax.persistence.Entity entityAnnotation = element.getAnnotation(javax.persistence.Entity.class);
-        Entity entity = new Entity();
+        Entity entity;
         if ("".equals(entityAnnotation.name())) {
-            entity.setName(element.getSimpleName().toString());
+            entity = new Entity(element.getSimpleName().toString());
         } else {
-            entity.setName(entityAnnotation.name());
+            entity = new Entity(entityAnnotation.name());
         }
         model.addEntity(entity);
     }

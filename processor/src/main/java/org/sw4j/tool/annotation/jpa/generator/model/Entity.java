@@ -16,6 +16,7 @@
  */
 package org.sw4j.tool.annotation.jpa.generator.model;
 
+import javax.annotation.Nonnull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
@@ -30,12 +31,15 @@ public class Entity {
 
     /** The name of the entity. */
     @XmlAttribute(name = "name")
-    private String name;
+    private final String name;
 
     /**
      * Default constructor.
+     *
+     * @param name the name of the entity.
      */
-    public Entity() {
+    public Entity(@Nonnull final String name) {
+        this.name = name;
     }
 
     /**
@@ -43,6 +47,7 @@ public class Entity {
      *
      * @return the name.
      */
+    @Nonnull
     public String getName() {
         return name;
     }
@@ -53,7 +58,7 @@ public class Entity {
      * @param name the name.
      */
     public void setName(final String name) {
-        this.name = name;
+//        this.name = name;
     }
 
 }

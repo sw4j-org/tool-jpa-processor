@@ -25,6 +25,8 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.ServiceLoader;
 import java.util.Set;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.RoundEnvironment;
 import javax.annotation.processing.SupportedAnnotationTypes;
@@ -71,7 +73,8 @@ public class AnnotationProcessor extends AbstractProcessor {
      * @return always {@code false} because this processor never claims an annotation.
      */
     @Override
-    public boolean process(final Set<? extends TypeElement> annotations, final RoundEnvironment roundEnv) {
+    public boolean process(@Nonnull final Set<? extends TypeElement> annotations,
+            @Nonnull final RoundEnvironment roundEnv) {
         String outputOption = this.processingEnv.getOptions().get(PROPERTIES_OPTION);
         ServiceLoader<GeneratorService> generatorService = setupGenerators(outputOption);
 
@@ -105,18 +108,21 @@ public class AnnotationProcessor extends AbstractProcessor {
      * @param outputOption the configuration string provided to the annotation processor.
      * @return the configured generators.
      */
-    private ServiceLoader<GeneratorService> setupGenerators(final String outputOption) {
+    @Nonnull
+    private ServiceLoader<GeneratorService> setupGenerators(@Nullable final String outputOption) {
         Map<String, Properties> outputParts = new HashMap<>();
-        for (String o: outputOption.split(",")) {
-            String[] singleOption = o.split("=");
-            if (singleOption.length == 2) {
-                Properties properties = new Properties();
-                try (InputStream is = new FileInputStream(singleOption[1])) {
-                    properties.load(is);
-                } catch (IOException ioex) {
-                    this.processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, ioex.toString());
+        if (outputOption != null) {
+            for (String o: outputOption.split(",")) {
+                String[] singleOption = o.split("=");
+                if (singleOption.length == 2) {
+                    Properties properties = new Properties();
+                    try (InputStream is = new FileInputStream(singleOption[1])) {
+                        properties.load(is);
+                    } catch (IOException ioex) {
+                        this.processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, ioex.toString());
+                    }
+                    outputParts.put(singleOption[0], properties);
                 }
-                outputParts.put(singleOption[0], properties);
             }
         }
         ServiceLoader<GeneratorService> generatorService = ServiceLoader.load(GeneratorService.class);

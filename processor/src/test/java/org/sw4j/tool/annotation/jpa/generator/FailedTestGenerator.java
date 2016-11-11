@@ -19,7 +19,6 @@ package org.sw4j.tool.annotation.jpa.generator;
 import java.io.File;
 import java.io.IOException;
 import java.util.Properties;
-import javax.xml.bind.JAXB;
 import org.sw4j.tool.annotation.jpa.generator.model.Model;
 
 /**
@@ -32,9 +31,6 @@ public class FailedTestGenerator implements GeneratorService {
 
     /** The prefix of the generator. */
     private static final String PREFIX = "failed";
-
-    /** The file to write the model to. */
-    private File outputFile;
 
     /**
      * Returns the prefix of this Generator.
@@ -53,7 +49,6 @@ public class FailedTestGenerator implements GeneratorService {
      */
     @Override
     public void setProperties(Properties properties) {
-        outputFile = new File(properties.getProperty("outFile"));
     }
 
     /**
@@ -65,8 +60,6 @@ public class FailedTestGenerator implements GeneratorService {
     @Override
     public void process(Model model) throws IOException {
         throw new IOException("Error in FailedTestGenerator.");
-//        outputFile.getParentFile().mkdirs();
-//        JAXB.marshal(model, outputFile);
     }
 
 }

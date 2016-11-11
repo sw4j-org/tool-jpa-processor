@@ -18,6 +18,8 @@ package org.sw4j.tool.annotation.jpa.generator;
 
 import java.io.IOException;
 import java.util.Properties;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.sw4j.tool.annotation.jpa.generator.model.Model;
 
 /**
@@ -32,6 +34,7 @@ public interface GeneratorService {
      *
      * @return the prefix of the generator.
      */
+    @Nonnull
     String getPrefix();
 
     /**
@@ -40,7 +43,7 @@ public interface GeneratorService {
      *
      * @param properties the properties used to configure the generator.
      */
-    void setProperties(Properties properties);
+    void setProperties(@Nullable Properties properties);
 
     /**
      * The model to process and to output.
@@ -48,6 +51,6 @@ public interface GeneratorService {
      * @param model the model to process.
      * @throws IOException if the output cannot be written.
      */
-    void process(Model model) throws IOException;
+    void process(@Nonnull Model model) throws IOException;
 
 }
