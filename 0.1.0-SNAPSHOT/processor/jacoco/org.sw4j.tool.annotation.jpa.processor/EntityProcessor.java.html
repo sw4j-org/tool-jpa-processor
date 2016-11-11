@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>EntityProcessor.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">JPA Annotation Processor (Annotation Processor)</a> &gt; <a href="index.source.html" class="el_package">org.sw4j.tool.annotation.jpa.processor</a> &gt; <span class="el_source">EntityProcessor.java</span></div><h1>EntityProcessor.java</h1><pre class="source lang-java linenums">/*
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>EntityProcessor.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">JPA Annotation Processor (Annotation Processor)</a> &gt; <a href="index.source.html" class="el_package">org.sw4j.tool.annotation.jpa.processor</a> &gt; <span class="el_source">EntityProcessor.java</span></div><h1>EntityProcessor.java</h1><pre class="source lang-java linenums">/*
  * Copyright (C) 2016 Uwe Plonus
  *
  * This program is free software: you can redistribute it and/or modify
@@ -16,15 +16,24 @@
  */
 package org.sw4j.tool.annotation.jpa.processor;
 
+import javax.annotation.Nonnull;
 import javax.lang.model.element.Element;
 import org.sw4j.tool.annotation.jpa.generator.model.Entity;
 import org.sw4j.tool.annotation.jpa.generator.model.Model;
 
 /**
+ * This is a processor to handle classes with an @Entity annotation.
  *
  * @author Uwe Plonus
  */
-<span class="fc" id="L27">public class EntityProcessor {</span>
+public class EntityProcessor {
+
+    /**
+     * Default constructor for the entity processor.
+     *
+     */
+<span class="fc" id="L35">    public EntityProcessor() {</span>
+<span class="fc" id="L36">    }</span>
 
     /**
      * Process a single entity annotated with {@code @Entity}.
@@ -32,16 +41,16 @@ import org.sw4j.tool.annotation.jpa.generator.model.Model;
      * @param element the element to process (must be an {@code @Entity}.
      * @param model the model where the final entity is added to.
      */
-    public void process(Element element, Model model) {
-<span class="fc" id="L36">        javax.persistence.Entity entityAnnotation = element.getAnnotation(javax.persistence.Entity.class);</span>
-<span class="fc" id="L37">        Entity entity = new Entity();</span>
-<span class="fc bfc" id="L38" title="All 2 branches covered.">        if (&quot;&quot;.equals(entityAnnotation.name())) {</span>
-<span class="fc" id="L39">            entity.setName(element.getSimpleName().toString());</span>
+    public void process(@Nonnull final Element element, @Nonnull final Model model) {
+<span class="fc" id="L45">        javax.persistence.Entity entityAnnotation = element.getAnnotation(javax.persistence.Entity.class);</span>
+        Entity entity;
+<span class="fc bfc" id="L47" title="All 2 branches covered.">        if (&quot;&quot;.equals(entityAnnotation.name())) {</span>
+<span class="fc" id="L48">            entity = new Entity(element.getSimpleName().toString());</span>
         } else {
-<span class="fc" id="L41">            entity.setName(entityAnnotation.name());</span>
+<span class="fc" id="L50">            entity = new Entity(entityAnnotation.name());</span>
         }
-<span class="fc" id="L43">        model.addEntity(entity);</span>
-<span class="fc" id="L44">    }</span>
+<span class="fc" id="L52">        model.addEntity(entity);</span>
+<span class="fc" id="L53">    }</span>
 
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.7.201606060606</span></div></body></html>
