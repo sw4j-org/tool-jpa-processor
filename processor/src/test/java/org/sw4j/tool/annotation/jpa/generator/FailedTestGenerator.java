@@ -16,41 +16,50 @@
  */
 package org.sw4j.tool.annotation.jpa.generator;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Properties;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import org.sw4j.tool.annotation.jpa.generator.model.Model;
 
 /**
- * The {@code GeneratorService} is a service interface to output a model into a generic format.
+ * An implementation of the {@link GeneratorService} used for testing. It writes the model to a XML
+ * file.
  *
  * @author Uwe Plonus
  */
-public interface GeneratorService {
+public class FailedTestGenerator implements GeneratorService {
+
+    /** The prefix of the generator. */
+    private static final String PREFIX = "failed";
 
     /**
-     * Returns the prefix used by the implementing generator.
+     * Returns the prefix of this Generator.
      *
-     * @return the prefix of the generator.
+     * @return the prefix.
      */
-    @Nonnull
-    String getPrefix();
+    @Override
+    public String getPrefix() {
+        return PREFIX;
+    }
 
     /**
-     * Sets the properties of the generator. The properties are used to configure the generator. The
-     * recognized properties are generator dependent and must be described at the generator.
+     * Sets the properties of the generator.
      *
-     * @param properties the properties used to configure the generator.
+     * @param properties the properties.
      */
-    void setProperties(@Nullable Properties properties);
+    @Override
+    public void setProperties(Properties properties) {
+    }
 
     /**
-     * The model to process and to output.
+     * Processes the model and writes it to the output.
      *
      * @param model the model to process.
-     * @throws IOException if the output cannot be written.
+     * @throws IOException when an error occurs during the output.
      */
-    void process(@Nonnull Model model) throws IOException;
+    @Override
+    public void process(Model model) throws IOException {
+        throw new IOException("Error in FailedTestGenerator.");
+    }
 
 }
