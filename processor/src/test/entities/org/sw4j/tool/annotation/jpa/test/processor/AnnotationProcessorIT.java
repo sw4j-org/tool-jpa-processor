@@ -27,10 +27,10 @@ import org.w3c.dom.Node;
  *
  * @author Uwe Plonus
  */
-public class AnnotationProcessorTest extends TestSuperclass {
+public class AnnotationProcessorIT extends TestSuperclass {
 
     /** Default constructor. */
-    public AnnotationProcessorTest() {
+    public AnnotationProcessorIT() {
     }
 
     @Test
