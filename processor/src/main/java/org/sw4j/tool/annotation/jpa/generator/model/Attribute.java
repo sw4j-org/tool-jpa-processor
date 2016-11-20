@@ -16,7 +16,6 @@
  */
 package org.sw4j.tool.annotation.jpa.generator.model;
 
-import java.util.LinkedList;
 import javax.annotation.Nonnull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -34,13 +33,19 @@ public class Attribute {
     @XmlAttribute(name = "name")
     private final String name;
 
+    /** Flag to indicate this attribute as Id. */
+    @XmlAttribute(name = "isId")
+    private final boolean isId;
+
     /**
      * Constructor for an attribute.
      *
      * @param name the name of the attribute.
+     * @param isId if this attribute should be marked as Id.
      */
-    public Attribute(@Nonnull final String name) {
+    public Attribute(@Nonnull final String name, final boolean isId) {
         this.name = name;
+        this.isId = isId;
     }
 
     /**
@@ -51,6 +56,14 @@ public class Attribute {
     @Nonnull
     public String getName() {
         return name;
+    }
+
+    /**
+     * Returns if this attribute is an Id.
+     * @return {@code true} if this attribute is an Id.
+     */
+    public boolean isId() {
+        return isId;
     }
 
 }

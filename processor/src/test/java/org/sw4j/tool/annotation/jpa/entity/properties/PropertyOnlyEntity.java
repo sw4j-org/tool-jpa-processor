@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.sw4j.tool.annotation.jpa.entities.field;
+package org.sw4j.tool.annotation.jpa.entity.properties;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -25,27 +25,11 @@ import javax.persistence.Id;
  * @author Uwe Plonus
  */
 @Entity
-public class SimpleFieldEntity {
+public class PropertyOnlyEntity {
 
     @Id
-    private int id;
-
     public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    private int value;
-
-    public int getValue() {
-        return value;
-    }
-
-    public void setValue(int value) {
-        this.value = value;
+        return 0;
     }
 
 }

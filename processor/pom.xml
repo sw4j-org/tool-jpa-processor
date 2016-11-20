@@ -70,7 +70,8 @@
               <!-- No annotation processors are executed as we are creating one -->
               <proc>none</proc>
               <testExcludes>
-                <testExclude>org/sw4j/tool/annotation/entities/**/*.java</testExclude>
+                <!-- Exclude classes that are used for integration tests -->
+                <testExclude>org/sw4j/tool/annotation/entity/**/*.java</testExclude>
               </testExcludes>
             </configuration>
           </execution>

@@ -31,7 +31,7 @@ import org.sw4j.tool.annotation.jpa.generator.TestGenerator;
 import org.sw4j.tool.annotation.jpa.processor.mock.annotation.processing.MessagerMock;
 import org.sw4j.tool.annotation.jpa.processor.mock.annotation.processing.ProcessingEnvironmentMock;
 import org.sw4j.tool.annotation.jpa.processor.mock.annotation.processing.RoundEnvironmentMock;
-import org.sw4j.tool.annotation.jpa.processor.mock.lang.model.element.EntityMock;
+import org.sw4j.tool.annotation.jpa.processor.mock.persistence.EntityMock;
 import org.sw4j.tool.annotation.jpa.processor.mock.lang.model.element.NameMock;
 import org.sw4j.tool.annotation.jpa.processor.mock.lang.model.element.TypeElementMock;
 import org.testng.Assert;

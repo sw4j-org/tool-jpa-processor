@@ -34,7 +34,7 @@ import org.w3c.dom.Node;
 public abstract class TestSuperclass {
 
     /** The folder that contains all JPA classes to process. */
-    private static final String ENTITY_PACKAGE = "src/test/java/org/sw4j/tool/annotation/jpa/entities/";
+    private static final String ENTITY_PACKAGE = "src/test/java/org/sw4j/tool/annotation/jpa/entity/";
 
     /** The file to write the result to. */
     private static final String TEST_PROPERTIES = "src/test/resources/test.properties";

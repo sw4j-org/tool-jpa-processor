@@ -16,7 +16,7 @@
  */
 package org.sw4j.tool.annotation.jpa.processor;
 
-import org.sw4j.tool.annotation.jpa.processor.mock.lang.model.element.EntityMock;
+import org.sw4j.tool.annotation.jpa.processor.mock.persistence.EntityMock;
 import org.sw4j.tool.annotation.jpa.processor.mock.lang.model.element.NameMock;
 import org.sw4j.tool.annotation.jpa.processor.mock.lang.model.element.TypeElementMock;
 import java.lang.annotation.Annotation;

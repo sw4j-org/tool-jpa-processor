@@ -14,31 +14,23 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.sw4j.tool.annotation.jpa.processor.mock.lang.model.element;
+package org.sw4j.tool.annotation.jpa.processor.mock.persistence;
 
 import java.lang.annotation.Annotation;
-import javax.persistence.Entity;
+import javax.persistence.Id;
 
 /**
  *
  * @author Uwe Plonus
  */
-public class EntityMock implements Entity {
+public class IdMock implements Id {
 
-    private final String name;
-
-    public EntityMock(final String name) {
-        this.name = name;
-    }
-
-    @Override
-    public String name() {
-        return this.name;
+    public IdMock() {
     }
 
     @Override
     public Class<? extends Annotation> annotationType() {
-        return Entity.class;
+        return Id.class;
     }
 
 }

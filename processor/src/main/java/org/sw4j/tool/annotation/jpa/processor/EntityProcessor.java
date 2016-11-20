@@ -102,6 +102,12 @@ public class EntityProcessor {
                 attributeProcessor.process(entity, possibleField.getKey(), possibleField.getValue(),
                         possibleProperties.get(possibleField.getKey()));
             }
+            for (Map.Entry<String, Element> possibleProperty: possibleProperties.entrySet()) {
+                if (!handledAttributes.contains(possibleProperty.getKey())) {
+                    handledAttributes.add(possibleProperty.getKey());
+                    attributeProcessor.process(entity, possibleProperty.getKey(), null, possibleProperty.getValue());
+                }
+            }
         } else {
             throw new EntityNotTopLevelClassException(element.getSimpleName().toString());
         }

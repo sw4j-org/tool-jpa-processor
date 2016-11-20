@@ -19,6 +19,7 @@ package org.sw4j.tool.annotation.jpa.processor;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.lang.model.element.Element;
+import javax.persistence.Id;
 import org.sw4j.tool.annotation.jpa.generator.model.Attribute;
 import org.sw4j.tool.annotation.jpa.generator.model.Entity;
 import org.sw4j.tool.annotation.jpa.processor.exceptions.AnnotationProcessorException;
@@ -50,8 +51,30 @@ public class AttributeProcessor {
     public void process(@Nonnull final Entity entity, @Nonnull final String attributeName,
             @Nullable final Element fieldElement, @Nullable final Element propertyElement)
             throws AnnotationProcessorException {
-        Attribute attribute = new Attribute(attributeName);
-        entity.addAttribute(attribute);
+        if (fieldElement != null || propertyElement != null) {
+            Attribute attribute = new Attribute(attributeName, isPossibleIdAttribute(fieldElement, propertyElement));
+            entity.addAttribute(attribute);
+        }
+    }
+
+    /**
+     * Test if the given field or property is a possible {@code Id}. The caller is responsible to ensure that the
+     * elements denote the same attribute.
+     *
+     * @param fieldElement the field element to check.
+     * @param propertyElement the property element to check.
+     * @return {@code true} if either the fieldElement or the propertyElement denote an {@code Id}.
+     */
+    private boolean isPossibleIdAttribute(@Nullable final Element fieldElement,
+            @Nullable final Element propertyElement) {
+        Id idAnnotation = null;
+        if (fieldElement != null) {
+            idAnnotation = fieldElement.getAnnotation(Id.class);
+        }
+        if (idAnnotation == null && propertyElement != null) {
+            idAnnotation = propertyElement.getAnnotation(Id.class);
+        }
+        return idAnnotation != null;
     }
 
 }
