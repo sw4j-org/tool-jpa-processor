@@ -52,13 +52,4 @@ public class Entity {
         return name;
     }
 
-    /**
-     * Sets the name of the entity.
-     *
-     * @param name the name.
-     */
-    public void setName(final String name) {
-//        this.name = name;
-    }
-
 }

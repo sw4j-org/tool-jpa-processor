@@ -14,52 +14,55 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.sw4j.tool.annotation.jpa.processor.mock;
+package org.sw4j.tool.annotation.jpa.processor.mock.annotation.processing;
 
 import java.lang.annotation.Annotation;
-import java.util.List;
-import java.util.Map;
+import java.util.Set;
+import javax.annotation.processing.RoundEnvironment;
 import javax.lang.model.element.Element;
-import javax.lang.model.element.ElementKind;
-import javax.lang.model.element.Name;
-import javax.lang.model.element.NestingKind;
 import javax.lang.model.element.TypeElement;
-import javax.lang.model.element.TypeParameterElement;
-import javax.lang.model.type.TypeMirror;
 
 /**
+ * A mock for the round environment for annotation processors.
  *
  * @author Uwe Plonus
  */
-public class TypeElementMock extends ElementMock implements TypeElement {
+public class RoundEnvironmentMock implements RoundEnvironment {
 
-    public TypeElementMock(final Name simpleName, final Map<Class<?>, ? extends Annotation> annotations,
-            final ElementKind kind, final Element enclosingElement, final List<? extends Element> enclosedElements) {
-        super(simpleName, annotations, kind, enclosingElement, enclosedElements);
+    private boolean processingOver;
+
+    private final Set<? extends Element> rootElements;
+
+    public RoundEnvironmentMock(final Set<? extends Element> rootElements) {
+        this.rootElements = rootElements;
+    }
+
+    public void processingOver(final boolean processingOver) {
+        this.processingOver = processingOver;
     }
 
     @Override
-    public NestingKind getNestingKind() {
+    public boolean processingOver() {
+        return this.processingOver;
+    }
+
+    @Override
+    public boolean errorRaised() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public Name getQualifiedName() {
+    public Set<? extends Element> getRootElements() {
+        return this.rootElements;
+    }
+
+    @Override
+    public Set<? extends Element> getElementsAnnotatedWith(TypeElement a) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public TypeMirror getSuperclass() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public List<? extends TypeMirror> getInterfaces() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public List<? extends TypeParameterElement> getTypeParameters() {
+    public Set<? extends Element> getElementsAnnotatedWith(Class<? extends Annotation> a) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 

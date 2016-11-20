@@ -37,11 +37,6 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>org.jmockit</groupId>
-      <artifactId>jmockit</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
       <groupId>org.testng</groupId>
       <artifactId>testng</artifactId>
       <scope>test</scope>
@@ -74,6 +69,9 @@
             <configuration>
               <!-- No annotation processors are executed as we are creating one -->
               <proc>none</proc>
+              <testExcludes>
+                <testExclude>org/sw4j/tool/annotation/entities/**/*.java</testExclude>
+              </testExcludes>
             </configuration>
           </execution>
         </executions>

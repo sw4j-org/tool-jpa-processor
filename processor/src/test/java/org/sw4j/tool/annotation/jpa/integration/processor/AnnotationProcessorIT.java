@@ -23,7 +23,7 @@ import org.testng.annotations.Test;
 import org.w3c.dom.Node;
 
 /**
- * Class to testResultFile the {@link AnnotationProcessor}.
+ * Class to test the {@link AnnotationProcessor}.
  *
  * @author Uwe Plonus
  */

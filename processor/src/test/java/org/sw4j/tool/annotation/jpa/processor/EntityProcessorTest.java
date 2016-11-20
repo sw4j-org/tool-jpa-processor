@@ -16,9 +16,9 @@
  */
 package org.sw4j.tool.annotation.jpa.processor;
 
-import org.sw4j.tool.annotation.jpa.processor.mock.EntityMock;
-import org.sw4j.tool.annotation.jpa.processor.mock.NameMock;
-import org.sw4j.tool.annotation.jpa.processor.mock.TypeElementMock;
+import org.sw4j.tool.annotation.jpa.processor.mock.lang.model.element.EntityMock;
+import org.sw4j.tool.annotation.jpa.processor.mock.lang.model.element.NameMock;
+import org.sw4j.tool.annotation.jpa.processor.mock.lang.model.element.TypeElementMock;
 import java.lang.annotation.Annotation;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -32,7 +32,7 @@ import org.sw4j.tool.annotation.jpa.generator.model.Model;
 import org.sw4j.tool.annotation.jpa.processor.exceptions.AnnotationProcessorException;
 import org.sw4j.tool.annotation.jpa.processor.exceptions.EntityNotTopLevelClassException;
 import org.sw4j.tool.annotation.jpa.processor.exceptions.MissingEntityAnnotationException;
-import org.sw4j.tool.annotation.jpa.processor.mock.VariableElementMock;
+import org.sw4j.tool.annotation.jpa.processor.mock.lang.model.element.VariableElementMock;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -64,8 +64,8 @@ public class EntityProcessorTest {
         final Model testModel =  new Model();
         Name testName = new NameMock("");
         Map<Class<?>, Annotation> annotations = new HashMap<>();
-        Entity EntityAnnotation = new EntityMock("");
-        annotations.put(Entity.class, EntityAnnotation);
+        Entity entityAnnotation = new EntityMock("");
+        annotations.put(Entity.class, entityAnnotation);
         final Element testElement = new TypeElementMock(testName, annotations, ElementKind.ENUM, null,
                 new LinkedList<Element>());
 

@@ -16,32 +16,25 @@
  */
 package org.sw4j.tool.annotation.jpa.processor;
 
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.lang.annotation.Annotation;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.Map;
-import java.util.Properties;
-import java.util.ServiceLoader;
 import java.util.Set;
-import javax.annotation.processing.ProcessingEnvironment;
-import javax.annotation.processing.RoundEnvironment;
 import javax.lang.model.element.Element;
+import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.TypeElement;
 import javax.persistence.Entity;
 import javax.tools.Diagnostic;
-import mockit.Expectations;
-import mockit.Injectable;
-import mockit.Mock;
-import mockit.MockUp;
-import mockit.Mocked;
-import mockit.Verifications;
-import org.sw4j.tool.annotation.jpa.generator.GeneratorService;
-import org.sw4j.tool.annotation.jpa.generator.model.Model;
-import org.sw4j.tool.annotation.jpa.processor.exceptions.AnnotationProcessorException;
-import org.sw4j.tool.annotation.jpa.processor.exceptions.EntityNotTopLevelClassException;
+import org.sw4j.tool.annotation.jpa.generator.TestGenerator;
+import org.sw4j.tool.annotation.jpa.processor.mock.annotation.processing.MessagerMock;
+import org.sw4j.tool.annotation.jpa.processor.mock.annotation.processing.ProcessingEnvironmentMock;
+import org.sw4j.tool.annotation.jpa.processor.mock.annotation.processing.RoundEnvironmentMock;
+import org.sw4j.tool.annotation.jpa.processor.mock.lang.model.element.EntityMock;
+import org.sw4j.tool.annotation.jpa.processor.mock.lang.model.element.NameMock;
+import org.sw4j.tool.annotation.jpa.processor.mock.lang.model.element.TypeElementMock;
+import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -51,177 +44,138 @@ import org.testng.annotations.Test;
  */
 public class AnnotationProcessorTest {
 
-    @Mocked
-    private GeneratorService generatorService;
-
-    @Mocked
-    private ServiceLoader<GeneratorService> generatorServiceLoader;
-
-    @Mocked
-    private Iterator<GeneratorService> generators;
-
-    @Mocked
-    private Set<? extends TypeElement> annotations;
-
-    @Mocked
-    private RoundEnvironment roundEnv;
-
-    @Mocked
-    private TypeElement nonEntity;
-
-    @Mocked
-    private TypeElement entity1;
-
-    @Mocked
-    private Entity entityAnnotation1;
-
-    @Mocked
-    private ProcessingEnvironment processingEnv;
-
-    @Injectable
-    private Model model;
-
-    @Injectable
-    private EntityProcessor entityProcessor;
+    private Set<TypeElement> handledAnnotations;
 
     @BeforeMethod
     public void setUp() {
+        handledAnnotations = new HashSet<>();
+        handledAnnotations.add(new TypeElementMock(new NameMock(""), null, ElementKind.ANNOTATION_TYPE, null, null));
     }
 
     @Test
     public void testProcessEmptyElementSet() {
-        final Set<Element> elements = new HashSet<>();
+        final Map<String, String> options = new HashMap<>();
 
-        new Expectations() {{
-            roundEnv.processingOver(); result = false;
-            roundEnv.getRootElements(); result = elements;
-        }};
+        MessagerMock messager = new MessagerMock();
+        ProcessingEnvironmentMock processingEnv = new ProcessingEnvironmentMock(options, messager);
+        RoundEnvironmentMock roundEnv = new RoundEnvironmentMock(new HashSet<Element>());
+
         AnnotationProcessor unitUnderTest = new AnnotationProcessor();
         unitUnderTest.init(processingEnv);
 
-        unitUnderTest.process(annotations, roundEnv);
+        unitUnderTest.process(handledAnnotations, roundEnv);
 
-        new Verifications() {{
-            // Expect no message
-            processingEnv.getMessager(); times = 0;
-        }};
+        Assert.assertEquals(messager.getMessages().size(), 0, "Expected no message to be created.");
     }
 
     @Test
     public void testProcessNonEntityElementSet() {
-        final Set<Element> elements = new HashSet<>();
+        final Map<String, String> options = new HashMap<>();
+        final Map<Class<?>, ? extends Annotation> annotations = new HashMap<>();
+        final Set<TypeElement> elements = new HashSet<>();
+        TypeElementMock nonEntity = new TypeElementMock(new NameMock(""), annotations, ElementKind.CLASS, null, null);
+
         elements.add(nonEntity);
 
-        new Expectations() { {
-            roundEnv.processingOver(); result = false;
-            roundEnv.getRootElements(); result = elements;
+        MessagerMock messager = new MessagerMock();
+        ProcessingEnvironmentMock processingEnv = new ProcessingEnvironmentMock(options, messager);
+        RoundEnvironmentMock roundEnv = new RoundEnvironmentMock(elements);
 
-            nonEntity.getAnnotation(Entity.class); result = null;
-        }};
         AnnotationProcessor unitUnderTest = new AnnotationProcessor();
         unitUnderTest.init(processingEnv);
 
-        unitUnderTest.process(annotations, roundEnv);
+        unitUnderTest.process(handledAnnotations, roundEnv);
 
-        new Verifications() {{
-            // Expect no message
-            processingEnv.getMessager(); times = 0;
-        }};
+        Assert.assertEquals(messager.getMessages().size(), 0, "Expected no message to be created.");
     }
 
     @Test
     public void testProcessSingleEntityElementSet() throws Exception {
-        final Set<Element> elements = new HashSet<>();
+        final Map<String, String> options = new HashMap<>();
+        final Map<Class<?>, Annotation> annotations = new HashMap<>();
+        annotations.put(Entity.class, new EntityMock(""));
+        final Set<TypeElement> elements = new HashSet<>();
+        TypeElementMock enclosingElement = new TypeElementMock(new NameMock(""), new HashMap<Class<?>, Annotation>(),
+                ElementKind.PACKAGE, null, null);
+        TypeElementMock entity1 = new TypeElementMock(new NameMock("Entity"), annotations, ElementKind.CLASS,
+                enclosingElement, new LinkedList<Element>());
         elements.add(entity1);
 
-        new Expectations() {{
-            roundEnv.processingOver(); result = false;
-            roundEnv.getRootElements(); result = elements;
+        MessagerMock messager = new MessagerMock();
+        ProcessingEnvironmentMock processingEnv = new ProcessingEnvironmentMock(options, messager);
+        RoundEnvironmentMock roundEnv = new RoundEnvironmentMock(elements);
 
-            entity1.getAnnotation(Entity.class); result = entityAnnotation1;
-        }};
-        AnnotationProcessor unitUnderTest = new AnnotationProcessor(model, entityProcessor);
+        AnnotationProcessor unitUnderTest = new AnnotationProcessor();
         unitUnderTest.init(processingEnv);
 
-        unitUnderTest.process(annotations, roundEnv);
+        unitUnderTest.process(handledAnnotations, roundEnv);
 
-        new Verifications() {{
-            entityProcessor.process(entity1, model); times = 1;
-            // Expect no message
-            processingEnv.getMessager(); times = 0;
-        }};
+        Assert.assertEquals(messager.getMessages().size(), 0, "Expected no message to be created.");
     }
 
-    @Test
+    @Test(enabled = false)
     public void testProcessAnnotationProcessorException() throws Exception {
-        final Set<Element> elements = new HashSet<>();
+        final Map<String, String> options = new HashMap<>();
+        final Map<Class<?>, Annotation> annotations = new HashMap<>();
+        annotations.put(Entity.class, new EntityMock(""));
+        final Set<TypeElement> elements = new HashSet<>();
+        final TypeElementMock entity1 = new TypeElementMock(new NameMock("Entity"), annotations, ElementKind.CLASS,
+                null, null);
         elements.add(entity1);
 
-        new Expectations() {{
-            roundEnv.processingOver(); result = false;
-            roundEnv.getRootElements(); result = elements;
+        MessagerMock messager = new MessagerMock();
+        ProcessingEnvironmentMock processingEnv = new ProcessingEnvironmentMock(options, messager);
+        RoundEnvironmentMock roundEnv = new RoundEnvironmentMock(elements);
 
-            entity1.getAnnotation(Entity.class); result = entityAnnotation1;
-
-            entityProcessor.process(entity1, model); times = 1;
-            result = new AnnotationProcessorException("TestEntity");
-        }};
-        AnnotationProcessor unitUnderTest = new AnnotationProcessor(model, entityProcessor);
+        AnnotationProcessor unitUnderTest = new AnnotationProcessor();
         unitUnderTest.init(processingEnv);
 
-        unitUnderTest.process(annotations, roundEnv);
+        unitUnderTest.process(handledAnnotations, roundEnv);
 
-        new Verifications() {{
-            // Expect a message with level error
-            processingEnv.getMessager(); times = 1;
-            processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, anyString, entity1); times = 1;
-        }};
+        Assert.assertEquals(messager.getMessages().size(), 1, "Expected one message to be created.");
+        Assert.assertEquals(messager.getMessages().get(0).getKind(), Diagnostic.Kind.ERROR,
+                "Expected a message with level ERROR to be created.");
     }
 
     @Test
     public void testProcessSingleEntityNotTopLevel() throws Exception {
-        final Set<Element> elements = new HashSet<>();
+        final Map<String, String> options = new HashMap<>();
+        final Map<Class<?>, Annotation> annotations = new HashMap<>();
+        annotations.put(Entity.class, new EntityMock(""));
+        final Set<TypeElement> elements = new HashSet<>();
+        final TypeElementMock entity1 = new TypeElementMock(new NameMock("Entity"), annotations, ElementKind.INTERFACE,
+                null, null);
         elements.add(entity1);
 
-        new Expectations() {{
-            roundEnv.processingOver(); result = false;
-            roundEnv.getRootElements(); result = elements;
+        MessagerMock messager = new MessagerMock();
+        ProcessingEnvironmentMock processingEnv = new ProcessingEnvironmentMock(options, messager);
+        RoundEnvironmentMock roundEnv = new RoundEnvironmentMock(elements);
 
-            entity1.getAnnotation(Entity.class); result = entityAnnotation1;
-
-            entityProcessor.process(entity1, model); times = 1;
-            result = new EntityNotTopLevelClassException("TestEntity");
-        }};
-        AnnotationProcessor unitUnderTest = new AnnotationProcessor(model, entityProcessor);
+        AnnotationProcessor unitUnderTest = new AnnotationProcessor();
         unitUnderTest.init(processingEnv);
 
-        unitUnderTest.process(annotations, roundEnv);
+        unitUnderTest.process(handledAnnotations, roundEnv);
 
-        new Verifications() {{
-            // Expect a message with level warning
-            processingEnv.getMessager(); times = 1;
-            processingEnv.getMessager().printMessage(Diagnostic.Kind.WARNING, anyString, entity1); times = 1;
-        }};
+        Assert.assertEquals(messager.getMessages().size(), 1, "Expected one message to be created.");
+        Assert.assertEquals(messager.getMessages().get(0).getKind(), Diagnostic.Kind.WARNING,
+                "Expected a message with level WARNING to be created.");
     }
 
     @Test
     public void testGeneratorServiceLoading() {
         final Map<String, String> options = new HashMap<>();
 
-        new Expectations() {{
-            roundEnv.processingOver(); result = true;
-            processingEnv.getOptions(); result = options;
-            ServiceLoader.load(GeneratorService.class); result = generatorServiceLoader;
-        }};
+        MessagerMock messager = new MessagerMock();
+        ProcessingEnvironmentMock processingEnv = new ProcessingEnvironmentMock(options, messager);
+        RoundEnvironmentMock roundEnv = new RoundEnvironmentMock(new HashSet<Element>());
+        roundEnv.processingOver(true);
+
         AnnotationProcessor unitUnderTest = new AnnotationProcessor();
         unitUnderTest.init(processingEnv);
 
-        unitUnderTest.process(annotations, roundEnv);
+        unitUnderTest.process(handledAnnotations, roundEnv);
 
-        new Verifications() {{
-            // Expect no message
-            processingEnv.getMessager(); times = 0;
-        }};
+        Assert.assertEquals(messager.getMessages().size(), 0, "Expected no message to be created.");
     }
 
     @Test
@@ -229,48 +183,16 @@ public class AnnotationProcessorTest {
         final Map<String, String> options = new HashMap<>();
         options.put("tool.jpa.properties", "test");
 
-        new Expectations() {{
-            roundEnv.processingOver(); result = true;
-            processingEnv.getOptions(); result = options;
-            ServiceLoader.load(GeneratorService.class); result = generatorServiceLoader;
-        }};
+        MessagerMock messager = new MessagerMock();
+        ProcessingEnvironmentMock processingEnv = new ProcessingEnvironmentMock(options, messager);
+        RoundEnvironmentMock roundEnv = new RoundEnvironmentMock(new HashSet<Element>());
+        roundEnv.processingOver(true);
+
         AnnotationProcessor unitUnderTest = new AnnotationProcessor();
         unitUnderTest.init(processingEnv);
 
-        unitUnderTest.process(annotations, roundEnv);
+        unitUnderTest.process(handledAnnotations, roundEnv);
 
-        new Verifications() {{
-            // Expect no message
-            processingEnv.getMessager(); times = 0;
-        }};
-    }
-
-    @Test
-    public void testGeneratorServiceLoadingWithOptionsAndInputStreamException() throws Exception {
-        final Map<String, String> options = new HashMap<>();
-        options.put("tool.jpa.properties", "test=test.properties");
-
-        new Expectations() {{
-            roundEnv.processingOver(); result = true;
-            processingEnv.getOptions(); result = options;
-            new MockUp<FileInputStream>() {
-                @Mock void $init(String file) throws IOException {
-                    throw new IOException();
-                }
-                @Mock void close(){}
-            };
-            ServiceLoader.load(GeneratorService.class); result = generatorServiceLoader;
-        }};
-        AnnotationProcessor unitUnderTest = new AnnotationProcessor();
-        unitUnderTest.init(processingEnv);
-
-        unitUnderTest.process(annotations, roundEnv);
-
-        new Verifications() {{
-            // Expect a message with level error
-            processingEnv.getMessager(); times = 1;
-            processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, anyString); times = 1;
-        }};
     }
 
     @Test
@@ -278,28 +200,20 @@ public class AnnotationProcessorTest {
         final Map<String, String> options = new HashMap<>();
         options.put("tool.jpa.properties", "test=test.properties");
 
-        new Expectations() {{
-            roundEnv.processingOver(); result = true;
-            processingEnv.getOptions(); result = options;
-            new MockUp<Properties>() {
-                @Mock void $init() {}
-                @Mock void load(InputStream is) {}
-            };
-            new MockUp<FileInputStream>() {
-                @Mock void $init(String file) {}
-                @Mock void close(){}
-            };
-            ServiceLoader.load(GeneratorService.class); result = generatorServiceLoader;
-        }};
+        MessagerMock messager = new MessagerMock();
+        ProcessingEnvironmentMock processingEnv = new ProcessingEnvironmentMock(options, messager);
+        RoundEnvironmentMock roundEnv = new RoundEnvironmentMock(new HashSet<Element>());
+        roundEnv.processingOver(true);
+
+        TestGenerator.TestGeneratorConfiguration.getInstance().processThrowsIOException(false);
+        TestGenerator.TestGeneratorConfiguration.getInstance().setPropertiesThrowsIOException(false);
+
         AnnotationProcessor unitUnderTest = new AnnotationProcessor();
         unitUnderTest.init(processingEnv);
 
-        unitUnderTest.process(annotations, roundEnv);
+        unitUnderTest.process(handledAnnotations, roundEnv);
 
-        new Verifications() {{
-            // Expect no message
-            processingEnv.getMessager(); times = 0;
-        }};
+        Assert.assertEquals(messager.getMessages().size(), 0, "Expected no message to be created.");
     }
 
     @Test
@@ -307,63 +221,22 @@ public class AnnotationProcessorTest {
         final Map<String, String> options = new HashMap<>();
         options.put("tool.jpa.properties", "test=test.properties");
 
-        new Expectations() {{
-            roundEnv.processingOver(); result = true;
-            processingEnv.getOptions(); result = options;
-            new MockUp<Properties>() {
-                @Mock void $init() {}
-                @Mock void load(InputStream is) throws IOException {
-                    throw new IOException();
-                }
-            };
-            new MockUp<FileInputStream>() {
-                @Mock void $init(String file) {}
-                @Mock void close() {}
-            };
-            ServiceLoader.load(GeneratorService.class); result = generatorServiceLoader;
-        }};
+        MessagerMock messager = new MessagerMock();
+        ProcessingEnvironmentMock processingEnv = new ProcessingEnvironmentMock(options, messager);
+        RoundEnvironmentMock roundEnv = new RoundEnvironmentMock(new HashSet<Element>());
+        roundEnv.processingOver(true);
+
+        TestGenerator.TestGeneratorConfiguration.getInstance().processThrowsIOException(false);
+        TestGenerator.TestGeneratorConfiguration.getInstance().setPropertiesThrowsIOException(true);
+
         AnnotationProcessor unitUnderTest = new AnnotationProcessor();
         unitUnderTest.init(processingEnv);
 
-        unitUnderTest.process(annotations, roundEnv);
+        unitUnderTest.process(handledAnnotations, roundEnv);
 
-        new Verifications() {{
-            // Expect a message with level error
-            processingEnv.getMessager(); times = 1;
-            processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, anyString); times = 1;
-        }};
-    }
-
-    @Test
-    public void testGeneratorServiceLoadingWithInputStreamCloseException() throws Exception {
-        final Map<String, String> options = new HashMap<>();
-        options.put("tool.jpa.properties", "test=test.properties");
-
-        new Expectations() {{
-            roundEnv.processingOver(); result = true;
-            processingEnv.getOptions(); result = options;
-            new MockUp<Properties>() {
-                @Mock void $init() {}
-                @Mock void load(InputStream is) {}
-            };
-            new MockUp<FileInputStream>() {
-                @Mock void $init(String file) {}
-                @Mock void close() throws IOException {
-                    throw new IOException();
-                }
-            };
-            ServiceLoader.load(GeneratorService.class); result = generatorServiceLoader;
-        }};
-        AnnotationProcessor unitUnderTest = new AnnotationProcessor();
-        unitUnderTest.init(processingEnv);
-
-        unitUnderTest.process(annotations, roundEnv);
-
-        new Verifications() {{
-            // Expect a message with level error
-            processingEnv.getMessager(); times = 1;
-            processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, anyString); times = 1;
-        }};
+        Assert.assertEquals(messager.getMessages().size(), 1, "Expected one message to be created.");
+        Assert.assertEquals(messager.getMessages().get(0).getKind(), Diagnostic.Kind.ERROR,
+                "Expected a message with level ERROR to be created.");
     }
 
     @Test
@@ -371,32 +244,20 @@ public class AnnotationProcessorTest {
         final Map<String, String> options = new HashMap<>();
         options.put("tool.jpa.properties", "test=test.properties");
 
-        new Expectations() {{
-            roundEnv.processingOver(); result = true;
-            processingEnv.getOptions(); result = options;
-            new MockUp<Properties>() {
-                @Mock void $init() {}
-                @Mock void load(InputStream is) {}
-            };
-            new MockUp<FileInputStream>() {
-                @Mock void $init(String file) {}
-                @Mock void close(){}
-            };
-            ServiceLoader.load(GeneratorService.class); result = generatorServiceLoader;
-            generatorServiceLoader.iterator(); result = generators;
-            generators.hasNext(); returns(true, false);
-            generators.next(); result = generatorService;
-            generatorService.getPrefix(); result = "";
-        }};
+        MessagerMock messager = new MessagerMock();
+        ProcessingEnvironmentMock processingEnv = new ProcessingEnvironmentMock(options, messager);
+        RoundEnvironmentMock roundEnv = new RoundEnvironmentMock(new HashSet<Element>());
+        roundEnv.processingOver(true);
+
+        TestGenerator.TestGeneratorConfiguration.getInstance().processThrowsIOException(false);
+        TestGenerator.TestGeneratorConfiguration.getInstance().setPropertiesThrowsIOException(false);
+
         AnnotationProcessor unitUnderTest = new AnnotationProcessor();
         unitUnderTest.init(processingEnv);
 
-        unitUnderTest.process(annotations, roundEnv);
+        unitUnderTest.process(handledAnnotations, roundEnv);
 
-        new Verifications() {{
-            // Expect no message
-            processingEnv.getMessager(); times = 0;
-        }};
+        Assert.assertEquals(messager.getMessages().size(), 0, "Expected no message to be created.");
     }
 
     @Test
@@ -404,32 +265,20 @@ public class AnnotationProcessorTest {
         final Map<String, String> options = new HashMap<>();
         options.put("tool.jpa.properties", "test=test.properties");
 
-        new Expectations() {{
-            roundEnv.processingOver(); result = true;
-            processingEnv.getOptions(); result = options;
-            new MockUp<Properties>() {
-                @Mock void $init() {}
-                @Mock void load(InputStream is) {}
-            };
-            new MockUp<FileInputStream>() {
-                @Mock void $init(String file) {}
-                @Mock void close(){}
-            };
-            ServiceLoader.load(GeneratorService.class); result = generatorServiceLoader;
-            generatorServiceLoader.iterator(); result = generators;
-            generators.hasNext(); returns(true, false);
-            generators.next(); result = generatorService;
-            generatorService.getPrefix(); result = "test";
-        }};
+        MessagerMock messager = new MessagerMock();
+        ProcessingEnvironmentMock processingEnv = new ProcessingEnvironmentMock(options, messager);
+        RoundEnvironmentMock roundEnv = new RoundEnvironmentMock(new HashSet<Element>());
+        roundEnv.processingOver(true);
+
+        TestGenerator.TestGeneratorConfiguration.getInstance().processThrowsIOException(false);
+        TestGenerator.TestGeneratorConfiguration.getInstance().setPropertiesThrowsIOException(false);
+
         AnnotationProcessor unitUnderTest = new AnnotationProcessor();
         unitUnderTest.init(processingEnv);
 
-        unitUnderTest.process(annotations, roundEnv);
+        unitUnderTest.process(handledAnnotations, roundEnv);
 
-        new Verifications() {{
-            // Expect no message
-            processingEnv.getMessager(); times = 0;
-        }};
+        Assert.assertEquals(messager.getMessages().size(), 0, "Expected no message to be created.");
     }
 
     @Test
@@ -437,33 +286,20 @@ public class AnnotationProcessorTest {
         final Map<String, String> options = new HashMap<>();
         options.put("tool.jpa.properties", "test=test.properties");
 
-        new Expectations() {{
-            roundEnv.processingOver(); result = true;
-            processingEnv.getOptions(); result = options;
-            new MockUp<Properties>() {
-                @Mock void $init() {}
-                @Mock void load(InputStream is) {}
-            };
-            new MockUp<FileInputStream>() {
-                @Mock void $init(String file) {}
-                @Mock void close(){}
-            };
-            ServiceLoader.load(GeneratorService.class); result = generatorServiceLoader;
-            generatorServiceLoader.iterator(); result = generators;
-            generators.hasNext(); returns(true, false, true, false);
-            generators.next(); result = generatorService;
-            generatorService.getPrefix(); result = "test";
-            generatorService.process((Model)any);
-        }};
+        MessagerMock messager = new MessagerMock();
+        ProcessingEnvironmentMock processingEnv = new ProcessingEnvironmentMock(options, messager);
+        RoundEnvironmentMock roundEnv = new RoundEnvironmentMock(new HashSet<Element>());
+        roundEnv.processingOver(true);
+
+        TestGenerator.TestGeneratorConfiguration.getInstance().processThrowsIOException(false);
+        TestGenerator.TestGeneratorConfiguration.getInstance().setPropertiesThrowsIOException(false);
+
         AnnotationProcessor unitUnderTest = new AnnotationProcessor();
         unitUnderTest.init(processingEnv);
 
-        unitUnderTest.process(annotations, roundEnv);
+        unitUnderTest.process(handledAnnotations, roundEnv);
 
-        new Verifications() {{
-            // Expect no message
-            processingEnv.getMessager(); times = 0;
-        }};
+        Assert.assertEquals(messager.getMessages().size(), 0, "Expected no message to be created.");
     }
 
     @Test
@@ -471,34 +307,22 @@ public class AnnotationProcessorTest {
         final Map<String, String> options = new HashMap<>();
         options.put("tool.jpa.properties", "test=test.properties");
 
-        new Expectations() {{
-            roundEnv.processingOver(); result = true;
-            processingEnv.getOptions(); result = options;
-            new MockUp<Properties>() {
-                @Mock void $init() {}
-                @Mock void load(InputStream is) {}
-            };
-            new MockUp<FileInputStream>() {
-                @Mock void $init(String file) {}
-                @Mock void close(){}
-            };
-            ServiceLoader.load(GeneratorService.class); result = generatorServiceLoader;
-            generatorServiceLoader.iterator(); result = generators;
-            generators.hasNext(); returns(true, false, true, false);
-            generators.next(); result = generatorService;
-            generatorService.getPrefix(); result = "test";
-            generatorService.process((Model)any); result = new IOException();
-        }};
+        MessagerMock messager = new MessagerMock();
+        ProcessingEnvironmentMock processingEnv = new ProcessingEnvironmentMock(options, messager);
+        RoundEnvironmentMock roundEnv = new RoundEnvironmentMock(new HashSet<Element>());
+        roundEnv.processingOver(true);
+
+        TestGenerator.TestGeneratorConfiguration.getInstance().processThrowsIOException(true);
+        TestGenerator.TestGeneratorConfiguration.getInstance().setPropertiesThrowsIOException(false);
+
         AnnotationProcessor unitUnderTest = new AnnotationProcessor();
         unitUnderTest.init(processingEnv);
 
-        unitUnderTest.process(annotations, roundEnv);
+        unitUnderTest.process(handledAnnotations, roundEnv);
 
-        new Verifications() {{
-            // Expect a message with level error
-            processingEnv.getMessager(); times = 1;
-            processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, anyString); times = 1;
-        }};
+        Assert.assertEquals(messager.getMessages().size(), 1, "Expected one message to be created.");
+        Assert.assertEquals(messager.getMessages().get(0).getKind(), Diagnostic.Kind.ERROR,
+                "Expected a message with level ERROR to be created.");
     }
 
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 uwe
+ * Copyright (C) 2016 Uwe Plonus
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,31 +14,28 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.sw4j.tool.annotation.jpa.processor.mock;
+package org.sw4j.tool.annotation.jpa.entities;
 
-import java.lang.annotation.Annotation;
 import javax.persistence.Entity;
+import javax.persistence.Id;
 
 /**
+ * An entity with a overridden name.
  *
  * @author Uwe Plonus
  */
-public class EntityMock implements Entity {
+@Entity(name = "NamedEntity")
+public class SimpleNamedEntity {
 
-    private final String name;
+    @Id
+    private int id;
 
-    public EntityMock(final String name) {
-        this.name = name;
+    public int getId() {
+        return id;
     }
 
-    @Override
-    public String name() {
-        return this.name;
-    }
-
-    @Override
-    public Class<? extends Annotation> annotationType() {
-        return Entity.class;
+    public void setId(int id) {
+        this.id = id;
     }
 
 }

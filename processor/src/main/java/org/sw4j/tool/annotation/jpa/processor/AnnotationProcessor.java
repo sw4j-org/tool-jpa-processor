@@ -16,13 +16,10 @@
  */
 package org.sw4j.tool.annotation.jpa.processor;
 
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Properties;
 import java.util.ServiceLoader;
 import java.util.Set;
 import javax.annotation.Nonnull;
@@ -71,18 +68,6 @@ public class AnnotationProcessor extends AbstractProcessor {
     }
 
     /**
-     * Constructor used for testing to inject the given (mocked) classes into this class.
-     *
-     * @param model the (mocked) model.
-     * @param entityProcessor the (mocked) entity processor.
-     */
-    /* package private */ AnnotationProcessor(@Nonnull final Model model,
-            @Nonnull final EntityProcessor entityProcessor) {
-        this.model = model;
-        this.entityProcessor = entityProcessor;
-    }
-
-    /**
      * Processes the annotations given in the {@code annotations} variable.
      *
      * @param annotations the annotations that are handled.
@@ -112,11 +97,13 @@ public class AnnotationProcessor extends AbstractProcessor {
             Iterator<GeneratorService> generators = generatorServiceLoader.iterator();
             while (generators.hasNext()) {
                 GeneratorService generator = generators.next();
-                try {
-                    generator.process(model);
-                } catch (IOException ioex) {
-                    this.processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR,
-                            ioex.toString());
+                if (generator.canProcess()) {
+                    try {
+                        generator.process(model);
+                    } catch (IOException ioex) {
+                        this.processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR,
+                                ioex.toString());
+                    }
                 }
             }
         }
@@ -132,18 +119,12 @@ public class AnnotationProcessor extends AbstractProcessor {
      */
     @Nonnull
     private ServiceLoader<GeneratorService> setupGenerators(@Nullable final String outputOption) {
-        Map<String, Properties> outputParts = new HashMap<>();
+        Map<String, String> outputParts = new HashMap<>();
         if (outputOption != null) {
             for (String o: outputOption.split(",")) {
                 String[] singleOption = o.split("=");
                 if (singleOption.length == 2) {
-                    Properties properties = new Properties();
-                    try (InputStream is = new FileInputStream(singleOption[1])) {
-                        properties.load(is);
-                    } catch (IOException ioex) {
-                        this.processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, ioex.toString());
-                    }
-                    outputParts.put(singleOption[0], properties);
+                    outputParts.put(singleOption[0], singleOption[1]);
                 }
             }
         }
@@ -152,7 +133,11 @@ public class AnnotationProcessor extends AbstractProcessor {
         while (generators.hasNext()) {
             GeneratorService generator = generators.next();
             if (outputParts.containsKey(generator.getPrefix())) {
-                generator.setProperties(outputParts.get(generator.getPrefix()));
+                try {
+                    generator.setPropertiesFileName(outputParts.get(generator.getPrefix()));
+                } catch (IOException ioex) {
+                    this.processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, ioex.toString());
+                }
             }
         }
         return generatorServiceLoader;
