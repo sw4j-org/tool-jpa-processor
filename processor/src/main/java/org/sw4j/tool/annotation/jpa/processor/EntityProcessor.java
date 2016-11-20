@@ -16,10 +16,18 @@
  */
 package org.sw4j.tool.annotation.jpa.processor;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 import javax.annotation.Nonnull;
 import javax.lang.model.element.Element;
+import javax.lang.model.element.ElementKind;
 import org.sw4j.tool.annotation.jpa.generator.model.Entity;
 import org.sw4j.tool.annotation.jpa.generator.model.Model;
+import org.sw4j.tool.annotation.jpa.processor.exceptions.AnnotationProcessorException;
+import org.sw4j.tool.annotation.jpa.processor.exceptions.EntityNotTopLevelClassException;
+import org.sw4j.tool.annotation.jpa.processor.exceptions.MissingEntityAnnotationException;
 
 /**
  * This is a processor to handle classes with an @Entity annotation.
@@ -29,10 +37,17 @@ import org.sw4j.tool.annotation.jpa.generator.model.Model;
 public class EntityProcessor {
 
     /**
+     * The processor to handle attributes of the processed entity.
+     */
+    private final AttributeProcessor attributeProcessor;
+
+
+    /**
      * Default constructor for the entity processor.
      *
      */
     public EntityProcessor() {
+        this.attributeProcessor = new AttributeProcessor();
     }
 
     /**
@@ -40,16 +55,46 @@ public class EntityProcessor {
      *
      * @param element the element to process (must be an {@code @Entity}.
      * @param model the model where the final entity is added to.
+     * @throws MissingEntityAnnotationException if the given element is not annotated with {@code @Entity}.
+     * @throws AnnotationProcessorException if the entity cannot be handled.
      */
-    public void process(@Nonnull final Element element, @Nonnull final Model model) {
+    public void process(@Nonnull final Element element, @Nonnull final Model model)
+            throws AnnotationProcessorException {
         javax.persistence.Entity entityAnnotation = element.getAnnotation(javax.persistence.Entity.class);
-        Entity entity;
-        if ("".equals(entityAnnotation.name())) {
-            entity = new Entity(element.getSimpleName().toString());
-        } else {
-            entity = new Entity(entityAnnotation.name());
+        if (entityAnnotation == null) {
+            throw new MissingEntityAnnotationException(element.getSimpleName().toString());
         }
-        model.addEntity(entity);
+
+        if (ElementKind.CLASS.equals(element.getKind()) &&
+                ElementKind.PACKAGE.equals(element.getEnclosingElement().getKind())) {
+            // This is a top level class therefore we can continue.
+            Entity entity;
+            if ("".equals(entityAnnotation.name())) {
+                entity = new Entity(element.getSimpleName().toString());
+            } else {
+                entity = new Entity(entityAnnotation.name());
+            }
+            model.addEntity(entity);
+
+            Map<String, Element> possibleField = new HashMap<>();
+            Map<String, Element> possibleProperty = new HashMap<>();
+
+            List<? extends Element> enclosedElements = element.getEnclosedElements();
+            for (Element enclosedElement: enclosedElements) {
+                if (ElementKind.FIELD.equals(enclosedElement.getKind())) {
+                    possibleField.put(enclosedElement.getSimpleName().toString(), enclosedElement);
+                } else if (ElementKind.METHOD.equals(enclosedElement.getKind())) {
+                    String methodName = enclosedElement.getSimpleName().toString();
+                    if (methodName.startsWith("get")) {
+                        StringBuilder propertyName = new StringBuilder(methodName.substring(3));
+                        propertyName.replace(0, 1, propertyName.substring(0, 1).toLowerCase(Locale.ROOT));
+                        possibleProperty.put(propertyName.toString(), enclosedElement);
+                    }
+                }
+            }
+        } else {
+            throw new EntityNotTopLevelClassException(element.getSimpleName().toString());
+        }
     }
 
 }

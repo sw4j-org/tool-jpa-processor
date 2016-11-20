@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 Uwe Plonus
+ * Copyright (C) 2016 uwe
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,28 +14,20 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.sw4j.tool.annotation.jpa.entity;
-
-import javax.persistence.Entity;
-import javax.persistence.Id;
+package org.sw4j.tool.annotation.jpa.processor;
 
 /**
- * An entity with a overridden name.
+ * This is a processor to handle attributes of classes with an @Entity annotation.
  *
  * @author Uwe Plonus
  */
-@Entity(name = "NamedEntity")
-public class SimpleNamedEntity {
+public class AttributeProcessor {
 
-    @Id
-    private int id;
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
+    /**
+     * Default constructor for the attribute processor.
+     *
+     */
+    public AttributeProcessor() {
     }
 
 }

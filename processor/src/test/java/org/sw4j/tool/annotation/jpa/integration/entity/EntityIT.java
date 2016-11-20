@@ -14,10 +14,10 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.sw4j.tool.annotation.jpa.test.entity;
+package org.sw4j.tool.annotation.jpa.integration.entity;
 
 import javax.xml.xpath.XPathExpressionException;
-import org.sw4j.tool.annotation.jpa.util.TestSuperclass;
+import org.sw4j.tool.annotation.jpa.integration.util.TestSuperclass;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 import org.w3c.dom.Node;
@@ -27,10 +27,10 @@ import org.w3c.dom.Node;
  *
  * @author Uwe Plonus
  */
-public class EntityTest extends TestSuperclass {
+public class EntityIT extends TestSuperclass {
 
     /** Default constructor. */
-    public EntityTest() {
+    public EntityIT() {
     }
 
     @Test

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 Uwe Plonus
+ * Copyright (C) 2016 uwe
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,28 +14,16 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.sw4j.tool.annotation.jpa.entity.field;
+package org.sw4j.tool.annotation.jpa.entities;
 
 import javax.persistence.Entity;
-import javax.persistence.Id;
 
 /**
- * A simple entity containing only an {@code @Id} field.
+ * An entity that is an enum (which is not allowed by the specification).
  *
  * @author Uwe Plonus
  */
 @Entity
-public class SimpleFieldEntity {
-
-    @Id
-    private int id;
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
+public enum EnumEntity {
 
 }

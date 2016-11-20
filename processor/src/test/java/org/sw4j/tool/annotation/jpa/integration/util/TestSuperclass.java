@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.sw4j.tool.annotation.jpa.util;
+package org.sw4j.tool.annotation.jpa.integration.util;
 
 import java.io.FileInputStream;
 import java.util.Properties;
@@ -25,19 +25,22 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 /**
+ * This class is used for all integration test classes. This class compiles the entities and checks that all model
+ * elements are tested. This means that either a sub class test fails because there is no node or this class throws an
+ * exception because a model element is not tested.
  *
  * @author Uwe Plonus
  */
 public abstract class TestSuperclass {
 
     /** The folder that contains all JPA classes to process. */
-    private static final String ENTITY_PACKAGE = "src/test/java/org/sw4j/tool/annotation/jpa/entity/";
+    private static final String ENTITY_PACKAGE = "src/test/java/org/sw4j/tool/annotation/jpa/entities/";
 
     /** The file to write the result to. */
     private static final String TEST_PROPERTIES = "src/test/resources/test.properties";
 
     /** The option prefix for the generator output. */
-    private static final String ANNOTATION_PROCESSOR_OPTION = "-Atool.jpa.properties=test=" + TEST_PROPERTIES
+    private static final String ANNOTATION_PROCESSOR_OPTION = "-Atool.jpa.properties=it=" + TEST_PROPERTIES
             + ",test2";
 
     /** The utility class of the testResultFile. */

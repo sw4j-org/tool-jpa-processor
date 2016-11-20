@@ -16,13 +16,10 @@
  */
 package org.sw4j.tool.annotation.jpa.processor;
 
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Properties;
 import java.util.ServiceLoader;
 import java.util.Set;
 import javax.annotation.Nonnull;
@@ -35,9 +32,13 @@ import javax.annotation.processing.SupportedSourceVersion;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
+import javax.persistence.Entity;
 import javax.tools.Diagnostic;
 import org.sw4j.tool.annotation.jpa.generator.GeneratorService;
 import org.sw4j.tool.annotation.jpa.generator.model.Model;
+import org.sw4j.tool.annotation.jpa.processor.exceptions.AnnotationProcessorException;
+import org.sw4j.tool.annotation.jpa.processor.exceptions.EntityNotTopLevelClassException;
+import org.sw4j.tool.annotation.jpa.processor.exceptions.MissingEntityAnnotationException;
 
 /**
  * An annotation processor to handle JPA annotations.
@@ -56,13 +57,14 @@ public class AnnotationProcessor extends AbstractProcessor {
     private final Model model;
 
     /** The processor to handle entities. */
-    private final EntityProcessor entityProcessor = new EntityProcessor();
+    private final EntityProcessor entityProcessor;
 
     /**
      * The default constructor.
      */
     public AnnotationProcessor() {
-        model = new Model();
+        this.model = new Model();
+        this.entityProcessor = new EntityProcessor();
     }
 
     /**
@@ -75,26 +77,33 @@ public class AnnotationProcessor extends AbstractProcessor {
     @Override
     public boolean process(@Nonnull final Set<? extends TypeElement> annotations,
             @Nonnull final RoundEnvironment roundEnv) {
-        String outputOption = this.processingEnv.getOptions().get(PROPERTIES_OPTION);
-        ServiceLoader<GeneratorService> generatorService = setupGenerators(outputOption);
-
         Set<? extends Element> elements = roundEnv.getRootElements();
         for (Element element: elements) {
-            javax.persistence.Entity entity = element.getAnnotation(javax.persistence.Entity.class);
+            Entity entity = element.getAnnotation(Entity.class);
             if (entity != null) {
-                entityProcessor.process(element, model);
+                try {
+                    entityProcessor.process(element, model);
+                } catch (EntityNotTopLevelClassException | MissingEntityAnnotationException ex) {
+                    this.processingEnv.getMessager().printMessage(Diagnostic.Kind.WARNING, ex.getMessage(), element);
+                } catch (AnnotationProcessorException ex) {
+                    this.processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, ex.getMessage(), element);
+                }
             }
         }
 
         if (roundEnv.processingOver()) {
-            Iterator<GeneratorService> generators = generatorService.iterator();
+            String outputOption = this.processingEnv.getOptions().get(PROPERTIES_OPTION);
+            ServiceLoader<GeneratorService> generatorServiceLoader = setupGenerators(outputOption);
+            Iterator<GeneratorService> generators = generatorServiceLoader.iterator();
             while (generators.hasNext()) {
                 GeneratorService generator = generators.next();
-                try {
-                    generator.process(model);
-                } catch (IOException ioex) {
-                    this.processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR,
-                            ioex.toString());
+                if (generator.canProcess()) {
+                    try {
+                        generator.process(model);
+                    } catch (IOException ioex) {
+                        this.processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR,
+                                ioex.toString());
+                    }
                 }
             }
         }
@@ -110,30 +119,28 @@ public class AnnotationProcessor extends AbstractProcessor {
      */
     @Nonnull
     private ServiceLoader<GeneratorService> setupGenerators(@Nullable final String outputOption) {
-        Map<String, Properties> outputParts = new HashMap<>();
+        Map<String, String> outputParts = new HashMap<>();
         if (outputOption != null) {
             for (String o: outputOption.split(",")) {
                 String[] singleOption = o.split("=");
                 if (singleOption.length == 2) {
-                    Properties properties = new Properties();
-                    try (InputStream is = new FileInputStream(singleOption[1])) {
-                        properties.load(is);
-                    } catch (IOException ioex) {
-                        this.processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, ioex.toString());
-                    }
-                    outputParts.put(singleOption[0], properties);
+                    outputParts.put(singleOption[0], singleOption[1]);
                 }
             }
         }
-        ServiceLoader<GeneratorService> generatorService = ServiceLoader.load(GeneratorService.class);
-        Iterator<GeneratorService> generators = generatorService.iterator();
+        ServiceLoader<GeneratorService> generatorServiceLoader = ServiceLoader.load(GeneratorService.class);
+        Iterator<GeneratorService> generators = generatorServiceLoader.iterator();
         while (generators.hasNext()) {
             GeneratorService generator = generators.next();
             if (outputParts.containsKey(generator.getPrefix())) {
-                generator.setProperties(outputParts.get(generator.getPrefix()));
+                try {
+                    generator.setPropertiesFileName(outputParts.get(generator.getPrefix()));
+                } catch (IOException ioex) {
+                    this.processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, ioex.toString());
+                }
             }
         }
-        return generatorService;
+        return generatorServiceLoader;
     }
 
 }

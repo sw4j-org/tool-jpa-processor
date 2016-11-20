@@ -14,42 +14,34 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.sw4j.tool.annotation.jpa.generator.model;
+package org.sw4j.tool.annotation.jpa.processor.exceptions;
 
 import javax.annotation.Nonnull;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
 
 /**
- * This class represents an entity. Via the entity you can access the attributes and tables assigned to the entity.
+ * This is an exception that indicates a problem in processing an element.
  *
  * @author Uwe Plonus
  */
-@XmlAccessorType(XmlAccessType.NONE)
-public class Entity {
-
-    /** The name of the entity. */
-    @XmlAttribute(name = "name")
-    private final String name;
+public class AnnotationProcessorException extends Exception {
 
     /**
-     * Default constructor.
+     * A constructor with a detailed message.
      *
-     * @param name the name of the entity.
+     * @param message the detailed message.
      */
-    public Entity(@Nonnull final String name) {
-        this.name = name;
+    public AnnotationProcessorException(@Nonnull final String message) {
+        super(message);
     }
 
     /**
-     * Returns the name of the entity.
+     * A constructor with a detailed message and a causing throwable.
      *
-     * @return the name.
+     * @param message the detailed message.
+     * @param cause the cause of this exception.
      */
-    @Nonnull
-    public String getName() {
-        return name;
+    public AnnotationProcessorException(@Nonnull final String message, @Nonnull final Throwable cause) {
+        super(message, cause);
     }
 
 }
