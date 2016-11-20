@@ -16,6 +16,7 @@
  */
 package org.sw4j.tool.annotation.jpa.generator.model;
 
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import javax.annotation.Nonnull;
@@ -47,9 +48,9 @@ public class Model {
     /**
      * Default constructor.
      */
-<span class="fc" id="L50">    public Model() {</span>
-<span class="fc" id="L51">        entities = new LinkedList&lt;&gt;();</span>
-<span class="fc" id="L52">    }</span>
+<span class="fc" id="L51">    public Model() {</span>
+<span class="fc" id="L52">        entities = new LinkedList&lt;&gt;();</span>
+<span class="fc" id="L53">    }</span>
 
     /**
      * Adds an entity to the model.
@@ -57,8 +58,17 @@ public class Model {
      * @param entity the entity to add.
      */
     public void addEntity(@Nonnull final Entity entity) {
-<span class="fc" id="L60">        entities.add(entity);</span>
-<span class="fc" id="L61">    }</span>
+<span class="fc" id="L61">        entities.add(entity);</span>
+<span class="fc" id="L62">    }</span>
+
+    /**
+     * Returns all entities of the model.
+     *
+     * @return a list containing all elements of the model.
+     */
+    public List&lt;Entity&gt; getEntities() {
+<span class="fc" id="L70">        return Collections.unmodifiableList(entities);</span>
+    }
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.7.201606060606</span></div></body></html>
