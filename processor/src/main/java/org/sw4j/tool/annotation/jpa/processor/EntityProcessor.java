@@ -17,9 +17,11 @@
 package org.sw4j.tool.annotation.jpa.processor;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
@@ -56,6 +58,8 @@ public class EntityProcessor {
      * @param element the element to process (must be an {@code @Entity}.
      * @param model the model where the final entity is added to.
      * @throws MissingEntityAnnotationException if the given element is not annotated with {@code @Entity}.
+     * @throws EntityNotTopLevelClassException if the given element is not a top level class but another type or not top
+     *  level (e.g. embedded).
      * @throws AnnotationProcessorException if the entity cannot be handled.
      */
     public void process(@Nonnull final Element element, @Nonnull final Model model)
@@ -76,21 +80,27 @@ public class EntityProcessor {
             }
             model.addEntity(entity);
 
-            Map<String, Element> possibleField = new HashMap<>();
-            Map<String, Element> possibleProperty = new HashMap<>();
+            Map<String, Element> possibleFields = new HashMap<>();
+            Map<String, Element> possibleProperties = new HashMap<>();
 
             List<? extends Element> enclosedElements = element.getEnclosedElements();
             for (Element enclosedElement: enclosedElements) {
                 if (ElementKind.FIELD.equals(enclosedElement.getKind())) {
-                    possibleField.put(enclosedElement.getSimpleName().toString(), enclosedElement);
+                    possibleFields.put(enclosedElement.getSimpleName().toString(), enclosedElement);
                 } else if (ElementKind.METHOD.equals(enclosedElement.getKind())) {
                     String methodName = enclosedElement.getSimpleName().toString();
                     if (methodName.startsWith("get")) {
                         StringBuilder propertyName = new StringBuilder(methodName.substring(3));
                         propertyName.replace(0, 1, propertyName.substring(0, 1).toLowerCase(Locale.ROOT));
-                        possibleProperty.put(propertyName.toString(), enclosedElement);
+                        possibleProperties.put(propertyName.toString(), enclosedElement);
                     }
                 }
+            }
+            Set<String> handledAttributes = new HashSet<>();
+            for (Map.Entry<String, Element> possibleField: possibleFields.entrySet()) {
+                handledAttributes.add(possibleField.getKey());
+                attributeProcessor.process(entity, possibleField.getKey(), possibleField.getValue(),
+                        possibleProperties.get(possibleField.getKey()));
             }
         } else {
             throw new EntityNotTopLevelClassException(element.getSimpleName().toString());

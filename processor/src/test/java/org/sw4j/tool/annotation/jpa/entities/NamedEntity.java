@@ -25,7 +25,7 @@ import javax.persistence.Id;
  * @author Uwe Plonus
  */
 @Entity(name = "NamedEntity")
-public class SimpleNamedEntity {
+public class NamedEntity {
 
     @Id
     private int id;

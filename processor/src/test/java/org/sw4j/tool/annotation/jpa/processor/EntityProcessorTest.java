@@ -167,7 +167,8 @@ public class EntityProcessorTest {
         unitUnderTest.process(testElement, testModel);
 
         Assert.assertEquals(testModel.getEntities().size(), 1, "Expected a model with a single entity.");
-        Assert.assertEquals(testModel.getEntities().get(0).getName(), "Test");
+        Assert.assertEquals(testModel.getEntities().get(0).getName(), "Test",
+                "Expected the entity to have the name \"Test\".");
     }
 
     @Test

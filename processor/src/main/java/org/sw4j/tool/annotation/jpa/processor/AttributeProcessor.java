@@ -16,6 +16,13 @@
  */
 package org.sw4j.tool.annotation.jpa.processor;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.lang.model.element.Element;
+import org.sw4j.tool.annotation.jpa.generator.model.Attribute;
+import org.sw4j.tool.annotation.jpa.generator.model.Entity;
+import org.sw4j.tool.annotation.jpa.processor.exceptions.AnnotationProcessorException;
+
 /**
  * This is a processor to handle attributes of classes with an @Entity annotation.
  *
@@ -28,6 +35,23 @@ public class AttributeProcessor {
      *
      */
     public AttributeProcessor() {
+    }
+
+    /**
+     * Process a single entity annotated with {@code @Entity}. An attribute may be defined by either a field or a
+     * property or both. Which one is used depends on the access of the entity.
+     *
+     * @param entity the entity this attribute belongs to.
+     * @param attributeName the name of the attribute.
+     * @param fieldElement the possible field of the attribute.
+     * @param propertyElement the possible property of the attribute.
+     * @throws AnnotationProcessorException if the entity cannot be handled.
+     */
+    public void process(@Nonnull final Entity entity, @Nonnull final String attributeName,
+            @Nullable final Element fieldElement, @Nullable final Element propertyElement)
+            throws AnnotationProcessorException {
+        Attribute attribute = new Attribute(attributeName);
+        entity.addAttribute(attribute);
     }
 
 }
