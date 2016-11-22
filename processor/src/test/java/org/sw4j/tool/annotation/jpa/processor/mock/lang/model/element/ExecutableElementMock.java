@@ -34,9 +34,13 @@ import javax.lang.model.type.TypeMirror;
  */
 public class ExecutableElementMock extends ElementMock implements ExecutableElement {
 
+    private final TypeMirror returnType;
+
     public ExecutableElementMock(final Name simpleName, final Map<Class<?>, ? extends Annotation> annotations,
-            final ElementKind kind, final Element enclosingElement, final List<? extends Element> enclosedElements) {
+            final ElementKind kind, final Element enclosingElement, final List<? extends Element> enclosedElements,
+            final TypeMirror returnType) {
         super(simpleName, annotations, kind, enclosingElement, enclosedElements);
+        this.returnType = returnType;
     }
 
     @Override
@@ -46,7 +50,7 @@ public class ExecutableElementMock extends ElementMock implements ExecutableElem
 
     @Override
     public TypeMirror getReturnType() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return this.returnType;
     }
 
     @Override

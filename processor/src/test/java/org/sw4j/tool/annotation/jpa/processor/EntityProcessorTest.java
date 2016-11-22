@@ -32,6 +32,7 @@ import org.sw4j.tool.annotation.jpa.generator.model.Model;
 import org.sw4j.tool.annotation.jpa.processor.exceptions.AnnotationProcessorException;
 import org.sw4j.tool.annotation.jpa.processor.exceptions.EntityNotTopLevelClassException;
 import org.sw4j.tool.annotation.jpa.processor.exceptions.MissingEntityAnnotationException;
+import org.sw4j.tool.annotation.jpa.processor.mock.annotation.processing.ProcessingEnvironmentMock;
 import org.sw4j.tool.annotation.jpa.processor.mock.lang.model.element.VariableElementMock;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -54,7 +55,7 @@ public class EntityProcessorTest {
         Assert.assertThrows(MissingEntityAnnotationException.class, new Assert.ThrowingRunnable() {
             @Override
             public void run() throws AnnotationProcessorException {
-                unitUnderTest.process(testElement, testModel);
+                unitUnderTest.process(testElement, testModel, new ProcessingEnvironmentMock());
             }
         });
     }
@@ -74,7 +75,7 @@ public class EntityProcessorTest {
         Assert.assertThrows(EntityNotTopLevelClassException.class, new Assert.ThrowingRunnable() {
             @Override
             public void run() throws AnnotationProcessorException {
-                unitUnderTest.process(testElement, testModel);
+                unitUnderTest.process(testElement, testModel, new ProcessingEnvironmentMock());
             }
         });
     }
@@ -96,7 +97,7 @@ public class EntityProcessorTest {
         Assert.assertThrows(EntityNotTopLevelClassException.class, new Assert.ThrowingRunnable() {
             @Override
             public void run() throws AnnotationProcessorException {
-                unitUnderTest.process(testElement, testModel);
+                unitUnderTest.process(testElement, testModel, new ProcessingEnvironmentMock());
             }
         });
     }
@@ -115,7 +116,7 @@ public class EntityProcessorTest {
 
         final EntityProcessor unitUnderTest = new EntityProcessor();
 
-        unitUnderTest.process(testElement, testModel);
+        unitUnderTest.process(testElement, testModel, new ProcessingEnvironmentMock());
 
         Assert.assertEquals(testModel.getEntities().size(), 1, "Expected a model with a single entity.");
         Assert.assertEquals(testModel.getEntities().get(0).getName(), "Test");
@@ -135,7 +136,7 @@ public class EntityProcessorTest {
 
         final EntityProcessor unitUnderTest = new EntityProcessor();
 
-        unitUnderTest.process(testElement, testModel);
+        unitUnderTest.process(testElement, testModel, new ProcessingEnvironmentMock());
 
         Assert.assertEquals(testModel.getEntities().size(), 1, "Expected a model with a single entity.");
         Assert.assertEquals(testModel.getEntities().get(0).getName(), "EntityName");
@@ -164,7 +165,7 @@ public class EntityProcessorTest {
 
         final EntityProcessor unitUnderTest = new EntityProcessor();
 
-        unitUnderTest.process(testElement, testModel);
+        unitUnderTest.process(testElement, testModel, new ProcessingEnvironmentMock());
 
         Assert.assertEquals(testModel.getEntities().size(), 1, "Expected a model with a single entity.");
         Assert.assertEquals(testModel.getEntities().get(0).getName(), "Test",
@@ -194,7 +195,7 @@ public class EntityProcessorTest {
 
         final EntityProcessor unitUnderTest = new EntityProcessor();
 
-        unitUnderTest.process(testElement, testModel);
+        unitUnderTest.process(testElement, testModel, new ProcessingEnvironmentMock());
 
         Assert.assertEquals(testModel.getEntities().size(), 1, "Expected a model with a single entity.");
         Assert.assertEquals(testModel.getEntities().get(0).getName(), "Test");
@@ -223,7 +224,7 @@ public class EntityProcessorTest {
 
         final EntityProcessor unitUnderTest = new EntityProcessor();
 
-        unitUnderTest.process(testElement, testModel);
+        unitUnderTest.process(testElement, testModel, new ProcessingEnvironmentMock());
 
         Assert.assertEquals(testModel.getEntities().size(), 1, "Expected a model with a single entity.");
         Assert.assertEquals(testModel.getEntities().get(0).getName(), "Test");
@@ -252,7 +253,7 @@ public class EntityProcessorTest {
 
         final EntityProcessor unitUnderTest = new EntityProcessor();
 
-        unitUnderTest.process(testElement, testModel);
+        unitUnderTest.process(testElement, testModel, new ProcessingEnvironmentMock());
 
         Assert.assertEquals(testModel.getEntities().size(), 1, "Expected a model with a single entity.");
         Assert.assertEquals(testModel.getEntities().get(0).getName(), "Test");
@@ -281,7 +282,7 @@ public class EntityProcessorTest {
 
         final EntityProcessor unitUnderTest = new EntityProcessor();
 
-        unitUnderTest.process(testElement, testModel);
+        unitUnderTest.process(testElement, testModel, new ProcessingEnvironmentMock());
 
         Assert.assertEquals(testModel.getEntities().size(), 1, "Expected a model with a single entity.");
         Assert.assertEquals(testModel.getEntities().get(0).getName(), "Test");

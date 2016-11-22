@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 Uwe Plonus
+ * Copyright (C) 2016 uwe
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,48 +14,32 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.sw4j.tool.annotation.jpa.entity.properties;
+package org.sw4j.tool.annotation.jpa.processor.mock.lang.model.type;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.lang.model.type.TypeKind;
+import javax.lang.model.type.TypeMirror;
+import javax.lang.model.type.TypeVisitor;
 
 /**
- * A simple entity containing only an {@code @Id} field.
  *
  * @author Uwe Plonus
  */
-@Entity
-public class SimplePropertyEntity {
+public class TypeMirrorMock implements TypeMirror {
 
-    private int id;
+    private final TypeKind kind;
 
-    @Id
-    public int getId() {
-        return id;
+    public TypeMirrorMock(TypeKind kind) {
+        this.kind = kind;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    @Override
+    public TypeKind getKind() {
+        return this.kind;
     }
 
-    private int value;
-
-    public int getValue() {
-        return value;
-    }
-
-    public void setValue(int value) {
-        this.value = value;
-    }
-
-    private boolean flag;
-
-    public boolean isFlag() {
-        return flag;
-    }
-
-    public void setFlag(boolean flag) {
-        this.flag = flag;
+    @Override
+    public <R, P> R accept(TypeVisitor<R, P> v, P p) {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
 }

@@ -82,7 +82,7 @@ public class AnnotationProcessor extends AbstractProcessor {
             Entity entity = element.getAnnotation(Entity.class);
             if (entity != null) {
                 try {
-                    entityProcessor.process(element, model);
+                    entityProcessor.process(element, model, this.processingEnv);
                 } catch (EntityNotTopLevelClassException | MissingEntityAnnotationException ex) {
                     this.processingEnv.getMessager().printMessage(Diagnostic.Kind.WARNING, ex.getMessage(), element);
                 } catch (AnnotationProcessorException ex) {

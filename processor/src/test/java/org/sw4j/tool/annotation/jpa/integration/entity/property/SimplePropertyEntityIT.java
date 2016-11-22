@@ -16,7 +16,6 @@
  */
 package org.sw4j.tool.annotation.jpa.integration.entity.property;
 
-import org.sw4j.tool.annotation.jpa.integration.entity.field.*;
 import javax.xml.xpath.XPathExpressionException;
 import org.sw4j.tool.annotation.jpa.integration.util.TestSuperclass;
 import org.testng.Assert;
@@ -73,6 +72,18 @@ public class SimplePropertyEntityIT extends TestSuperclass {
         Assert.assertEquals(attributeId.getNodeType(), Node.ELEMENT_NODE, "Expected an element.");
         Assert.assertEquals(attributeId.getAttributes().getNamedItem("name").getNodeValue(), "value",
                 "Expected the entity with name \"SimplePropertyEntity\" to have an attribute with the name \"value\"");
+    }
+
+    @Test
+    public void testSimpleEntityFlag() throws XPathExpressionException {
+        Node attributeId = getNode("/model/entities/entity[@name=\"SimplePropertyEntity\"]/attributes/" +
+                "attribute[@name=\"flag\"]");
+
+        Assert.assertNotNull(attributeId, "Expected the entity with name \"SimplePropertyEntity\" to have an " +
+                "attribute with name \"flag\" to exist.");
+        Assert.assertEquals(attributeId.getNodeType(), Node.ELEMENT_NODE, "Expected an element.");
+        Assert.assertEquals(attributeId.getAttributes().getNamedItem("name").getNodeValue(), "flag",
+                "Expected the entity with name \"SimplePropertyEntity\" to have an attribute with the name \"flag\"");
     }
 
 }

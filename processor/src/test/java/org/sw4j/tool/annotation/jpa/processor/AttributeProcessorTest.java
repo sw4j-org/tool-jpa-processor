@@ -23,12 +23,16 @@ import java.util.Map;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.Name;
+import javax.lang.model.type.TypeKind;
 import javax.persistence.Id;
 import org.sw4j.tool.annotation.jpa.generator.model.Entity;
 import org.sw4j.tool.annotation.jpa.processor.exceptions.AnnotationProcessorException;
+import org.sw4j.tool.annotation.jpa.processor.mock.annotation.processing.ProcessingEnvironmentMock;
 import org.sw4j.tool.annotation.jpa.processor.mock.lang.model.element.ExecutableElementMock;
 import org.sw4j.tool.annotation.jpa.processor.mock.lang.model.element.NameMock;
+import org.sw4j.tool.annotation.jpa.processor.mock.lang.model.element.TypeElementMock;
 import org.sw4j.tool.annotation.jpa.processor.mock.lang.model.element.VariableElementMock;
+import org.sw4j.tool.annotation.jpa.processor.mock.lang.model.type.TypeMirrorMock;
 import org.sw4j.tool.annotation.jpa.processor.mock.persistence.IdMock;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -99,7 +103,7 @@ public class AttributeProcessorTest {
         final Entity testEntity =  new Entity("Test");
         Name idName = new NameMock("getId");
         Element testElement = new ExecutableElementMock(idName, new HashMap<Class<?>, Annotation>(),
-                ElementKind.METHOD, null, new LinkedList<Element>());
+                ElementKind.METHOD, null, new LinkedList<Element>(), null);
 
         AttributeProcessor unitUnderTest = new AttributeProcessor();
 
@@ -119,7 +123,7 @@ public class AttributeProcessorTest {
         Id id = new IdMock();
         annotations.put(Id.class, id);
         Element testElement = new ExecutableElementMock(idName, annotations, ElementKind.FIELD, null,
-                new LinkedList<Element>());
+                new LinkedList<Element>(), null);
 
         AttributeProcessor unitUnderTest = new AttributeProcessor();
 
@@ -139,7 +143,7 @@ public class AttributeProcessorTest {
         Element fieldElement = new VariableElementMock(fieldName, new HashMap<Class<?>, Annotation>(),
                 ElementKind.FIELD, null, new LinkedList<Element>());
         Element propertyElement = new ExecutableElementMock(propertyName, new HashMap<Class<?>, Annotation>(),
-                ElementKind.METHOD, null, new LinkedList<Element>());
+                ElementKind.METHOD, null, new LinkedList<Element>(), null);
 
         AttributeProcessor unitUnderTest = new AttributeProcessor();
 
@@ -162,7 +166,7 @@ public class AttributeProcessorTest {
         Element fieldElement = new VariableElementMock(fieldName, new HashMap<Class<?>, Annotation>(),
                 ElementKind.FIELD, null, new LinkedList<Element>());
         Element propertyElement = new ExecutableElementMock(propertyName, annotations, ElementKind.METHOD, null,
-                new LinkedList<Element>());
+                new LinkedList<Element>(), null);
 
         AttributeProcessor unitUnderTest = new AttributeProcessor();
 
@@ -185,7 +189,7 @@ public class AttributeProcessorTest {
         Element fieldElement = new VariableElementMock(fieldName, annotations, ElementKind.FIELD, null,
                 new LinkedList<Element>());
         Element propertyElement = new ExecutableElementMock(propertyName, new HashMap<Class<?>, Annotation>(),
-                ElementKind.METHOD, null, new LinkedList<Element>());
+                ElementKind.METHOD, null, new LinkedList<Element>(), null);
 
         AttributeProcessor unitUnderTest = new AttributeProcessor();
 
@@ -208,7 +212,7 @@ public class AttributeProcessorTest {
         Element fieldElement = new VariableElementMock(fieldName, annotations, ElementKind.FIELD, null,
                 new LinkedList<Element>());
         Element propertyElement = new ExecutableElementMock(propertyName, annotations, ElementKind.METHOD, null,
-                new LinkedList<Element>());
+                new LinkedList<Element>(), null);
 
         AttributeProcessor unitUnderTest = new AttributeProcessor();
 
@@ -260,6 +264,97 @@ public class AttributeProcessorTest {
                 "Expected the attribute to have the name \"test\".");
         Assert.assertEquals(testEntity.getAttributes().get(1).getName(), "test2",
                 "Expected the attribute to have the name \"test2\".");
+    }
+
+    @Test
+    public void testIsFieldWithField() {
+        Name testName = new NameMock("test");
+        Element testElement = new VariableElementMock(testName, new HashMap<Class<?>, Annotation>(),
+                ElementKind.FIELD, null, new LinkedList<Element>());
+
+        final AttributeProcessor unitUnderTest = new AttributeProcessor();
+
+        Assert.assertTrue(unitUnderTest.isField(testElement), "Expected the field to be a field.");
+    }
+
+    @Test
+    public void testIsFieldWithMethod() {
+        Name testName = new NameMock("test");
+        Element testElement = new ExecutableElementMock(testName, new HashMap<Class<?>, Annotation>(),
+                ElementKind.METHOD, null, new LinkedList<Element>(), null);
+
+        final AttributeProcessor unitUnderTest = new AttributeProcessor();
+
+        Assert.assertFalse(unitUnderTest.isField(testElement), "Expected the method not to be a field.");
+    }
+
+    @Test
+    public void testIsPropertyWithField() {
+        Name testName = new NameMock("test");
+        Element testElement = new VariableElementMock(testName, new HashMap<Class<?>, Annotation>(),
+                ElementKind.FIELD, null, new LinkedList<Element>());
+
+        final AttributeProcessor unitUnderTest = new AttributeProcessor();
+
+        Assert.assertFalse(unitUnderTest.isProperty(testElement, new ProcessingEnvironmentMock()),
+                "Expected the field not to be a property.");
+    }
+
+    @Test
+    public void testIsPropertyWithNonGetterMethod() {
+        Name testName = new NameMock("test");
+        Element testElement = new ExecutableElementMock(testName, new HashMap<Class<?>, Annotation>(),
+                ElementKind.METHOD, null, new LinkedList<Element>(), null);
+
+        final AttributeProcessor unitUnderTest = new AttributeProcessor();
+
+        Assert.assertFalse(unitUnderTest.isProperty(testElement, new ProcessingEnvironmentMock()),
+                "Expected the method not to be a property.");
+    }
+
+    @Test
+    public void testIsPropertyWithGetterMethodPrimitiveResult() {
+        Name className = new NameMock("Test");
+        Element classElement = new TypeElementMock(className, new HashMap<Class<?>, Annotation>(), ElementKind.CLASS,
+                null, null);
+        Name methodName = new NameMock("getTest");
+        Element methodElement = new ExecutableElementMock(methodName, new HashMap<Class<?>, Annotation>(),
+                ElementKind.METHOD, classElement, new LinkedList<Element>(), new TypeMirrorMock(TypeKind.INT));
+
+        final AttributeProcessor unitUnderTest = new AttributeProcessor();
+
+        Assert.assertTrue(unitUnderTest.isProperty(methodElement, new ProcessingEnvironmentMock()),
+                "Expected the method to be a property with primitive return type.");
+    }
+
+    @Test
+    public void testIsPropertyWithGetterMethodObjectResult() {
+        Name className = new NameMock("Test");
+        Element classElement = new TypeElementMock(className, new HashMap<Class<?>, Annotation>(), ElementKind.CLASS,
+                null, null);
+        Name methodName = new NameMock("getTest");
+        Element methodElement = new ExecutableElementMock(methodName, new HashMap<Class<?>, Annotation>(),
+                ElementKind.METHOD, classElement, new LinkedList<Element>(), new TypeMirrorMock(TypeKind.INT));
+
+        final AttributeProcessor unitUnderTest = new AttributeProcessor();
+
+        Assert.assertTrue(unitUnderTest.isProperty(methodElement, new ProcessingEnvironmentMock()),
+                "Expected the method to be a property with primitive return type.");
+    }
+
+    @Test
+    public void testIsPropertyWithGetterMethodPrimitiveBooleanResult() {
+        Name className = new NameMock("Test");
+        Element classElement = new TypeElementMock(className, new HashMap<Class<?>, Annotation>(), ElementKind.CLASS,
+                null, null);
+        Name methodName = new NameMock("isTest");
+        Element methodElement = new ExecutableElementMock(methodName, new HashMap<Class<?>, Annotation>(),
+                ElementKind.METHOD, classElement, new LinkedList<Element>(), new TypeMirrorMock(TypeKind.BOOLEAN));
+
+        final AttributeProcessor unitUnderTest = new AttributeProcessor();
+
+        Assert.assertTrue(unitUnderTest.isProperty(methodElement, new ProcessingEnvironmentMock()),
+                "Expected the method to be a property with primitive return type.");
     }
 
 }

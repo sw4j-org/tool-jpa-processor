@@ -23,6 +23,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import javax.annotation.Nonnull;
+import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import org.sw4j.tool.annotation.jpa.generator.model.Entity;
@@ -57,12 +58,14 @@ public class EntityProcessor {
      *
      * @param element the element to process (must be an {@code @Entity}.
      * @param model the model where the final entity is added to.
+     * @param processingEnvironment the processing environment used to get the Types utilities.
      * @throws MissingEntityAnnotationException if the given element is not annotated with {@code @Entity}.
      * @throws EntityNotTopLevelClassException if the given element is not a top level class but another type or not top
      *  level (e.g. embedded).
      * @throws AnnotationProcessorException if the entity cannot be handled.
      */
-    public void process(@Nonnull final Element element, @Nonnull final Model model)
+    public void process(@Nonnull final Element element, @Nonnull final Model model,
+            @Nonnull final ProcessingEnvironment processingEnvironment)
             throws AnnotationProcessorException {
         javax.persistence.Entity entityAnnotation = element.getAnnotation(javax.persistence.Entity.class);
         if (entityAnnotation == null) {
@@ -85,27 +88,25 @@ public class EntityProcessor {
 
             List<? extends Element> enclosedElements = element.getEnclosedElements();
             for (Element enclosedElement: enclosedElements) {
-                if (ElementKind.FIELD.equals(enclosedElement.getKind())) {
+                if (this.attributeProcessor.isField(enclosedElement)) {
                     possibleFields.put(enclosedElement.getSimpleName().toString(), enclosedElement);
-                } else if (ElementKind.METHOD.equals(enclosedElement.getKind())) {
-                    String methodName = enclosedElement.getSimpleName().toString();
-                    if (methodName.startsWith("get")) {
-                        StringBuilder propertyName = new StringBuilder(methodName.substring(3));
-                        propertyName.replace(0, 1, propertyName.substring(0, 1).toLowerCase(Locale.ROOT));
-                        possibleProperties.put(propertyName.toString(), enclosedElement);
-                    }
+                } else if (this.attributeProcessor.isProperty(enclosedElement, processingEnvironment)) {
+                    possibleProperties.put(
+                            this.attributeProcessor.getPropertyFromMethod(enclosedElement, processingEnvironment),
+                            enclosedElement);
                 }
             }
             Set<String> handledAttributes = new HashSet<>();
             for (Map.Entry<String, Element> possibleField: possibleFields.entrySet()) {
                 handledAttributes.add(possibleField.getKey());
-                attributeProcessor.process(entity, possibleField.getKey(), possibleField.getValue(),
+                this.attributeProcessor.process(entity, possibleField.getKey(), possibleField.getValue(),
                         possibleProperties.get(possibleField.getKey()));
             }
             for (Map.Entry<String, Element> possibleProperty: possibleProperties.entrySet()) {
                 if (!handledAttributes.contains(possibleProperty.getKey())) {
                     handledAttributes.add(possibleProperty.getKey());
-                    attributeProcessor.process(entity, possibleProperty.getKey(), null, possibleProperty.getValue());
+                    this.attributeProcessor.process(entity, possibleProperty.getKey(), null,
+                            possibleProperty.getValue());
                 }
             }
         } else {
