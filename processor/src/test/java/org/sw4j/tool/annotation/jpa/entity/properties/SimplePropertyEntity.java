@@ -58,4 +58,16 @@ public class SimplePropertyEntity {
         this.flag = flag;
     }
 
+    private Boolean classFlag;
+
+    public Boolean isClassFlag() {
+        return classFlag;
+    }
+
+    public void setClassFlag(Boolean classFlag) {
+        this.classFlag = classFlag;
+    }
+
+    public void isMissing() {}
+
 }

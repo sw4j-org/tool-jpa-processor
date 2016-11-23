@@ -131,7 +131,7 @@ public class AttributeProcessor {
                 result.append(Introspector.decapitalize(elementName.substring(2)));
             } else {
                 Element returnElement = processingEnvironment.getTypeUtils().asElement(returnType);
-                if (ElementKind.CLASS.equals(returnElement.getKind())) {
+                if (returnElement != null && ElementKind.CLASS.equals(returnElement.getKind())) {
                     if (Boolean.class.getName().equals(((TypeElement)returnElement).getQualifiedName().toString())) {
                         result.append(Introspector.decapitalize(elementName.substring(2)));
                     }

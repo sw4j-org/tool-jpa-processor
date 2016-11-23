@@ -86,4 +86,16 @@ public class SimplePropertyEntityIT extends TestSuperclass {
                 "Expected the entity with name \"SimplePropertyEntity\" to have an attribute with the name \"flag\"");
     }
 
+    @Test
+    public void testSimpleEntityClassFlag() throws XPathExpressionException {
+        Node attributeId = getNode("/model/entities/entity[@name=\"SimplePropertyEntity\"]/attributes/" +
+                "attribute[@name=\"classFlag\"]");
+
+        Assert.assertNotNull(attributeId, "Expected the entity with name \"SimplePropertyEntity\" to have an " +
+                "attribute with name \"classFlag\" to exist.");
+        Assert.assertEquals(attributeId.getNodeType(), Node.ELEMENT_NODE, "Expected an element.");
+        Assert.assertEquals(attributeId.getAttributes().getNamedItem("name").getNodeValue(), "classFlag",
+                "Expected the entity with name \"SimplePropertyEntity\" to have an attribute with the name \"classFlag\"");
+    }
+
 }
