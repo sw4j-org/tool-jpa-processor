@@ -16,10 +16,17 @@
  */
 package org.sw4j.tool.annotation.jpa.generator.model;
 
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlType;
 
 /**
  * This class represents an entity. Via the entity you can access the attributes and tables assigned to the entity.
@@ -27,14 +34,23 @@ import javax.xml.bind.annotation.XmlAttribute;
  * @author Uwe Plonus
  */
 @XmlAccessorType(XmlAccessType.NONE)
+@XmlType(name = "",
+        propOrder = {
+            "attributes",
+        })
 public class Entity {
 
     /** The name of the entity. */
     @XmlAttribute(name = "name")
     private final String name;
 
+    /** The entities of the model. */
+    @XmlElementWrapper(name = "attributes", required = false)
+    @XmlElement(name = "attribute")
+    private List<Attribute> attributes;
+
     /**
-     * Default constructor.
+     * Constructor for an entity.
      *
      * @param name the name of the entity.
      */
@@ -50,6 +66,28 @@ public class Entity {
     @Nonnull
     public String getName() {
         return name;
+    }
+
+    /**
+     * Adds an attribute to the entity.
+     *
+     * @param attribute the attribute to add.
+     */
+    public synchronized void addAttribute(@Nonnull final Attribute attribute) {
+        if (attributes == null) {
+            attributes = new LinkedList<>();
+        }
+        attributes.add(attribute);
+    }
+
+    /**
+     * Returns all attributes of the entity.
+     *
+     * @return a list containing all attributes of the entity.
+     */
+    @Nonnull
+    public List<Attribute> getAttributes() {
+        return this.attributes == null ? Collections.EMPTY_LIST : Collections.unmodifiableList(this.attributes);
     }
 
 }

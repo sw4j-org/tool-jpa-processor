@@ -17,17 +17,17 @@
 package org.sw4j.tool.annotation.jpa.processor;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 import javax.annotation.Nonnull;
+import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
+import javax.tools.Diagnostic;
 import org.sw4j.tool.annotation.jpa.generator.model.Entity;
 import org.sw4j.tool.annotation.jpa.generator.model.Model;
-import org.sw4j.tool.annotation.jpa.processor.exceptions.AnnotationProcessorException;
-import org.sw4j.tool.annotation.jpa.processor.exceptions.EntityNotTopLevelClassException;
-import org.sw4j.tool.annotation.jpa.processor.exceptions.MissingEntityAnnotationException;
 
 /**
  * This is a processor to handle classes with an @Entity annotation.
@@ -41,6 +41,8 @@ public class EntityProcessor {
      */
     private final AttributeProcessor attributeProcessor;
 
+    /** The processing environment used to access the tool facilities. */
+    private ProcessingEnvironment processingEnv;
 
     /**
      * Default constructor for the entity processor.
@@ -51,21 +53,34 @@ public class EntityProcessor {
     }
 
     /**
+     * Initializes the processor with the processing environment.
+     *
+     * @param processingEnv environment to access facilities the tool framework provides to the processor.
+     */
+    public void init(ProcessingEnvironment processingEnv) {
+        this.processingEnv = processingEnv;
+        this.attributeProcessor.init(this.processingEnv);
+    }
+
+    public void process(@Nonnull final Set<? extends Element> elements, @Nonnull final Model model) {
+        for (Element element: elements) {
+            this.process(element, model);
+        }
+    }
+
+    /**
      * Process a single entity annotated with {@code @Entity}.
      *
      * @param element the element to process (must be an {@code @Entity}.
      * @param model the model where the final entity is added to.
-     * @throws MissingEntityAnnotationException if the given element is not annotated with {@code @Entity}.
-     * @throws AnnotationProcessorException if the entity cannot be handled.
      */
-    public void process(@Nonnull final Element element, @Nonnull final Model model)
-            throws AnnotationProcessorException {
+    public void process(@Nonnull final Element element, @Nonnull final Model model) {
         javax.persistence.Entity entityAnnotation = element.getAnnotation(javax.persistence.Entity.class);
         if (entityAnnotation == null) {
-            throw new MissingEntityAnnotationException(element.getSimpleName().toString());
-        }
-
-        if (ElementKind.CLASS.equals(element.getKind()) &&
+            this.processingEnv.getMessager().printMessage(Diagnostic.Kind.WARNING,
+                    new StringBuilder("The processed class \"").append(element.getSimpleName())
+                            .append("\" is not an entity.").toString(), element);
+        } else if (ElementKind.CLASS.equals(element.getKind()) &&
                 ElementKind.PACKAGE.equals(element.getEnclosingElement().getKind())) {
             // This is a top level class therefore we can continue.
             Entity entity;
@@ -76,25 +91,49 @@ public class EntityProcessor {
             }
             model.addEntity(entity);
 
-            Map<String, Element> possibleField = new HashMap<>();
-            Map<String, Element> possibleProperty = new HashMap<>();
+            Map<String, Element> possibleFields = new HashMap<>();
+            Map<String, Element> possibleProperties = new HashMap<>();
 
             List<? extends Element> enclosedElements = element.getEnclosedElements();
             for (Element enclosedElement: enclosedElements) {
-                if (ElementKind.FIELD.equals(enclosedElement.getKind())) {
-                    possibleField.put(enclosedElement.getSimpleName().toString(), enclosedElement);
-                } else if (ElementKind.METHOD.equals(enclosedElement.getKind())) {
-                    String methodName = enclosedElement.getSimpleName().toString();
-                    if (methodName.startsWith("get")) {
-                        StringBuilder propertyName = new StringBuilder(methodName.substring(3));
-                        propertyName.replace(0, 1, propertyName.substring(0, 1).toLowerCase(Locale.ROOT));
-                        possibleProperty.put(propertyName.toString(), enclosedElement);
-                    }
+                if (this.attributeProcessor.isField(enclosedElement)) {
+                    possibleFields.put(enclosedElement.getSimpleName().toString(), enclosedElement);
+                } else if (this.attributeProcessor.isProperty(enclosedElement)) {
+                    possibleProperties.put(
+                            this.attributeProcessor.getPropertyFromMethod(enclosedElement), enclosedElement);
+                }
+            }
+            Set<String> handledAttributes = new HashSet<>();
+            for (Map.Entry<String, Element> possibleField: possibleFields.entrySet()) {
+                handledAttributes.add(possibleField.getKey());
+                this.attributeProcessor.process(entity, possibleField.getKey(), possibleField.getValue(),
+                        possibleProperties.get(possibleField.getKey()));
+            }
+            for (Map.Entry<String, Element> possibleProperty: possibleProperties.entrySet()) {
+                if (!handledAttributes.contains(possibleProperty.getKey())) {
+                    handledAttributes.add(possibleProperty.getKey());
+                    this.attributeProcessor.process(entity, possibleProperty.getKey(), null,
+                            possibleProperty.getValue());
                 }
             }
         } else {
-            throw new EntityNotTopLevelClassException(element.getSimpleName().toString());
+            this.processingEnv.getMessager().printMessage(Diagnostic.Kind.WARNING,
+                    new StringBuilder("The processed entity \"").append(element.getSimpleName())
+                            .append("\" is no top level class."), element);
         }
+    }
+
+    /**
+     * Checks if the given element is a field.
+     *
+     * @param element the element to check.
+     * @return {@code true} if the element is a field.
+     */
+    public boolean isEntity(@Nonnull final Element element) {
+        return ElementKind.CLASS.equals(element.getKind()) &&
+                element.getEnclosingElement() != null &&
+                ElementKind.PACKAGE.equals(element.getEnclosingElement().getKind()) &&
+                element.getAnnotation(javax.persistence.Entity.class) != null;
     }
 
 }

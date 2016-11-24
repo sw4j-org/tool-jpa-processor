@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 Uwe Plonus
+ * Copyright (C) 2016 uwe
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,8 +14,32 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+package org.sw4j.tool.annotation.jpa.processor.mock.lang.model.type;
+
+import javax.lang.model.type.TypeKind;
+import javax.lang.model.type.TypeMirror;
+import javax.lang.model.type.TypeVisitor;
 
 /**
- * This package contains exceptions for the annotation processor.
+ *
+ * @author Uwe Plonus
  */
-package org.sw4j.tool.annotation.jpa.processor.exceptions;
+public class TypeMirrorMock implements TypeMirror {
+
+    private final TypeKind kind;
+
+    public TypeMirrorMock(TypeKind kind) {
+        this.kind = kind;
+    }
+
+    @Override
+    public TypeKind getKind() {
+        return this.kind;
+    }
+
+    @Override
+    public <R, P> R accept(TypeVisitor<R, P> v, P p) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+}

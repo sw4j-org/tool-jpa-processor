@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 uwe
+ * Copyright (C) 2016 Uwe Plonus
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,16 +14,22 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.sw4j.tool.annotation.jpa.entities;
+package org.sw4j.tool.annotation.jpa.entity.properties;
 
 import javax.persistence.Entity;
+import javax.persistence.Id;
 
 /**
- * An entity that is an enum (which is not allowed by the specification).
+ * A simple entity containing only an {@code @Id} field.
  *
  * @author Uwe Plonus
  */
 @Entity
-public enum EnumEntity {
+public class PropertyOnlyEntity {
+
+    @Id
+    public int getId() {
+        return 0;
+    }
 
 }

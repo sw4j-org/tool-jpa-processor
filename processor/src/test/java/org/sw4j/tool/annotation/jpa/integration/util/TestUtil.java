@@ -136,34 +136,18 @@ public class TestUtil {
     private void checkVisitedNodes(Element node) {
         if (!visitedNodes.contains(node)) {
             StringBuilder path = new StringBuilder();
-            NamedNodeMap attributes = node.getAttributes();
-            if (attributes.getLength() > 0) {
-                path.append("[");
-                for (int i = 0; i < attributes.getLength(); i++) {
-                    if (i > 0) {
-                        path.append(" and ");
-                    }
-                    Node attribute = attributes.item(i);
-                    path.append("@").append(attribute.getNodeName()).append("='")
-                            .append(attribute.getNodeValue()).append("'");
-                }
-                path.append("]");
-            }
-            path.insert(0, node.getNodeName());
-            Node parent = node.getParentNode();
+            Node parent = node;
             while (parent != null) {
-                path.insert(0, "/");
                 if (parent.getNodeType() != Node.DOCUMENT_NODE) {
+                    path.insert(0, handleElementAttributes(parent));
                     path.insert(0, parent.getNodeName());
+                    path.insert(0, "/");
                 }
                 parent = parent.getParentNode();
             }
             Assert.fail(new StringBuilder("Expected the node \"").append(path)
                         .append("\" to be tested.").toString());
         }
-        Assert.assertTrue(visitedNodes.contains(node),
-                new StringBuilder("Expected the node \"").append(node.toString())
-                        .append("\" to be tested.").toString());
         NodeList children = node.getChildNodes();
         for (int i = 0; i < children.getLength(); i++) {
             Node child = children.item(i);
@@ -171,6 +155,26 @@ public class TestUtil {
                 checkVisitedNodes((Element)child);
             }
         }
+    }
+
+    private StringBuilder handleElementAttributes(Node node) {
+        StringBuilder attributePath = new StringBuilder();
+        if (node.hasAttributes()) {
+            NamedNodeMap attributes = node.getAttributes();
+            if (attributes.getLength() > 0) {
+                attributePath.append("[");
+                for (int i = 0; i < attributes.getLength(); i++) {
+                    if (i > 0) {
+                        attributePath.append(" and ");
+                    }
+                    Node attribute = attributes.item(i);
+                    attributePath.append("@").append(attribute.getNodeName()).append("='")
+                            .append(attribute.getNodeValue()).append("'");
+                }
+                attributePath.append("]");
+            }
+        }
+        return attributePath;
     }
 
     /**

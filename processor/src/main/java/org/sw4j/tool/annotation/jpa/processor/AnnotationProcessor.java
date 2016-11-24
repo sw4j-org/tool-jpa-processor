@@ -18,6 +18,7 @@ package org.sw4j.tool.annotation.jpa.processor;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.ServiceLoader;
@@ -25,6 +26,7 @@ import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.processing.AbstractProcessor;
+import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.RoundEnvironment;
 import javax.annotation.processing.SupportedAnnotationTypes;
 import javax.annotation.processing.SupportedOptions;
@@ -32,13 +34,9 @@ import javax.annotation.processing.SupportedSourceVersion;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
-import javax.persistence.Entity;
 import javax.tools.Diagnostic;
 import org.sw4j.tool.annotation.jpa.generator.GeneratorService;
 import org.sw4j.tool.annotation.jpa.generator.model.Model;
-import org.sw4j.tool.annotation.jpa.processor.exceptions.AnnotationProcessorException;
-import org.sw4j.tool.annotation.jpa.processor.exceptions.EntityNotTopLevelClassException;
-import org.sw4j.tool.annotation.jpa.processor.exceptions.MissingEntityAnnotationException;
 
 /**
  * An annotation processor to handle JPA annotations.
@@ -68,6 +66,19 @@ public class AnnotationProcessor extends AbstractProcessor {
     }
 
     /**
+     * Initializes the processor with the processing environment. An {@code IllegalStateException} will be thrown if
+     * this method is called more than once on the same object.
+     *
+     * @param processingEnv environment to access facilities the tool framework provides to the processor.
+     * @throws IllegalStateException if this method is called more than once.
+     */
+    @Override
+    public void init(ProcessingEnvironment processingEnv) {
+        super.init(processingEnv);
+        this.entityProcessor.init(this.processingEnv);
+    }
+
+    /**
      * Processes the annotations given in the {@code annotations} variable.
      *
      * @param annotations the annotations that are handled.
@@ -78,18 +89,13 @@ public class AnnotationProcessor extends AbstractProcessor {
     public boolean process(@Nonnull final Set<? extends TypeElement> annotations,
             @Nonnull final RoundEnvironment roundEnv) {
         Set<? extends Element> elements = roundEnv.getRootElements();
+        Set<Element> entities = new HashSet<>();
         for (Element element: elements) {
-            Entity entity = element.getAnnotation(Entity.class);
-            if (entity != null) {
-                try {
-                    entityProcessor.process(element, model);
-                } catch (EntityNotTopLevelClassException | MissingEntityAnnotationException ex) {
-                    this.processingEnv.getMessager().printMessage(Diagnostic.Kind.WARNING, ex.getMessage(), element);
-                } catch (AnnotationProcessorException ex) {
-                    this.processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, ex.getMessage(), element);
-                }
+            if (this.entityProcessor.isEntity(element)) {
+                entities.add(element);
             }
         }
+        this.entityProcessor.process(entities, model);
 
         if (roundEnv.processingOver()) {
             String outputOption = this.processingEnv.getOptions().get(PROPERTIES_OPTION);

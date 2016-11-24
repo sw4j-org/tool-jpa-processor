@@ -16,6 +16,7 @@
  */
 package org.sw4j.tool.annotation.jpa.processor.mock.annotation.processing;
 
+import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import javax.annotation.processing.Filer;
@@ -35,6 +36,10 @@ public class ProcessingEnvironmentMock implements ProcessingEnvironment {
     private final Map<String, String> options;
 
     private final Messager messager;
+
+    public ProcessingEnvironmentMock() {
+        this(new HashMap<String, String>(), new MessagerMock());
+    }
 
     public ProcessingEnvironmentMock(final Map<String, String> options, final Messager messager) {
         this.options = options;
