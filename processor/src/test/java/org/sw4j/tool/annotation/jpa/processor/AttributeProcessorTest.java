@@ -20,6 +20,7 @@ import java.lang.annotation.Annotation;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
+import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.Name;
@@ -35,6 +36,7 @@ import org.sw4j.tool.annotation.jpa.processor.mock.lang.model.element.VariableEl
 import org.sw4j.tool.annotation.jpa.processor.mock.lang.model.type.TypeMirrorMock;
 import org.sw4j.tool.annotation.jpa.processor.mock.persistence.IdMock;
 import org.testng.Assert;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 /**
@@ -42,6 +44,17 @@ import org.testng.annotations.Test;
  * @author Uwe Plonus
  */
 public class AttributeProcessorTest {
+
+    private AttributeProcessor unitUnderTest;
+
+    private ProcessingEnvironment processingEnv;
+
+    @BeforeMethod
+    public void setUp() {
+        this.unitUnderTest = new AttributeProcessor();
+        this.processingEnv = new ProcessingEnvironmentMock();
+        this.unitUnderTest.init(this.processingEnv);
+    }
 
     @Test
     public void testProcessNoAttribute() throws AnnotationProcessorException {
@@ -54,9 +67,7 @@ public class AttributeProcessorTest {
     public void testProcessBothNull() throws AnnotationProcessorException {
         final Entity testEntity =  new Entity("Test");
 
-        AttributeProcessor unitUnderTest = new AttributeProcessor();
-
-        unitUnderTest.process(testEntity, "id", null, null);
+        this.unitUnderTest.process(testEntity, "id", null, null);
 
         Assert.assertTrue(testEntity.getAttributes().isEmpty(), "Expected entity with empty attributes.");
     }
@@ -68,9 +79,7 @@ public class AttributeProcessorTest {
         Element testElement = new VariableElementMock(idName, new HashMap<Class<?>, Annotation>(),
                 ElementKind.FIELD, null, new LinkedList<Element>());
 
-        AttributeProcessor unitUnderTest = new AttributeProcessor();
-
-        unitUnderTest.process(testEntity, "id", testElement, null);
+        this.unitUnderTest.process(testEntity, "id", testElement, null);
 
         Assert.assertEquals(testEntity.getAttributes().size(), 1, "Expected entity with one attribute.");
         Assert.assertEquals(testEntity.getAttributes().get(0).getName(), "id",
@@ -88,9 +97,7 @@ public class AttributeProcessorTest {
         Element testElement = new VariableElementMock(idName, annotations, ElementKind.FIELD, null,
                 new LinkedList<Element>());
 
-        AttributeProcessor unitUnderTest = new AttributeProcessor();
-
-        unitUnderTest.process(testEntity, "id", testElement, null);
+        this.unitUnderTest.process(testEntity, "id", testElement, null);
 
         Assert.assertEquals(testEntity.getAttributes().size(), 1, "Expected entity with one attribute.");
         Assert.assertEquals(testEntity.getAttributes().get(0).getName(), "id",
@@ -105,9 +112,7 @@ public class AttributeProcessorTest {
         Element testElement = new ExecutableElementMock(idName, new HashMap<Class<?>, Annotation>(),
                 ElementKind.METHOD, null, new LinkedList<Element>(), null);
 
-        AttributeProcessor unitUnderTest = new AttributeProcessor();
-
-        unitUnderTest.process(testEntity, "id", null, testElement);
+        this.unitUnderTest.process(testEntity, "id", null, testElement);
 
         Assert.assertEquals(testEntity.getAttributes().size(), 1, "Expected entity with one attribute.");
         Assert.assertEquals(testEntity.getAttributes().get(0).getName(), "id",
@@ -125,9 +130,7 @@ public class AttributeProcessorTest {
         Element testElement = new ExecutableElementMock(idName, annotations, ElementKind.FIELD, null,
                 new LinkedList<Element>(), null);
 
-        AttributeProcessor unitUnderTest = new AttributeProcessor();
-
-        unitUnderTest.process(testEntity, "id", null, testElement);
+        this.unitUnderTest.process(testEntity, "id", null, testElement);
 
         Assert.assertEquals(testEntity.getAttributes().size(), 1, "Expected entity with one attribute.");
         Assert.assertEquals(testEntity.getAttributes().get(0).getName(), "id",
@@ -145,9 +148,7 @@ public class AttributeProcessorTest {
         Element propertyElement = new ExecutableElementMock(propertyName, new HashMap<Class<?>, Annotation>(),
                 ElementKind.METHOD, null, new LinkedList<Element>(), null);
 
-        AttributeProcessor unitUnderTest = new AttributeProcessor();
-
-        unitUnderTest.process(testEntity, "id", fieldElement, propertyElement);
+        this.unitUnderTest.process(testEntity, "id", fieldElement, propertyElement);
 
         Assert.assertEquals(testEntity.getAttributes().size(), 1, "Expected entity with one attribute.");
         Assert.assertEquals(testEntity.getAttributes().get(0).getName(), "id",
@@ -168,9 +169,7 @@ public class AttributeProcessorTest {
         Element propertyElement = new ExecutableElementMock(propertyName, annotations, ElementKind.METHOD, null,
                 new LinkedList<Element>(), null);
 
-        AttributeProcessor unitUnderTest = new AttributeProcessor();
-
-        unitUnderTest.process(testEntity, "id", fieldElement, propertyElement);
+        this.unitUnderTest.process(testEntity, "id", fieldElement, propertyElement);
 
         Assert.assertEquals(testEntity.getAttributes().size(), 1, "Expected entity with one attribute.");
         Assert.assertEquals(testEntity.getAttributes().get(0).getName(), "id",
@@ -191,9 +190,7 @@ public class AttributeProcessorTest {
         Element propertyElement = new ExecutableElementMock(propertyName, new HashMap<Class<?>, Annotation>(),
                 ElementKind.METHOD, null, new LinkedList<Element>(), null);
 
-        AttributeProcessor unitUnderTest = new AttributeProcessor();
-
-        unitUnderTest.process(testEntity, "id", fieldElement, propertyElement);
+        this.unitUnderTest.process(testEntity, "id", fieldElement, propertyElement);
 
         Assert.assertEquals(testEntity.getAttributes().size(), 1, "Expected entity with one attribute.");
         Assert.assertEquals(testEntity.getAttributes().get(0).getName(), "id",
@@ -214,9 +211,7 @@ public class AttributeProcessorTest {
         Element propertyElement = new ExecutableElementMock(propertyName, annotations, ElementKind.METHOD, null,
                 new LinkedList<Element>(), null);
 
-        AttributeProcessor unitUnderTest = new AttributeProcessor();
-
-        unitUnderTest.process(testEntity, "id", fieldElement, propertyElement);
+        this.unitUnderTest.process(testEntity, "id", fieldElement, propertyElement);
 
         Assert.assertEquals(testEntity.getAttributes().size(), 1, "Expected entity with one attribute.");
         Assert.assertEquals(testEntity.getAttributes().get(0).getName(), "id",
@@ -231,9 +226,7 @@ public class AttributeProcessorTest {
         Element testElement = new VariableElementMock(testName, new HashMap<Class<?>, Annotation>(),
                 ElementKind.FIELD, null, new LinkedList<Element>());
 
-        AttributeProcessor unitUnderTest = new AttributeProcessor();
-
-        unitUnderTest.process(testEntity, "test", testElement, null);
+        this.unitUnderTest.process(testEntity, "test", testElement, null);
 
         Assert.assertNotNull(testEntity.getAttributes(), "Expected the entity to have attributes.");
         Assert.assertEquals(testEntity.getAttributes().size(), 1, "Expected the entity to have one attribute.");
@@ -248,15 +241,13 @@ public class AttributeProcessorTest {
         Element testElement = new VariableElementMock(testName, new HashMap<Class<?>, Annotation>(),
                 ElementKind.FIELD, null, new LinkedList<Element>());
 
-        final AttributeProcessor unitUnderTest = new AttributeProcessor();
-
-        unitUnderTest.process(testEntity, "test", testElement, null);
+        this.unitUnderTest.process(testEntity, "test", testElement, null);
 
         testName = new NameMock("test2");
         testElement = new VariableElementMock(testName, new HashMap<Class<?>, Annotation>(),
                 ElementKind.FIELD, null, new LinkedList<Element>());
 
-        unitUnderTest.process(testEntity, "test2", testElement, null);
+        this.unitUnderTest.process(testEntity, "test2", testElement, null);
 
         Assert.assertNotNull(testEntity.getAttributes(), "Expected the entity to have attributes.");
         Assert.assertEquals(testEntity.getAttributes().size(), 2, "Expected the entity to have two attributes.");
@@ -272,9 +263,7 @@ public class AttributeProcessorTest {
         Element testElement = new VariableElementMock(testName, new HashMap<Class<?>, Annotation>(),
                 ElementKind.FIELD, null, new LinkedList<Element>());
 
-        final AttributeProcessor unitUnderTest = new AttributeProcessor();
-
-        Assert.assertTrue(unitUnderTest.isField(testElement), "Expected the field to be a field.");
+        Assert.assertTrue(this.unitUnderTest.isField(testElement), "Expected the field to be a field.");
     }
 
     @Test
@@ -283,9 +272,7 @@ public class AttributeProcessorTest {
         Element testElement = new ExecutableElementMock(testName, new HashMap<Class<?>, Annotation>(),
                 ElementKind.METHOD, null, new LinkedList<Element>(), null);
 
-        final AttributeProcessor unitUnderTest = new AttributeProcessor();
-
-        Assert.assertFalse(unitUnderTest.isField(testElement), "Expected the method not to be a field.");
+        Assert.assertFalse(this.unitUnderTest.isField(testElement), "Expected the method not to be a field.");
     }
 
     @Test
@@ -294,9 +281,7 @@ public class AttributeProcessorTest {
         Element testElement = new VariableElementMock(testName, new HashMap<Class<?>, Annotation>(),
                 ElementKind.FIELD, null, new LinkedList<Element>());
 
-        final AttributeProcessor unitUnderTest = new AttributeProcessor();
-
-        Assert.assertFalse(unitUnderTest.isProperty(testElement, new ProcessingEnvironmentMock()),
+        Assert.assertFalse(this.unitUnderTest.isProperty(testElement),
                 "Expected the field not to be a property.");
     }
 
@@ -306,9 +291,7 @@ public class AttributeProcessorTest {
         Element testElement = new ExecutableElementMock(testName, new HashMap<Class<?>, Annotation>(),
                 ElementKind.METHOD, null, new LinkedList<Element>(), null);
 
-        final AttributeProcessor unitUnderTest = new AttributeProcessor();
-
-        Assert.assertFalse(unitUnderTest.isProperty(testElement, new ProcessingEnvironmentMock()),
+        Assert.assertFalse(this.unitUnderTest.isProperty(testElement),
                 "Expected the method not to be a property.");
     }
 
@@ -321,9 +304,7 @@ public class AttributeProcessorTest {
         Element methodElement = new ExecutableElementMock(methodName, new HashMap<Class<?>, Annotation>(),
                 ElementKind.METHOD, classElement, new LinkedList<Element>(), new TypeMirrorMock(TypeKind.INT));
 
-        final AttributeProcessor unitUnderTest = new AttributeProcessor();
-
-        Assert.assertTrue(unitUnderTest.isProperty(methodElement, new ProcessingEnvironmentMock()),
+        Assert.assertTrue(this.unitUnderTest.isProperty(methodElement),
                 "Expected the method to be a property with primitive return type.");
     }
 
@@ -336,9 +317,7 @@ public class AttributeProcessorTest {
         Element methodElement = new ExecutableElementMock(methodName, new HashMap<Class<?>, Annotation>(),
                 ElementKind.METHOD, classElement, new LinkedList<Element>(), new TypeMirrorMock(TypeKind.INT));
 
-        final AttributeProcessor unitUnderTest = new AttributeProcessor();
-
-        Assert.assertTrue(unitUnderTest.isProperty(methodElement, new ProcessingEnvironmentMock()),
+        Assert.assertTrue(this.unitUnderTest.isProperty(methodElement),
                 "Expected the method to be a property with primitive return type.");
     }
 
@@ -351,9 +330,7 @@ public class AttributeProcessorTest {
         Element methodElement = new ExecutableElementMock(methodName, new HashMap<Class<?>, Annotation>(),
                 ElementKind.METHOD, classElement, new LinkedList<Element>(), new TypeMirrorMock(TypeKind.BOOLEAN));
 
-        final AttributeProcessor unitUnderTest = new AttributeProcessor();
-
-        Assert.assertTrue(unitUnderTest.isProperty(methodElement, new ProcessingEnvironmentMock()),
+        Assert.assertTrue(this.unitUnderTest.isProperty(methodElement),
                 "Expected the method to be a property with primitive return type.");
     }
 

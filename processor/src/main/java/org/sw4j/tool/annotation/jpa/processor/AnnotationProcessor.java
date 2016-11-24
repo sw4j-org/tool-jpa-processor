@@ -25,6 +25,7 @@ import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.processing.AbstractProcessor;
+import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.RoundEnvironment;
 import javax.annotation.processing.SupportedAnnotationTypes;
 import javax.annotation.processing.SupportedOptions;
@@ -68,6 +69,19 @@ public class AnnotationProcessor extends AbstractProcessor {
     }
 
     /**
+     * Initializes the processor with the processing environment. An {@code IllegalStateException} will be thrown if
+     * this method is called more than once on the same object.
+     *
+     * @param processingEnv environment to access facilities the tool framework provides to the processor.
+     * @throws IllegalStateException if this method is called more than once.
+     */
+    @Override
+    public void init(ProcessingEnvironment processingEnv) {
+        super.init(processingEnv);
+        this.entityProcessor.init(this.processingEnv);
+    }
+
+    /**
      * Processes the annotations given in the {@code annotations} variable.
      *
      * @param annotations the annotations that are handled.
@@ -82,7 +96,7 @@ public class AnnotationProcessor extends AbstractProcessor {
             Entity entity = element.getAnnotation(Entity.class);
             if (entity != null) {
                 try {
-                    entityProcessor.process(element, model, this.processingEnv);
+                    this.entityProcessor.process(element, model);
                 } catch (EntityNotTopLevelClassException | MissingEntityAnnotationException ex) {
                     this.processingEnv.getMessager().printMessage(Diagnostic.Kind.WARNING, ex.getMessage(), element);
                 } catch (AnnotationProcessorException ex) {

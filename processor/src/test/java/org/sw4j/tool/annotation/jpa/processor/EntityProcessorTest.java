@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.Name;
@@ -35,6 +36,7 @@ import org.sw4j.tool.annotation.jpa.processor.exceptions.MissingEntityAnnotation
 import org.sw4j.tool.annotation.jpa.processor.mock.annotation.processing.ProcessingEnvironmentMock;
 import org.sw4j.tool.annotation.jpa.processor.mock.lang.model.element.VariableElementMock;
 import org.testng.Assert;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 /**
@@ -43,6 +45,17 @@ import org.testng.annotations.Test;
  */
 public class EntityProcessorTest {
 
+    private EntityProcessor unitUnderTest;
+
+    private ProcessingEnvironment processingEnv;
+
+    @BeforeMethod
+    public void setUp() {
+        this.unitUnderTest = new EntityProcessor();
+        this.processingEnv = new ProcessingEnvironmentMock();
+        this.unitUnderTest.init(this.processingEnv);
+    }
+
     @Test
     public void testProcessNonEntity() {
         final Model testModel =  new Model();
@@ -50,12 +63,10 @@ public class EntityProcessorTest {
         final Element testElement = new TypeElementMock(testName, new HashMap<Class<?>, Annotation>(),
                 ElementKind.CLASS, null, new LinkedList<Element>());
 
-        final EntityProcessor unitUnderTest = new EntityProcessor();
-
         Assert.assertThrows(MissingEntityAnnotationException.class, new Assert.ThrowingRunnable() {
             @Override
             public void run() throws AnnotationProcessorException {
-                unitUnderTest.process(testElement, testModel, new ProcessingEnvironmentMock());
+                EntityProcessorTest.this.unitUnderTest.process(testElement, testModel);
             }
         });
     }
@@ -70,12 +81,10 @@ public class EntityProcessorTest {
         final Element testElement = new TypeElementMock(testName, annotations, ElementKind.ENUM, null,
                 new LinkedList<Element>());
 
-        final EntityProcessor unitUnderTest = new EntityProcessor();
-
         Assert.assertThrows(EntityNotTopLevelClassException.class, new Assert.ThrowingRunnable() {
             @Override
             public void run() throws AnnotationProcessorException {
-                unitUnderTest.process(testElement, testModel, new ProcessingEnvironmentMock());
+                EntityProcessorTest.this.unitUnderTest.process(testElement, testModel);
             }
         });
     }
@@ -92,12 +101,10 @@ public class EntityProcessorTest {
         final Element testElement = new TypeElementMock(testName, annotations, ElementKind.CLASS, enclosingElement,
                 new LinkedList<Element>());
 
-        final EntityProcessor unitUnderTest = new EntityProcessor();
-
         Assert.assertThrows(EntityNotTopLevelClassException.class, new Assert.ThrowingRunnable() {
             @Override
             public void run() throws AnnotationProcessorException {
-                unitUnderTest.process(testElement, testModel, new ProcessingEnvironmentMock());
+                EntityProcessorTest.this.unitUnderTest.process(testElement, testModel);
             }
         });
     }
@@ -114,9 +121,7 @@ public class EntityProcessorTest {
         final Element testElement = new TypeElementMock(testName, annotations, ElementKind.CLASS, enclosingElement,
                 new LinkedList<Element>());
 
-        final EntityProcessor unitUnderTest = new EntityProcessor();
-
-        unitUnderTest.process(testElement, testModel, new ProcessingEnvironmentMock());
+        this.unitUnderTest.process(testElement, testModel);
 
         Assert.assertEquals(testModel.getEntities().size(), 1, "Expected a model with a single entity.");
         Assert.assertEquals(testModel.getEntities().get(0).getName(), "Test");
@@ -134,9 +139,7 @@ public class EntityProcessorTest {
         final Element testElement = new TypeElementMock(testName, annotations, ElementKind.CLASS, enclosingElement,
                 new LinkedList<Element>());
 
-        final EntityProcessor unitUnderTest = new EntityProcessor();
-
-        unitUnderTest.process(testElement, testModel, new ProcessingEnvironmentMock());
+        this.unitUnderTest.process(testElement, testModel);
 
         Assert.assertEquals(testModel.getEntities().size(), 1, "Expected a model with a single entity.");
         Assert.assertEquals(testModel.getEntities().get(0).getName(), "EntityName");
@@ -163,9 +166,7 @@ public class EntityProcessorTest {
 
         enclosedElements.add(field);
 
-        final EntityProcessor unitUnderTest = new EntityProcessor();
-
-        unitUnderTest.process(testElement, testModel, new ProcessingEnvironmentMock());
+        this.unitUnderTest.process(testElement, testModel);
 
         Assert.assertEquals(testModel.getEntities().size(), 1, "Expected a model with a single entity.");
         Assert.assertEquals(testModel.getEntities().get(0).getName(), "Test",
@@ -193,9 +194,7 @@ public class EntityProcessorTest {
 
         enclosedElements.add(field);
 
-        final EntityProcessor unitUnderTest = new EntityProcessor();
-
-        unitUnderTest.process(testElement, testModel, new ProcessingEnvironmentMock());
+        this.unitUnderTest.process(testElement, testModel);
 
         Assert.assertEquals(testModel.getEntities().size(), 1, "Expected a model with a single entity.");
         Assert.assertEquals(testModel.getEntities().get(0).getName(), "Test");
@@ -222,9 +221,7 @@ public class EntityProcessorTest {
 
         enclosedElements.add(field);
 
-        final EntityProcessor unitUnderTest = new EntityProcessor();
-
-        unitUnderTest.process(testElement, testModel, new ProcessingEnvironmentMock());
+        this.unitUnderTest.process(testElement, testModel);
 
         Assert.assertEquals(testModel.getEntities().size(), 1, "Expected a model with a single entity.");
         Assert.assertEquals(testModel.getEntities().get(0).getName(), "Test");
@@ -251,9 +248,7 @@ public class EntityProcessorTest {
 
         enclosedElements.add(field);
 
-        final EntityProcessor unitUnderTest = new EntityProcessor();
-
-        unitUnderTest.process(testElement, testModel, new ProcessingEnvironmentMock());
+        this.unitUnderTest.process(testElement, testModel);
 
         Assert.assertEquals(testModel.getEntities().size(), 1, "Expected a model with a single entity.");
         Assert.assertEquals(testModel.getEntities().get(0).getName(), "Test");
@@ -280,9 +275,7 @@ public class EntityProcessorTest {
 
         enclosedElements.add(field);
 
-        final EntityProcessor unitUnderTest = new EntityProcessor();
-
-        unitUnderTest.process(testElement, testModel, new ProcessingEnvironmentMock());
+        this.unitUnderTest.process(testElement, testModel);
 
         Assert.assertEquals(testModel.getEntities().size(), 1, "Expected a model with a single entity.");
         Assert.assertEquals(testModel.getEntities().get(0).getName(), "Test");

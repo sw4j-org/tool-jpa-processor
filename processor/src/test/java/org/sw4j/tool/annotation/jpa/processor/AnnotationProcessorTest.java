@@ -22,6 +22,7 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.Set;
+import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.TypeElement;
@@ -36,6 +37,7 @@ import org.sw4j.tool.annotation.jpa.processor.mock.lang.model.element.NameMock;
 import org.sw4j.tool.annotation.jpa.processor.mock.lang.model.element.TypeElementMock;
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
 /**
@@ -44,10 +46,17 @@ import org.testng.annotations.Test;
  */
 public class AnnotationProcessorTest {
 
+    private EntityProcessor unitUnderTest;
+
+    private ProcessingEnvironment processingEnv;
+
     private Set<TypeElement> handledAnnotations;
 
     @BeforeMethod
     public void setUp() {
+        this.unitUnderTest = new EntityProcessor();
+        this.processingEnv = new ProcessingEnvironmentMock();
+        this.unitUnderTest.init(this.processingEnv);
         handledAnnotations = new HashSet<>();
         handledAnnotations.add(new TypeElementMock(new NameMock(""), null, ElementKind.ANNOTATION_TYPE, null, null));
     }

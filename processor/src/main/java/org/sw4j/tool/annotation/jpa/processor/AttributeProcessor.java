@@ -38,11 +38,23 @@ import org.sw4j.tool.annotation.jpa.processor.exceptions.AnnotationProcessorExce
  */
 public class AttributeProcessor {
 
+    /** The processing environment used to access the tool facilities. */
+    private ProcessingEnvironment processingEnv;
+
     /**
      * Default constructor for the attribute processor.
      *
      */
     public AttributeProcessor() {
+    }
+
+    /**
+     * Initializes the processor with the processing environment.
+     *
+     * @param processingEnv environment to access facilities the tool framework provides to the processor.
+     */
+    public void init(ProcessingEnvironment processingEnv) {
+        this.processingEnv = processingEnv;
     }
 
     /**
@@ -98,14 +110,12 @@ public class AttributeProcessor {
      * Checks if the given element is a property. This method only checks for the getter methods.
      *
      * @param element the element to check.
-     * @param processingEnvironment the processing environment used to get the Types utilities.
      * @return {@code true} if the element is the getter of a property.
      */
-    public boolean isProperty(@Nonnull final Element element,
-            @Nonnull final ProcessingEnvironment processingEnvironment) {
+    public boolean isProperty(@Nonnull final Element element) {
         boolean isProperty = false;
         if (ElementKind.METHOD.equals(element.getKind())) {
-            isProperty = !"".equals(getPropertyFromMethod(element, processingEnvironment));
+            isProperty = !"".equals(getPropertyFromMethod(element));
         }
         return isProperty;
     }
@@ -116,11 +126,9 @@ public class AttributeProcessor {
      * a boolean property) then an empty string is returned.
      *
      * @param element the element to check.
-     * @param processingEnvironment the processing environment used to get the Types utilities.
      * @return either the property name or an empty string.
      */
-    public String getPropertyFromMethod(@Nonnull final Element element,
-            @Nonnull final ProcessingEnvironment processingEnvironment) {
+    public String getPropertyFromMethod(@Nonnull final Element element) {
         StringBuilder result = new StringBuilder();
         String elementName = element.getSimpleName().toString();
         if (elementName.startsWith("get")) {
@@ -130,7 +138,7 @@ public class AttributeProcessor {
             if (TypeKind.BOOLEAN.equals(returnType.getKind())) {
                 result.append(Introspector.decapitalize(elementName.substring(2)));
             } else {
-                Element returnElement = processingEnvironment.getTypeUtils().asElement(returnType);
+                Element returnElement = this.processingEnv.getTypeUtils().asElement(returnType);
                 if (returnElement != null && ElementKind.CLASS.equals(returnElement.getKind())) {
                     if (Boolean.class.getName().equals(((TypeElement)returnElement).getQualifiedName().toString())) {
                         result.append(Introspector.decapitalize(elementName.substring(2)));

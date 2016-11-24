@@ -19,7 +19,6 @@ package org.sw4j.tool.annotation.jpa.processor;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import javax.annotation.Nonnull;
@@ -44,6 +43,8 @@ public class EntityProcessor {
      */
     private final AttributeProcessor attributeProcessor;
 
+    /** The processing environment used to access the tool facilities. */
+    private ProcessingEnvironment processingEnv;
 
     /**
      * Default constructor for the entity processor.
@@ -54,18 +55,26 @@ public class EntityProcessor {
     }
 
     /**
+     * Initializes the processor with the processing environment.
+     *
+     * @param processingEnv environment to access facilities the tool framework provides to the processor.
+     */
+    public void init(ProcessingEnvironment processingEnv) {
+        this.processingEnv = processingEnv;
+        this.attributeProcessor.init(this.processingEnv);
+    }
+
+    /**
      * Process a single entity annotated with {@code @Entity}.
      *
      * @param element the element to process (must be an {@code @Entity}.
      * @param model the model where the final entity is added to.
-     * @param processingEnvironment the processing environment used to get the Types utilities.
      * @throws MissingEntityAnnotationException if the given element is not annotated with {@code @Entity}.
      * @throws EntityNotTopLevelClassException if the given element is not a top level class but another type or not top
      *  level (e.g. embedded).
      * @throws AnnotationProcessorException if the entity cannot be handled.
      */
-    public void process(@Nonnull final Element element, @Nonnull final Model model,
-            @Nonnull final ProcessingEnvironment processingEnvironment)
+    public void process(@Nonnull final Element element, @Nonnull final Model model)
             throws AnnotationProcessorException {
         javax.persistence.Entity entityAnnotation = element.getAnnotation(javax.persistence.Entity.class);
         if (entityAnnotation == null) {
@@ -90,10 +99,9 @@ public class EntityProcessor {
             for (Element enclosedElement: enclosedElements) {
                 if (this.attributeProcessor.isField(enclosedElement)) {
                     possibleFields.put(enclosedElement.getSimpleName().toString(), enclosedElement);
-                } else if (this.attributeProcessor.isProperty(enclosedElement, processingEnvironment)) {
+                } else if (this.attributeProcessor.isProperty(enclosedElement)) {
                     possibleProperties.put(
-                            this.attributeProcessor.getPropertyFromMethod(enclosedElement, processingEnvironment),
-                            enclosedElement);
+                            this.attributeProcessor.getPropertyFromMethod(enclosedElement), enclosedElement);
                 }
             }
             Set<String> handledAttributes = new HashSet<>();
