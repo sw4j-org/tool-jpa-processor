@@ -25,10 +25,10 @@ under the License.
     <language>en-us</language>
     <copyright>&#169;2016</copyright>
     <item>
-      <title>File: 13,
+      <title>File: 10,
              Errors: 0,
-             Warnings: 0,
-             Infos: 2
+             Warnings: 7,
+             Infos: 4
       </title>
             <link>https://sw4j-org.github.io/tool-jpa-processor/0.1.0-SNAPSHOT/processor//checkstyle.html</link>
       <description>
@@ -44,104 +44,6 @@ under the License.
             </tr>
           </thead>
           <tbody>
-                          <tr>
-                <td>
-                  <a href="https://sw4j-org.github.io/tool-jpa-processor/0.1.0-SNAPSHOT/processor//checkstyle.html#org.sw4j.tool.annotation.jpa.processor.AttributeProcessor.java">org/sw4j/tool/annotation/jpa/processor/AttributeProcessor.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="https://sw4j-org.github.io/tool-jpa-processor/0.1.0-SNAPSHOT/processor//checkstyle.html#org.sw4j.tool.annotation.jpa.generator.model.package-info.java">org/sw4j/tool/annotation/jpa/generator/model/package-info.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="https://sw4j-org.github.io/tool-jpa-processor/0.1.0-SNAPSHOT/processor//checkstyle.html#org.sw4j.tool.annotation.jpa.generator.GeneratorService.java">org/sw4j/tool/annotation/jpa/generator/GeneratorService.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="https://sw4j-org.github.io/tool-jpa-processor/0.1.0-SNAPSHOT/processor//checkstyle.html#org.sw4j.tool.annotation.jpa.processor.exceptions.package-info.java">org/sw4j/tool/annotation/jpa/processor/exceptions/package-info.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="https://sw4j-org.github.io/tool-jpa-processor/0.1.0-SNAPSHOT/processor//checkstyle.html#org.sw4j.tool.annotation.jpa.generator.model.Model.java">org/sw4j/tool/annotation/jpa/generator/model/Model.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="https://sw4j-org.github.io/tool-jpa-processor/0.1.0-SNAPSHOT/processor//checkstyle.html#org.sw4j.tool.annotation.jpa.generator.model.Entity.java">org/sw4j/tool/annotation/jpa/generator/model/Entity.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="https://sw4j-org.github.io/tool-jpa-processor/0.1.0-SNAPSHOT/processor//checkstyle.html#org.sw4j.tool.annotation.jpa.processor.AnnotationProcessor.java">org/sw4j/tool/annotation/jpa/processor/AnnotationProcessor.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
                           <tr>
                 <td>
                   <a href="https://sw4j-org.github.io/tool-jpa-processor/0.1.0-SNAPSHOT/processor//checkstyle.html#org.sw4j.tool.annotation.jpa.processor.package-info.java">org/sw4j/tool/annotation/jpa/processor/package-info.java</a>
@@ -172,7 +74,21 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://sw4j-org.github.io/tool-jpa-processor/0.1.0-SNAPSHOT/processor//checkstyle.html#org.sw4j.tool.annotation.jpa.processor.exceptions.EntityNotTopLevelClassException.java">org/sw4j/tool/annotation/jpa/processor/exceptions/EntityNotTopLevelClassException.java</a>
+                  <a href="https://sw4j-org.github.io/tool-jpa-processor/0.1.0-SNAPSHOT/processor//checkstyle.html#org.sw4j.tool.annotation.jpa.processor.AttributeProcessor.java">org/sw4j/tool/annotation/jpa/processor/AttributeProcessor.java</a>
+                </td>
+                <td>
+                  3
+                </td>
+                <td>
+                  2
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://sw4j-org.github.io/tool-jpa-processor/0.1.0-SNAPSHOT/processor//checkstyle.html#org.sw4j.tool.annotation.jpa.generator.model.package-info.java">org/sw4j/tool/annotation/jpa/generator/model/package-info.java</a>
                 </td>
                 <td>
                   0
@@ -186,7 +102,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://sw4j-org.github.io/tool-jpa-processor/0.1.0-SNAPSHOT/processor//checkstyle.html#org.sw4j.tool.annotation.jpa.processor.exceptions.AnnotationProcessorException.java">org/sw4j/tool/annotation/jpa/processor/exceptions/AnnotationProcessorException.java</a>
+                  <a href="https://sw4j-org.github.io/tool-jpa-processor/0.1.0-SNAPSHOT/processor//checkstyle.html#org.sw4j.tool.annotation.jpa.generator.model.Attribute.java">org/sw4j/tool/annotation/jpa/generator/model/Attribute.java</a>
                 </td>
                 <td>
                   0
@@ -200,7 +116,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://sw4j-org.github.io/tool-jpa-processor/0.1.0-SNAPSHOT/processor//checkstyle.html#org.sw4j.tool.annotation.jpa.processor.exceptions.MissingEntityAnnotationException.java">org/sw4j/tool/annotation/jpa/processor/exceptions/MissingEntityAnnotationException.java</a>
+                  <a href="https://sw4j-org.github.io/tool-jpa-processor/0.1.0-SNAPSHOT/processor//checkstyle.html#org.sw4j.tool.annotation.jpa.generator.GeneratorService.java">org/sw4j/tool/annotation/jpa/generator/GeneratorService.java</a>
                 </td>
                 <td>
                   0
@@ -217,7 +133,49 @@ under the License.
                   <a href="https://sw4j-org.github.io/tool-jpa-processor/0.1.0-SNAPSHOT/processor//checkstyle.html#org.sw4j.tool.annotation.jpa.processor.EntityProcessor.java">org/sw4j/tool/annotation/jpa/processor/EntityProcessor.java</a>
                 </td>
                 <td>
-                  2
+                  0
+                </td>
+                <td>
+                  4
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://sw4j-org.github.io/tool-jpa-processor/0.1.0-SNAPSHOT/processor//checkstyle.html#org.sw4j.tool.annotation.jpa.generator.model.Model.java">org/sw4j/tool/annotation/jpa/generator/model/Model.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://sw4j-org.github.io/tool-jpa-processor/0.1.0-SNAPSHOT/processor//checkstyle.html#org.sw4j.tool.annotation.jpa.processor.AnnotationProcessor.java">org/sw4j/tool/annotation/jpa/processor/AnnotationProcessor.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  1
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://sw4j-org.github.io/tool-jpa-processor/0.1.0-SNAPSHOT/processor//checkstyle.html#org.sw4j.tool.annotation.jpa.generator.model.Entity.java">org/sw4j/tool/annotation/jpa/generator/model/Entity.java</a>
+                </td>
+                <td>
+                  1
                 </td>
                 <td>
                   0

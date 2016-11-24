@@ -16,10 +16,17 @@
  */
 package org.sw4j.tool.annotation.jpa.generator.model;
 
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlType;
 
 /**
  * This class represents an entity. Via the entity you can access the attributes and tables assigned to the entity.
@@ -27,20 +34,29 @@ import javax.xml.bind.annotation.XmlAttribute;
  * @author Uwe Plonus
  */
 @XmlAccessorType(XmlAccessType.NONE)
+@XmlType(name = &quot;&quot;,
+        propOrder = {
+            &quot;attributes&quot;,
+        })
 public class Entity {
 
     /** The name of the entity. */
     @XmlAttribute(name = &quot;name&quot;)
     private final String name;
 
+    /** The entities of the model. */
+    @XmlElementWrapper(name = &quot;attributes&quot;, required = false)
+    @XmlElement(name = &quot;attribute&quot;)
+    private List&lt;Attribute&gt; attributes;
+
     /**
-     * Default constructor.
+     * Constructor for an entity.
      *
      * @param name the name of the entity.
      */
-<span class="fc" id="L41">    public Entity(@Nonnull final String name) {</span>
-<span class="fc" id="L42">        this.name = name;</span>
-<span class="fc" id="L43">    }</span>
+<span class="fc" id="L57">    public Entity(@Nonnull final String name) {</span>
+<span class="fc" id="L58">        this.name = name;</span>
+<span class="fc" id="L59">    }</span>
 
     /**
      * Returns the name of the entity.
@@ -49,7 +65,29 @@ public class Entity {
      */
     @Nonnull
     public String getName() {
-<span class="nc" id="L52">        return name;</span>
+<span class="nc" id="L68">        return name;</span>
+    }
+
+    /**
+     * Adds an attribute to the entity.
+     *
+     * @param attribute the attribute to add.
+     */
+    public synchronized void addAttribute(@Nonnull final Attribute attribute) {
+<span class="fc bfc" id="L77" title="All 2 branches covered.">        if (attributes == null) {</span>
+<span class="fc" id="L78">            attributes = new LinkedList&lt;&gt;();</span>
+        }
+<span class="fc" id="L80">        attributes.add(attribute);</span>
+<span class="fc" id="L81">    }</span>
+
+    /**
+     * Returns all attributes of the entity.
+     *
+     * @return a list containing all attributes of the entity.
+     */
+    @Nonnull
+    public List&lt;Attribute&gt; getAttributes() {
+<span class="nc bnc" id="L90" title="All 2 branches missed.">        return this.attributes == null ? Collections.EMPTY_LIST : Collections.unmodifiableList(this.attributes);</span>
     }
 
 }
