@@ -29,10 +29,9 @@ import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.Name;
 import javax.persistence.Entity;
+import javax.tools.Diagnostic;
 import org.sw4j.tool.annotation.jpa.generator.model.Model;
-import org.sw4j.tool.annotation.jpa.processor.exceptions.AnnotationProcessorException;
-import org.sw4j.tool.annotation.jpa.processor.exceptions.EntityNotTopLevelClassException;
-import org.sw4j.tool.annotation.jpa.processor.exceptions.MissingEntityAnnotationException;
+import org.sw4j.tool.annotation.jpa.processor.mock.annotation.processing.MessagerMock;
 import org.sw4j.tool.annotation.jpa.processor.mock.annotation.processing.ProcessingEnvironmentMock;
 import org.sw4j.tool.annotation.jpa.processor.mock.lang.model.element.VariableElementMock;
 import org.testng.Assert;
@@ -49,10 +48,17 @@ public class EntityProcessorTest {
 
     private ProcessingEnvironment processingEnv;
 
+    private Map<String, String> options;
+
+    private MessagerMock messager;
+
     @BeforeMethod
     public void setUp() {
+        this.options = new HashMap<>();
+        this.messager = new MessagerMock();
+
         this.unitUnderTest = new EntityProcessor();
-        this.processingEnv = new ProcessingEnvironmentMock();
+        this.processingEnv = new ProcessingEnvironmentMock(this.options, this.messager);
         this.unitUnderTest.init(this.processingEnv);
     }
 
@@ -63,12 +69,11 @@ public class EntityProcessorTest {
         final Element testElement = new TypeElementMock(testName, new HashMap<Class<?>, Annotation>(),
                 ElementKind.CLASS, null, new LinkedList<Element>());
 
-        Assert.assertThrows(MissingEntityAnnotationException.class, new Assert.ThrowingRunnable() {
-            @Override
-            public void run() throws AnnotationProcessorException {
-                EntityProcessorTest.this.unitUnderTest.process(testElement, testModel);
-            }
-        });
+        this.unitUnderTest.process(testElement, testModel);
+
+        Assert.assertEquals(this.messager.getMessages().size(), 1, "Expected one message to be created.");
+        Assert.assertEquals(this.messager.getMessages().get(0).getKind(), Diagnostic.Kind.WARNING,
+                "Expected a message with level WARNING to be created.");
     }
 
     @Test
@@ -81,12 +86,11 @@ public class EntityProcessorTest {
         final Element testElement = new TypeElementMock(testName, annotations, ElementKind.ENUM, null,
                 new LinkedList<Element>());
 
-        Assert.assertThrows(EntityNotTopLevelClassException.class, new Assert.ThrowingRunnable() {
-            @Override
-            public void run() throws AnnotationProcessorException {
-                EntityProcessorTest.this.unitUnderTest.process(testElement, testModel);
-            }
-        });
+        this.unitUnderTest.process(testElement, testModel);
+
+        Assert.assertEquals(this.messager.getMessages().size(), 1, "Expected one message to be created.");
+        Assert.assertEquals(this.messager.getMessages().get(0).getKind(), Diagnostic.Kind.WARNING,
+                "Expected a message with level WARNING to be created.");
     }
 
     @Test
@@ -101,16 +105,15 @@ public class EntityProcessorTest {
         final Element testElement = new TypeElementMock(testName, annotations, ElementKind.CLASS, enclosingElement,
                 new LinkedList<Element>());
 
-        Assert.assertThrows(EntityNotTopLevelClassException.class, new Assert.ThrowingRunnable() {
-            @Override
-            public void run() throws AnnotationProcessorException {
-                EntityProcessorTest.this.unitUnderTest.process(testElement, testModel);
-            }
-        });
+        this.unitUnderTest.process(testElement, testModel);
+
+        Assert.assertEquals(this.messager.getMessages().size(), 1, "Expected one message to be created.");
+        Assert.assertEquals(this.messager.getMessages().get(0).getKind(), Diagnostic.Kind.WARNING,
+                "Expected a message with level WARNING to be created.");
     }
 
     @Test
-    public void testProcessEntityNoName() throws AnnotationProcessorException {
+    public void testProcessEntityNoName() {
         final Model testModel = new Model();
         Name testName = new NameMock("Test");
         Element enclosingElement = new TypeElementMock(testName, new HashMap<Class<?>, Annotation>(),
@@ -128,7 +131,7 @@ public class EntityProcessorTest {
     }
 
     @Test
-    public void testProcessEntityWithExplicitName() throws AnnotationProcessorException {
+    public void testProcessEntityWithExplicitName() {
         final Model testModel = new Model();
         Name testName = new NameMock("Test");
         Element enclosingElement = new TypeElementMock(testName, new HashMap<Class<?>, Annotation>(),
@@ -146,7 +149,7 @@ public class EntityProcessorTest {
     }
 
     @Test
-    public void testProcessEntityWithSingleField() throws AnnotationProcessorException {
+    public void testProcessEntityWithSingleField() {
         final Model testModel = new Model();
         Name testName = new NameMock("Test");
         Element enclosingElement = new TypeElementMock(testName, new HashMap<Class<?>, Annotation>(),
@@ -174,7 +177,7 @@ public class EntityProcessorTest {
     }
 
     @Test
-    public void testProcessEntityWithSingleGetter() throws AnnotationProcessorException {
+    public void testProcessEntityWithSingleGetter() {
         final Model testModel = new Model();
         Name testName = new NameMock("Test");
         Element enclosingElement = new TypeElementMock(testName, new HashMap<Class<?>, Annotation>(),
@@ -201,7 +204,7 @@ public class EntityProcessorTest {
     }
 
     @Test
-    public void testProcessEntityWithSingleSetter() throws AnnotationProcessorException {
+    public void testProcessEntityWithSingleSetter() {
         final Model testModel = new Model();
         Name testName = new NameMock("Test");
         Element enclosingElement = new TypeElementMock(testName, new HashMap<Class<?>, Annotation>(),
@@ -228,7 +231,7 @@ public class EntityProcessorTest {
     }
 
     @Test
-    public void testProcessEntityWithIndependentMethod() throws AnnotationProcessorException {
+    public void testProcessEntityWithIndependentMethod() {
         final Model testModel = new Model();
         Name testName = new NameMock("Test");
         Element enclosingElement = new TypeElementMock(testName, new HashMap<Class<?>, Annotation>(),
@@ -255,7 +258,7 @@ public class EntityProcessorTest {
     }
 
     @Test
-    public void testProcessEntityWithEmbeddedClass() throws AnnotationProcessorException {
+    public void testProcessEntityWithEmbeddedClass() {
         final Model testModel = new Model();
         Name testName = new NameMock("Test");
         Element enclosingElement = new TypeElementMock(testName, new HashMap<Class<?>, Annotation>(),
@@ -279,6 +282,57 @@ public class EntityProcessorTest {
 
         Assert.assertEquals(testModel.getEntities().size(), 1, "Expected a model with a single entity.");
         Assert.assertEquals(testModel.getEntities().get(0).getName(), "Test");
+    }
+
+    @Test
+    public void testIsEntityNoClass() {
+        Name testName = new NameMock("Test");
+        final Element testElement = new TypeElementMock(testName, new HashMap<Class<?>, Annotation>(),
+                ElementKind.ENUM, null, new LinkedList<Element>());
+
+        Assert.assertFalse(this.unitUnderTest.isEntity(testElement),
+                "Expected an enum not to be an entity.");
+    }
+
+    @Test
+    public void testIsEntityNoPackage() {
+        Name testName = new NameMock("Test");
+        final Element testElement = new TypeElementMock(testName, new HashMap<Class<?>, Annotation>(),
+                ElementKind.CLASS, null, new LinkedList<Element>());
+
+        Assert.assertFalse(this.unitUnderTest.isEntity(testElement),
+                "Expected a class without annotation not to be an entity.");
+    }
+
+    @Test
+    public void testIsEntityNoAnnotation() {
+        Name packageName = new NameMock("test");
+        Element enclosingElement = new TypeElementMock(packageName, new HashMap<Class<?>, Annotation>(),
+                ElementKind.PACKAGE, null, new LinkedList<Element>());
+        Name testName = new NameMock("Test");
+        final Element testElement = new TypeElementMock(testName, new HashMap<Class<?>, Annotation>(),
+                ElementKind.CLASS, enclosingElement, new LinkedList<Element>());
+
+        Assert.assertFalse(this.unitUnderTest.isEntity(testElement),
+                "Expected a class without annotation not to be an entity.");
+    }
+
+    @Test
+    public void testIsEntityWithAnnotation() {
+        Name packageName = new NameMock("test");
+        Element enclosingElement = new TypeElementMock(packageName, new HashMap<Class<?>, Annotation>(),
+                ElementKind.PACKAGE, null, new LinkedList<Element>());
+
+        Map<Class<?>, Annotation> annotations = new HashMap<>();
+        Entity EntityAnnotation = new EntityMock("");
+        annotations.put(Entity.class, EntityAnnotation);
+
+        Name testName = new NameMock("Test");
+        final Element testElement = new TypeElementMock(testName, annotations, ElementKind.CLASS, enclosingElement,
+                new LinkedList<Element>());
+
+        Assert.assertTrue(this.unitUnderTest.isEntity(testElement),
+                "Expected a class with annotation to be an entity.");
     }
 
 }

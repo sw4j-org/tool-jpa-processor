@@ -29,7 +29,6 @@ import javax.lang.model.type.TypeMirror;
 import javax.persistence.Id;
 import org.sw4j.tool.annotation.jpa.generator.model.Attribute;
 import org.sw4j.tool.annotation.jpa.generator.model.Entity;
-import org.sw4j.tool.annotation.jpa.processor.exceptions.AnnotationProcessorException;
 
 /**
  * This is a processor to handle attributes of classes with an @Entity annotation.
@@ -65,11 +64,9 @@ public class AttributeProcessor {
      * @param attributeName the name of the attribute.
      * @param fieldElement the possible field of the attribute.
      * @param propertyElement the possible property of the attribute.
-     * @throws AnnotationProcessorException if the entity cannot be handled.
      */
     public void process(@Nonnull final Entity entity, @Nonnull final String attributeName,
-            @Nullable final Element fieldElement, @Nullable final Element propertyElement)
-            throws AnnotationProcessorException {
+            @Nullable final Element fieldElement, @Nullable final Element propertyElement) {
         if (fieldElement != null || propertyElement != null) {
             Attribute attribute = new Attribute(attributeName, isPossibleIdAttribute(fieldElement, propertyElement));
             entity.addAttribute(attribute);

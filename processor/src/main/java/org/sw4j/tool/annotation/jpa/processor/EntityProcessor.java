@@ -25,11 +25,9 @@ import javax.annotation.Nonnull;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
+import javax.tools.Diagnostic;
 import org.sw4j.tool.annotation.jpa.generator.model.Entity;
 import org.sw4j.tool.annotation.jpa.generator.model.Model;
-import org.sw4j.tool.annotation.jpa.processor.exceptions.AnnotationProcessorException;
-import org.sw4j.tool.annotation.jpa.processor.exceptions.EntityNotTopLevelClassException;
-import org.sw4j.tool.annotation.jpa.processor.exceptions.MissingEntityAnnotationException;
 
 /**
  * This is a processor to handle classes with an @Entity annotation.
@@ -64,24 +62,25 @@ public class EntityProcessor {
         this.attributeProcessor.init(this.processingEnv);
     }
 
+    public void process(@Nonnull final Set<? extends Element> elements, @Nonnull final Model model) {
+        for (Element element: elements) {
+            this.process(element, model);
+        }
+    }
+
     /**
      * Process a single entity annotated with {@code @Entity}.
      *
      * @param element the element to process (must be an {@code @Entity}.
      * @param model the model where the final entity is added to.
-     * @throws MissingEntityAnnotationException if the given element is not annotated with {@code @Entity}.
-     * @throws EntityNotTopLevelClassException if the given element is not a top level class but another type or not top
-     *  level (e.g. embedded).
-     * @throws AnnotationProcessorException if the entity cannot be handled.
      */
-    public void process(@Nonnull final Element element, @Nonnull final Model model)
-            throws AnnotationProcessorException {
+    public void process(@Nonnull final Element element, @Nonnull final Model model) {
         javax.persistence.Entity entityAnnotation = element.getAnnotation(javax.persistence.Entity.class);
         if (entityAnnotation == null) {
-            throw new MissingEntityAnnotationException(element.getSimpleName().toString());
-        }
-
-        if (ElementKind.CLASS.equals(element.getKind()) &&
+            this.processingEnv.getMessager().printMessage(Diagnostic.Kind.WARNING,
+                    new StringBuilder("The processed class \"").append(element.getSimpleName())
+                            .append("\" is not an entity.").toString(), element);
+        } else if (ElementKind.CLASS.equals(element.getKind()) &&
                 ElementKind.PACKAGE.equals(element.getEnclosingElement().getKind())) {
             // This is a top level class therefore we can continue.
             Entity entity;
@@ -118,8 +117,23 @@ public class EntityProcessor {
                 }
             }
         } else {
-            throw new EntityNotTopLevelClassException(element.getSimpleName().toString());
+            this.processingEnv.getMessager().printMessage(Diagnostic.Kind.WARNING,
+                    new StringBuilder("The processed entity \"").append(element.getSimpleName())
+                            .append("\" is no top level class."), element);
         }
+    }
+
+    /**
+     * Checks if the given element is a field.
+     *
+     * @param element the element to check.
+     * @return {@code true} if the element is a field.
+     */
+    public boolean isEntity(@Nonnull final Element element) {
+        return ElementKind.CLASS.equals(element.getKind()) &&
+                element.getEnclosingElement() != null &&
+                ElementKind.PACKAGE.equals(element.getEnclosingElement().getKind()) &&
+                element.getAnnotation(javax.persistence.Entity.class) != null;
     }
 
 }

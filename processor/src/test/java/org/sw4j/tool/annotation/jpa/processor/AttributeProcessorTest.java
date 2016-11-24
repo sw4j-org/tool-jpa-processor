@@ -27,7 +27,6 @@ import javax.lang.model.element.Name;
 import javax.lang.model.type.TypeKind;
 import javax.persistence.Id;
 import org.sw4j.tool.annotation.jpa.generator.model.Entity;
-import org.sw4j.tool.annotation.jpa.processor.exceptions.AnnotationProcessorException;
 import org.sw4j.tool.annotation.jpa.processor.mock.annotation.processing.ProcessingEnvironmentMock;
 import org.sw4j.tool.annotation.jpa.processor.mock.lang.model.element.ExecutableElementMock;
 import org.sw4j.tool.annotation.jpa.processor.mock.lang.model.element.NameMock;
@@ -57,14 +56,14 @@ public class AttributeProcessorTest {
     }
 
     @Test
-    public void testProcessNoAttribute() throws AnnotationProcessorException {
+    public void testProcessNoAttribute() {
         final Entity testEntity =  new Entity("Test");
 
         Assert.assertTrue(testEntity.getAttributes().isEmpty(), "Expected the entity to have no attributes.");
     }
 
     @Test
-    public void testProcessBothNull() throws AnnotationProcessorException {
+    public void testProcessBothNull() {
         final Entity testEntity =  new Entity("Test");
 
         this.unitUnderTest.process(testEntity, "id", null, null);
@@ -73,7 +72,7 @@ public class AttributeProcessorTest {
     }
 
     @Test
-    public void testProcessOnlyFieldNoId() throws AnnotationProcessorException {
+    public void testProcessOnlyFieldNoId() {
         final Entity testEntity =  new Entity("Test");
         Name idName = new NameMock("id");
         Element testElement = new VariableElementMock(idName, new HashMap<Class<?>, Annotation>(),
@@ -88,7 +87,7 @@ public class AttributeProcessorTest {
     }
 
     @Test
-    public void testProcessOnlyFieldId() throws AnnotationProcessorException {
+    public void testProcessOnlyFieldId() {
         final Entity testEntity =  new Entity("Test");
         Map<Class<?>, Annotation> annotations = new HashMap<>();
         Name idName = new NameMock("id");
@@ -106,7 +105,7 @@ public class AttributeProcessorTest {
     }
 
     @Test
-    public void testProcessOnlyPropertyNoId() throws AnnotationProcessorException {
+    public void testProcessOnlyPropertyNoId() {
         final Entity testEntity =  new Entity("Test");
         Name idName = new NameMock("getId");
         Element testElement = new ExecutableElementMock(idName, new HashMap<Class<?>, Annotation>(),
@@ -121,7 +120,7 @@ public class AttributeProcessorTest {
     }
 
     @Test
-    public void testProcessOnlyPropertyId() throws AnnotationProcessorException {
+    public void testProcessOnlyPropertyId() {
         final Entity testEntity =  new Entity("Test");
         Map<Class<?>, Annotation> annotations = new HashMap<>();
         Name idName = new NameMock("getId");
@@ -139,7 +138,7 @@ public class AttributeProcessorTest {
     }
 
     @Test
-    public void testProcessFieldPropertyNoId() throws AnnotationProcessorException {
+    public void testProcessFieldPropertyNoId() {
         final Entity testEntity =  new Entity("Test");
         Name fieldName = new NameMock("id");
         Name propertyName = new NameMock("getId");
@@ -157,7 +156,7 @@ public class AttributeProcessorTest {
     }
 
     @Test
-    public void testProcessFieldPropertyFieldWithId() throws AnnotationProcessorException {
+    public void testProcessFieldPropertyFieldWithId() {
         final Entity testEntity =  new Entity("Test");
         Map<Class<?>, Annotation> annotations = new HashMap<>();
         Name fieldName = new NameMock("id");
@@ -178,7 +177,7 @@ public class AttributeProcessorTest {
     }
 
     @Test
-    public void testProcessFieldPropertyPropertyWithId() throws AnnotationProcessorException {
+    public void testProcessFieldPropertyPropertyWithId() {
         final Entity testEntity =  new Entity("Test");
         Map<Class<?>, Annotation> annotations = new HashMap<>();
         Name fieldName = new NameMock("id");
@@ -199,7 +198,7 @@ public class AttributeProcessorTest {
     }
 
     @Test
-    public void testProcessFieldPropertyBothWithId() throws AnnotationProcessorException {
+    public void testProcessFieldPropertyBothWithId() {
         final Entity testEntity =  new Entity("Test");
         Map<Class<?>, Annotation> annotations = new HashMap<>();
         Name fieldName = new NameMock("id");
@@ -220,7 +219,7 @@ public class AttributeProcessorTest {
     }
 
     @Test
-    public void testProcessSingleAttribute() throws AnnotationProcessorException {
+    public void testProcessSingleAttribute() {
         final Entity testEntity =  new Entity("Test");
         Name testName = new NameMock("test");
         Element testElement = new VariableElementMock(testName, new HashMap<Class<?>, Annotation>(),
@@ -235,7 +234,7 @@ public class AttributeProcessorTest {
     }
 
     @Test
-    public void testProcessTwoAttributes() throws AnnotationProcessorException {
+    public void testProcessTwoAttributes() {
         final Entity testEntity =  new Entity("Test");
         Name testName = new NameMock("test");
         Element testElement = new VariableElementMock(testName, new HashMap<Class<?>, Annotation>(),
