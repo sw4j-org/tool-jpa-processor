@@ -34,6 +34,7 @@ import javax.annotation.processing.SupportedSourceVersion;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
+import javax.persistence.Entity;
 import javax.tools.Diagnostic;
 import org.sw4j.tool.annotation.jpa.generator.GeneratorService;
 import org.sw4j.tool.annotation.jpa.generator.model.Model;
@@ -89,13 +90,7 @@ public class AnnotationProcessor extends AbstractProcessor {
     public boolean process(@Nonnull final Set<? extends TypeElement> annotations,
             @Nonnull final RoundEnvironment roundEnv) {
         Set<? extends Element> elements = roundEnv.getRootElements();
-        Set<Element> entities = new HashSet<>();
-        for (Element element: elements) {
-            if (this.entityProcessor.isEntity(element)) {
-                entities.add(element);
-            }
-        }
-        this.entityProcessor.process(entities, model);
+        this.entityProcessor.process(roundEnv.getElementsAnnotatedWith(Entity.class), model);
 
         if (roundEnv.processingOver()) {
             String outputOption = this.processingEnv.getOptions().get(PROPERTIES_OPTION);

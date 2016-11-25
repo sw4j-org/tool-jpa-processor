@@ -71,7 +71,7 @@ public class AnnotationProcessorTest {
 
     @Test
     public void testProcessEmptyElementSet() {
-        RoundEnvironmentMock roundEnv = new RoundEnvironmentMock(new HashSet<Element>());
+        RoundEnvironmentMock roundEnv = new RoundEnvironmentMock(new HashSet<Element>(), new HashSet<Element>());
 
         this.unitUnderTest.process(this.handledAnnotations, roundEnv);
 
@@ -86,7 +86,7 @@ public class AnnotationProcessorTest {
 
         elements.add(nonEntity);
 
-        RoundEnvironmentMock roundEnv = new RoundEnvironmentMock(elements);
+        RoundEnvironmentMock roundEnv = new RoundEnvironmentMock(elements, new HashSet<Element>());
 
         this.unitUnderTest.process(this.handledAnnotations, roundEnv);
 
@@ -104,7 +104,7 @@ public class AnnotationProcessorTest {
                 enclosingElement, new LinkedList<Element>());
         elements.add(entity1);
 
-        RoundEnvironmentMock roundEnv = new RoundEnvironmentMock(elements);
+        RoundEnvironmentMock roundEnv = new RoundEnvironmentMock(elements, elements);
 
         this.unitUnderTest.process(this.handledAnnotations, roundEnv);
 
@@ -113,7 +113,7 @@ public class AnnotationProcessorTest {
 
     @Test
     public void testGeneratorServiceLoading() {
-        RoundEnvironmentMock roundEnv = new RoundEnvironmentMock(new HashSet<Element>());
+        RoundEnvironmentMock roundEnv = new RoundEnvironmentMock(new HashSet<Element>(), new HashSet<Element>());
         roundEnv.processingOver(true);
 
         this.unitUnderTest.process(this.handledAnnotations, roundEnv);
@@ -125,7 +125,7 @@ public class AnnotationProcessorTest {
     public void testGeneratorServiceLoadingWithOptionsOnlyPrefix() {
         this.options.put("tool.jpa.properties", "test");
 
-        RoundEnvironmentMock roundEnv = new RoundEnvironmentMock(new HashSet<Element>());
+        RoundEnvironmentMock roundEnv = new RoundEnvironmentMock(new HashSet<Element>(), new HashSet<Element>());
         roundEnv.processingOver(true);
 
         this.unitUnderTest.process(this.handledAnnotations, roundEnv);
@@ -135,7 +135,7 @@ public class AnnotationProcessorTest {
     public void testGeneratorServiceLoadingWithLoadProperties() throws Exception {
         this.options.put("tool.jpa.properties", "test=test.properties");
 
-        RoundEnvironmentMock roundEnv = new RoundEnvironmentMock(new HashSet<Element>());
+        RoundEnvironmentMock roundEnv = new RoundEnvironmentMock(new HashSet<Element>(), new HashSet<Element>());
         roundEnv.processingOver(true);
 
         TestGenerator.TestGeneratorConfiguration.getInstance().processThrowsIOException(false);
@@ -150,7 +150,7 @@ public class AnnotationProcessorTest {
     public void testGeneratorServiceLoadingWithLoadPropertiesException() throws Exception {
         this.options.put("tool.jpa.properties", "test=test.properties");
 
-        RoundEnvironmentMock roundEnv = new RoundEnvironmentMock(new HashSet<Element>());
+        RoundEnvironmentMock roundEnv = new RoundEnvironmentMock(new HashSet<Element>(), new HashSet<Element>());
         roundEnv.processingOver(true);
 
         TestGenerator.TestGeneratorConfiguration.getInstance().processThrowsIOException(false);
@@ -167,7 +167,7 @@ public class AnnotationProcessorTest {
     public void testGeneratorServiceLoadingWithGeneratorNoProperties() throws Exception {
         this.options.put("tool.jpa.properties", "test=test.properties");
 
-        RoundEnvironmentMock roundEnv = new RoundEnvironmentMock(new HashSet<Element>());
+        RoundEnvironmentMock roundEnv = new RoundEnvironmentMock(new HashSet<Element>(), new HashSet<Element>());
         roundEnv.processingOver(true);
 
         TestGenerator.TestGeneratorConfiguration.getInstance().processThrowsIOException(false);
@@ -182,7 +182,7 @@ public class AnnotationProcessorTest {
     public void testGeneratorServiceLoadingWithGeneratorWithProperties() throws Exception {
         this.options.put("tool.jpa.properties", "test=test.properties");
 
-        RoundEnvironmentMock roundEnv = new RoundEnvironmentMock(new HashSet<Element>());
+        RoundEnvironmentMock roundEnv = new RoundEnvironmentMock(new HashSet<Element>(), new HashSet<Element>());
         roundEnv.processingOver(true);
 
         TestGenerator.TestGeneratorConfiguration.getInstance().processThrowsIOException(false);
@@ -197,7 +197,7 @@ public class AnnotationProcessorTest {
     public void testGeneratorServiceLoadingWithGeneratorCall() throws Exception {
         this.options.put("tool.jpa.properties", "test=test.properties");
 
-        RoundEnvironmentMock roundEnv = new RoundEnvironmentMock(new HashSet<Element>());
+        RoundEnvironmentMock roundEnv = new RoundEnvironmentMock(new HashSet<Element>(), new HashSet<Element>());
         roundEnv.processingOver(true);
 
         TestGenerator.TestGeneratorConfiguration.getInstance().processThrowsIOException(false);
@@ -212,7 +212,7 @@ public class AnnotationProcessorTest {
     public void testGeneratorServiceLoadingWithGeneratorCallIOException() throws Exception {
         this.options.put("tool.jpa.properties", "test=test.properties");
 
-        RoundEnvironmentMock roundEnv = new RoundEnvironmentMock(new HashSet<Element>());
+        RoundEnvironmentMock roundEnv = new RoundEnvironmentMock(new HashSet<Element>(), new HashSet<Element>());
         roundEnv.processingOver(true);
 
         TestGenerator.TestGeneratorConfiguration.getInstance().processThrowsIOException(true);

@@ -33,8 +33,12 @@ public class RoundEnvironmentMock implements RoundEnvironment {
 
     private final Set<? extends Element> rootElements;
 
-    public RoundEnvironmentMock(final Set<? extends Element> rootElements) {
+    private final Set<? extends Element> annotatedElements;
+
+    public RoundEnvironmentMock(final Set<? extends Element> rootElements,
+            final Set<? extends Element> annotatedElements) {
         this.rootElements = rootElements;
+        this.annotatedElements = annotatedElements;
     }
 
     public void processingOver(final boolean processingOver) {
@@ -58,12 +62,12 @@ public class RoundEnvironmentMock implements RoundEnvironment {
 
     @Override
     public Set<? extends Element> getElementsAnnotatedWith(TypeElement a) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return this.annotatedElements;
     }
 
     @Override
     public Set<? extends Element> getElementsAnnotatedWith(Class<? extends Annotation> a) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return this.annotatedElements;
     }
 
 }

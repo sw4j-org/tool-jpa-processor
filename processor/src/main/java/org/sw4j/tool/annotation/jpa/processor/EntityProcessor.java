@@ -123,17 +123,4 @@ public class EntityProcessor {
         }
     }
 
-    /**
-     * Checks if the given element is a field.
-     *
-     * @param element the element to check.
-     * @return {@code true} if the element is a field.
-     */
-    public boolean isEntity(@Nonnull final Element element) {
-        return ElementKind.CLASS.equals(element.getKind()) &&
-                element.getEnclosingElement() != null &&
-                ElementKind.PACKAGE.equals(element.getEnclosingElement().getKind()) &&
-                element.getAnnotation(javax.persistence.Entity.class) != null;
-    }
-
 }
