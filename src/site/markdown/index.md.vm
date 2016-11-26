@@ -1,4 +1,7 @@
-# Introduction
+#set($h1 = '#')
+#set($h2 = '##')
+
+$h1 Introduction
 
 This project contains a JPA annotation processor to handle JPA annotations and generate scripts (or
 similar) to create the schema needed.
@@ -10,7 +13,7 @@ The major modules are
 * the [processor](./processor/index.html)
 * the [generators](./generator/index.html)
 
-## Generation of schemas
+$h2 Generation of schemas
 
 To generate a schema description out of the JPA annotations you need the annotation processor and a
 generator during compilation.

@@ -1,0 +1,18 @@
+#set($h1 = '#')
+#set($h2 = '##')
+
+$h1 Processed Annotations
+
+The following Annotations are processed at the moment:
+
+* [@Entity](#aEntity)
+* [@Id](#aId)
+
+$h2 @Entity
+
+The @Entity annotation is processed completely. If the @Entity does not have a name then the simple name of the class is
+used as entity name.
+
+$h2 @Id
+
+The @Id annotation is processed and determines the default access type of an entity.

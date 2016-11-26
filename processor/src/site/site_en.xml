@@ -33,6 +33,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     <menu name="User Documentation">
       <item name="Overview" href="index.html"/>
       <item name="Restrictions" href="restrictions.html"/>
+      <item name="Processed Annotations" href="processed.html"/>
     </menu>
 
     <menu ref="reports"/>

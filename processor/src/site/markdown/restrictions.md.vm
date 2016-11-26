@@ -1,4 +1,7 @@
-# Restrictions
+#set($h1 = '#')
+#set($h2 = '##')
+
+$h1 Restrictions
 
 The annotation processor has some restrictions for the entity model that is processed.
 
@@ -7,3 +10,4 @@ The current limitations are:
 * The name of an entity must be unique within the compilation unit.
 * The name of a table must be unique within the compilation unit (even if the tables are spread
 across different schemas or catalogs).
+* An entity must have exactly one @Id attribute.
