@@ -33,9 +33,13 @@ import javax.lang.model.type.TypeMirror;
  */
 public class TypeElementMock extends ElementMock implements TypeElement {
 
-    public TypeElementMock(final Name simpleName, final Map<Class<?>, ? extends Annotation> annotations,
-            final ElementKind kind, final Element enclosingElement, final List<? extends Element> enclosedElements) {
+    private final Name qualifiedName;
+
+    public TypeElementMock(final Name simpleName, final Name qualifiedName,
+            final Map<Class<?>, ? extends Annotation> annotations, final ElementKind kind,
+            final Element enclosingElement, final List<? extends Element> enclosedElements) {
         super(simpleName, annotations, kind, enclosingElement, enclosedElements);
+        this.qualifiedName = qualifiedName;
     }
 
     @Override
@@ -45,7 +49,7 @@ public class TypeElementMock extends ElementMock implements TypeElement {
 
     @Override
     public Name getQualifiedName() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return this.qualifiedName;
     }
 
     @Override

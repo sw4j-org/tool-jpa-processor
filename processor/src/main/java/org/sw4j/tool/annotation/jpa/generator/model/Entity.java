@@ -40,8 +40,12 @@ import javax.xml.bind.annotation.XmlType;
 public class Entity {
 
     /** The name of the entity. */
-    @XmlAttribute(name = "name")
+    @XmlAttribute(name = "name", required = true)
     private final String name;
+
+    /** The class name of the entity. */
+    @XmlAttribute(name = "className", required = true)
+    private final String className;
 
     /** The entities of the model. */
     @XmlElementWrapper(name = "attributes", required = false)
@@ -52,9 +56,11 @@ public class Entity {
      * Constructor for an entity.
      *
      * @param name the name of the entity.
+     * @param className the class name of the entity.
      */
-    public Entity(@Nonnull final String name) {
+    public Entity(@Nonnull final String name, @Nonnull final String className) {
         this.name = name;
+        this.className = className;
     }
 
     /**
@@ -64,7 +70,17 @@ public class Entity {
      */
     @Nonnull
     public String getName() {
-        return name;
+        return this.name;
+    }
+
+    /**
+     * Returns the class name of the entity.
+     *
+     * @return the class name.
+     */
+    @Nonnull
+    public String getClassName() {
+        return this.className;
     }
 
     /**
@@ -73,10 +89,10 @@ public class Entity {
      * @param attribute the attribute to add.
      */
     public synchronized void addAttribute(@Nonnull final Attribute attribute) {
-        if (attributes == null) {
-            attributes = new LinkedList<>();
+        if (this.attributes == null) {
+            this.attributes = new LinkedList<>();
         }
-        attributes.add(attribute);
+        this.attributes.add(attribute);
     }
 
     /**

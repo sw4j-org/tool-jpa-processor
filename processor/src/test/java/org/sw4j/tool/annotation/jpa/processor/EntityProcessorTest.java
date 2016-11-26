@@ -66,7 +66,8 @@ public class EntityProcessorTest {
     public void testProcessNonEntity() {
         final Model testModel =  new Model();
         Name testName = new NameMock("Test");
-        final Element testElement = new TypeElementMock(testName, new HashMap<Class<?>, Annotation>(),
+        Name className = new NameMock("org.sw4j.test.Test");
+        final Element testElement = new TypeElementMock(testName, className, new HashMap<Class<?>, Annotation>(),
                 ElementKind.CLASS, null, new LinkedList<Element>());
 
         this.unitUnderTest.process(testElement, testModel);
@@ -83,7 +84,8 @@ public class EntityProcessorTest {
         Map<Class<?>, Annotation> annotations = new HashMap<>();
         Entity entityAnnotation = new EntityMock("");
         annotations.put(Entity.class, entityAnnotation);
-        final Element testElement = new TypeElementMock(testName, annotations, ElementKind.ENUM, null,
+        Name className = new NameMock("org.sw4j.test.Test");
+        final Element testElement = new TypeElementMock(testName, className, annotations, ElementKind.ENUM, null,
                 new LinkedList<Element>());
 
         this.unitUnderTest.process(testElement, testModel);
@@ -97,13 +99,15 @@ public class EntityProcessorTest {
     public void testProcessEntityNoTopLevelClass() {
         final Model testModel = new Model();
         Name testName = new NameMock("");
-        Element enclosingElement = new TypeElementMock(testName, new HashMap<Class<?>, Annotation>(), ElementKind.CLASS,
-                null, new LinkedList<Element>());
+        Name className = new NameMock("org.sw4j.test.Test");
+        Element enclosingElement = new TypeElementMock(testName, className, new HashMap<Class<?>, Annotation>(),
+                ElementKind.CLASS, null, new LinkedList<Element>());
         Map<Class<?>, Annotation> annotations = new HashMap<>();
         Entity EntityAnnotation = new EntityMock("");
         annotations.put(Entity.class, EntityAnnotation);
-        final Element testElement = new TypeElementMock(testName, annotations, ElementKind.CLASS, enclosingElement,
-                new LinkedList<Element>());
+        className = new NameMock("org.sw4j.test.Test.Test");
+        final Element testElement = new TypeElementMock(testName, className, annotations, ElementKind.CLASS,
+                enclosingElement, new LinkedList<Element>());
 
         this.unitUnderTest.process(testElement, testModel);
 
@@ -116,13 +120,15 @@ public class EntityProcessorTest {
     public void testProcessEntityNoName() {
         final Model testModel = new Model();
         Name testName = new NameMock("Test");
-        Element enclosingElement = new TypeElementMock(testName, new HashMap<Class<?>, Annotation>(),
+        Name className = new NameMock("org.sw4j.test");
+        Element enclosingElement = new TypeElementMock(testName, className, new HashMap<Class<?>, Annotation>(),
                 ElementKind.PACKAGE, null, new LinkedList<Element>());
         Map<Class<?>, Annotation> annotations = new HashMap<>();
         Entity EntityAnnotation = new EntityMock("");
         annotations.put(Entity.class, EntityAnnotation);
-        final Element testElement = new TypeElementMock(testName, annotations, ElementKind.CLASS, enclosingElement,
-                new LinkedList<Element>());
+        className = new NameMock("org.sw4j.test.Test");
+        final Element testElement = new TypeElementMock(testName, className, annotations, ElementKind.CLASS,
+                enclosingElement, new LinkedList<Element>());
 
         this.unitUnderTest.process(testElement, testModel);
 
@@ -134,13 +140,15 @@ public class EntityProcessorTest {
     public void testProcessEntityWithExplicitName() {
         final Model testModel = new Model();
         Name testName = new NameMock("Test");
-        Element enclosingElement = new TypeElementMock(testName, new HashMap<Class<?>, Annotation>(),
+        Name className = new NameMock("org.sw4j.test");
+        Element enclosingElement = new TypeElementMock(testName, className, new HashMap<Class<?>, Annotation>(),
                 ElementKind.PACKAGE, null, new LinkedList<Element>());
         Map<Class<?>, Annotation> annotations = new HashMap<>();
         Entity EntityAnnotation = new EntityMock("EntityName");
         annotations.put(Entity.class, EntityAnnotation);
-        final Element testElement = new TypeElementMock(testName, annotations, ElementKind.CLASS, enclosingElement,
-                new LinkedList<Element>());
+        className = new NameMock("org.sw4j.test.Test");
+        final Element testElement = new TypeElementMock(testName, className, annotations, ElementKind.CLASS,
+                enclosingElement, new LinkedList<Element>());
 
         this.unitUnderTest.process(testElement, testModel);
 
@@ -152,7 +160,8 @@ public class EntityProcessorTest {
     public void testProcessEntityWithSingleField() {
         final Model testModel = new Model();
         Name testName = new NameMock("Test");
-        Element enclosingElement = new TypeElementMock(testName, new HashMap<Class<?>, Annotation>(),
+        Name className = new NameMock("org.sw4j.test");
+        Element enclosingElement = new TypeElementMock(testName, className, new HashMap<Class<?>, Annotation>(),
                 ElementKind.PACKAGE, null, new LinkedList<Element>());
         Map<Class<?>, Annotation> annotations = new HashMap<>();
         Entity EntityAnnotation = new EntityMock("");
@@ -160,8 +169,9 @@ public class EntityProcessorTest {
 
         List<Element> enclosedElements = new LinkedList<>();
 
-        final Element testElement = new TypeElementMock(testName, annotations, ElementKind.CLASS, enclosingElement,
-                enclosedElements);
+        className = new NameMock("org.sw4j.test.Test");
+        final Element testElement = new TypeElementMock(testName, className, annotations, ElementKind.CLASS,
+                enclosingElement, enclosedElements);
 
         Name fieldName = new NameMock("field");
         Element field = new VariableElementMock(fieldName, new HashMap<Class<?>, Annotation>(), ElementKind.FIELD,
@@ -180,7 +190,8 @@ public class EntityProcessorTest {
     public void testProcessEntityWithSingleGetter() {
         final Model testModel = new Model();
         Name testName = new NameMock("Test");
-        Element enclosingElement = new TypeElementMock(testName, new HashMap<Class<?>, Annotation>(),
+        Name className = new NameMock("org.sw4j.test");
+        Element enclosingElement = new TypeElementMock(testName, className, new HashMap<Class<?>, Annotation>(),
                 ElementKind.PACKAGE, null, new LinkedList<Element>());
         Map<Class<?>, Annotation> annotations = new HashMap<>();
         Entity EntityAnnotation = new EntityMock("");
@@ -188,8 +199,9 @@ public class EntityProcessorTest {
 
         List<Element> enclosedElements = new LinkedList<>();
 
-        final Element testElement = new TypeElementMock(testName, annotations, ElementKind.CLASS, enclosingElement,
-                enclosedElements);
+        className = new NameMock("org.sw4j.test.Test");
+        final Element testElement = new TypeElementMock(testName, className, annotations, ElementKind.CLASS,
+                enclosingElement, enclosedElements);
 
         Name propertyName = new NameMock("getProperty");
         Element field = new VariableElementMock(propertyName, new HashMap<Class<?>, Annotation>(), ElementKind.METHOD,
@@ -207,7 +219,8 @@ public class EntityProcessorTest {
     public void testProcessEntityWithSingleSetter() {
         final Model testModel = new Model();
         Name testName = new NameMock("Test");
-        Element enclosingElement = new TypeElementMock(testName, new HashMap<Class<?>, Annotation>(),
+        Name className = new NameMock("org.sw4j.test");
+        Element enclosingElement = new TypeElementMock(testName, className, new HashMap<Class<?>, Annotation>(),
                 ElementKind.PACKAGE, null, new LinkedList<Element>());
         Map<Class<?>, Annotation> annotations = new HashMap<>();
         Entity EntityAnnotation = new EntityMock("");
@@ -215,8 +228,9 @@ public class EntityProcessorTest {
 
         List<Element> enclosedElements = new LinkedList<>();
 
-        final Element testElement = new TypeElementMock(testName, annotations, ElementKind.CLASS, enclosingElement,
-                enclosedElements);
+        className = new NameMock("org.sw4j.test.Test");
+        final Element testElement = new TypeElementMock(testName, className, annotations, ElementKind.CLASS,
+                enclosingElement, enclosedElements);
 
         Name propertyName = new NameMock("setProperty");
         Element field = new VariableElementMock(propertyName, new HashMap<Class<?>, Annotation>(), ElementKind.METHOD,
@@ -234,7 +248,8 @@ public class EntityProcessorTest {
     public void testProcessEntityWithIndependentMethod() {
         final Model testModel = new Model();
         Name testName = new NameMock("Test");
-        Element enclosingElement = new TypeElementMock(testName, new HashMap<Class<?>, Annotation>(),
+        Name className = new NameMock("org.sw4j.test");
+        Element enclosingElement = new TypeElementMock(testName, className, new HashMap<Class<?>, Annotation>(),
                 ElementKind.PACKAGE, null, new LinkedList<Element>());
         Map<Class<?>, Annotation> annotations = new HashMap<>();
         Entity EntityAnnotation = new EntityMock("");
@@ -242,8 +257,9 @@ public class EntityProcessorTest {
 
         List<Element> enclosedElements = new LinkedList<>();
 
-        final Element testElement = new TypeElementMock(testName, annotations, ElementKind.CLASS, enclosingElement,
-                enclosedElements);
+        className = new NameMock("org.sw4j.test.Test");
+        final Element testElement = new TypeElementMock(testName, className, annotations, ElementKind.CLASS,
+                enclosingElement, enclosedElements);
 
         Name propertyName = new NameMock("foo");
         Element field = new VariableElementMock(propertyName, new HashMap<Class<?>, Annotation>(), ElementKind.METHOD,
@@ -261,7 +277,8 @@ public class EntityProcessorTest {
     public void testProcessEntityWithEmbeddedClass() {
         final Model testModel = new Model();
         Name testName = new NameMock("Test");
-        Element enclosingElement = new TypeElementMock(testName, new HashMap<Class<?>, Annotation>(),
+        Name className = new NameMock("org.sw4j.test.Test");
+        Element enclosingElement = new TypeElementMock(testName, className, new HashMap<Class<?>, Annotation>(),
                 ElementKind.PACKAGE, null, new LinkedList<Element>());
         Map<Class<?>, Annotation> annotations = new HashMap<>();
         Entity EntityAnnotation = new EntityMock("");
@@ -269,8 +286,9 @@ public class EntityProcessorTest {
 
         List<Element> enclosedElements = new LinkedList<>();
 
-        final Element testElement = new TypeElementMock(testName, annotations, ElementKind.CLASS, enclosingElement,
-                enclosedElements);
+        className = new NameMock("org.sw4j.test.Test");
+        final Element testElement = new TypeElementMock(testName, className, annotations, ElementKind.CLASS,
+                enclosingElement, enclosedElements);
 
         Name propertyName = new NameMock("Embedded");
         Element field = new VariableElementMock(propertyName, new HashMap<Class<?>, Annotation>(), ElementKind.CLASS,

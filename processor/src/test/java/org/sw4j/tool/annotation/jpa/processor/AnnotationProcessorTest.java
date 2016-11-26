@@ -65,8 +65,8 @@ public class AnnotationProcessorTest {
         this.unitUnderTest.init(this.processingEnv);
 
         this.handledAnnotations = new HashSet<>();
-        this.handledAnnotations.add(new TypeElementMock(new NameMock(""), null, ElementKind.ANNOTATION_TYPE, null,
-                null));
+        this.handledAnnotations.add(new TypeElementMock(new NameMock(""), new NameMock("org.sw4j.test.Test"), null,
+                ElementKind.ANNOTATION_TYPE, null, null));
     }
 
     @Test
@@ -82,7 +82,8 @@ public class AnnotationProcessorTest {
     public void testProcessNonEntityElementSet() {
         final Map<Class<?>, ? extends Annotation> annotations = new HashMap<>();
         final Set<TypeElement> elements = new HashSet<>();
-        TypeElementMock nonEntity = new TypeElementMock(new NameMock(""), annotations, ElementKind.CLASS, null, null);
+        TypeElementMock nonEntity = new TypeElementMock(new NameMock(""), new NameMock("org.sw4j.test.Test"),
+                annotations, ElementKind.CLASS, null, null);
 
         elements.add(nonEntity);
 
@@ -98,17 +99,19 @@ public class AnnotationProcessorTest {
         final Map<Class<?>, Annotation> annotations = new HashMap<>();
         annotations.put(Entity.class, new EntityMock(""));
         final Set<TypeElement> elements = new HashSet<>();
-        TypeElementMock enclosingElement = new TypeElementMock(new NameMock(""), new HashMap<Class<?>, Annotation>(),
-                ElementKind.PACKAGE, null, null);
-        TypeElementMock entity1 = new TypeElementMock(new NameMock("Entity"), annotations, ElementKind.CLASS,
-                enclosingElement, new LinkedList<Element>());
+        TypeElementMock enclosingElement = new TypeElementMock(new NameMock(""), new NameMock("org.sw4j.test"),
+                new HashMap<Class<?>, Annotation>(), ElementKind.PACKAGE, null, null);
+        TypeElementMock entity1 = new TypeElementMock(new NameMock("Entity"), new NameMock("org.sw4j.test.Test"),
+                annotations, ElementKind.CLASS, enclosingElement, new LinkedList<Element>());
         elements.add(entity1);
 
         RoundEnvironmentMock roundEnv = new RoundEnvironmentMock(elements, elements);
 
         this.unitUnderTest.process(this.handledAnnotations, roundEnv);
 
-        Assert.assertEquals(this.messager.getMessages().size(), 0, "Expected no message to be created.");
+        Assert.assertEquals(this.messager.getMessages().size(), 1, "Expected one message to be created.");
+        Assert.assertEquals(this.messager.getMessages().get(0).getKind(), Diagnostic.Kind.ERROR,
+                "Expected a message with level ERROR to be created.");
     }
 
     @Test

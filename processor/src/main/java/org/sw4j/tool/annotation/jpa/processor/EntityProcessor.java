@@ -21,6 +21,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
+import javax.lang.model.element.TypeElement;
 import javax.tools.Diagnostic;
 import org.sw4j.tool.annotation.jpa.generator.model.Entity;
 import org.sw4j.tool.annotation.jpa.generator.model.Model;
@@ -87,11 +88,13 @@ public class EntityProcessor {
                 element.getEnclosingElement() != null &&
                 ElementKind.PACKAGE.equals(element.getEnclosingElement().getKind())) {
             // This is a top level class therefore we can continue.
+            TypeElement typeElement = (TypeElement)element;
+            String className = typeElement.getQualifiedName().toString();
             Entity entity;
             if ("".equals(entityAnnotation.name())) {
-                entity = new Entity(element.getSimpleName().toString());
+                entity = new Entity(element.getSimpleName().toString(), className);
             } else {
-                entity = new Entity(entityAnnotation.name());
+                entity = new Entity(entityAnnotation.name(), className);
             }
             model.addEntity(entity);
 

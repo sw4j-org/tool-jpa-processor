@@ -32,6 +32,7 @@ import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 import javax.persistence.Id;
+import javax.tools.Diagnostic;
 import org.sw4j.tool.annotation.jpa.generator.model.Attribute;
 import org.sw4j.tool.annotation.jpa.generator.model.Entity;
 
@@ -41,6 +42,18 @@ import org.sw4j.tool.annotation.jpa.generator.model.Entity;
  * @author Uwe Plonus
  */
 public class AttributeProcessor {
+
+    /** The prefix of a generic property. */
+    private static final String PROPERTY_PREFIX = "get";
+
+    /** The length of the prefix of a generic property. */
+    private static final int PROPERTY_PREFIX_LENGTH = "get".length();
+
+    /** The prefix of a boolean property. */
+    private static final String BOOLEAN_PROPERTY_PREFIX = "is";
+
+    /** The length of the prefix of a boolean property. */
+    private static final int BOOLEAN_PROPERTY_PREFIX_LENGTH = "is".length();
 
     /** The processing environment used to access the tool facilities. */
     private ProcessingEnvironment processingEnv;
@@ -86,16 +99,26 @@ public class AttributeProcessor {
             }
         }
 
-        Set<String> handledAttributes = new HashSet<>();
-        for (Map.Entry<String, Element> possibleField: fields.entrySet()) {
-            handledAttributes.add(possibleField.getKey());
-            process(entity, possibleField.getKey(), possibleField.getValue(), properties.get(possibleField.getKey()));
-        }
-        for (Map.Entry<String, Element> possibleProperty: properties.entrySet()) {
-            if (!handledAttributes.contains(possibleProperty.getKey())) {
-                handledAttributes.add(possibleProperty.getKey());
-                process(entity, possibleProperty.getKey(), null, possibleProperty.getValue());
+        if (possibleIds.size() == 1) {
+            Set<String> handledAttributes = new HashSet<>();
+            for (Map.Entry<String, Element> possibleField: fields.entrySet()) {
+                handledAttributes.add(possibleField.getKey());
+                process(entity, possibleField.getKey(), possibleField.getValue(),
+                        properties.get(possibleField.getKey()));
             }
+            for (Map.Entry<String, Element> possibleProperty: properties.entrySet()) {
+                if (!handledAttributes.contains(possibleProperty.getKey())) {
+                    handledAttributes.add(possibleProperty.getKey());
+                    process(entity, possibleProperty.getKey(), null, possibleProperty.getValue());
+                }
+            }
+        } else {
+            this.processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, new StringBuilder(
+                    "This annotation processor does not support entities with multiple @Id annotations. The entity \"")
+                    .append(entity.getName())
+                    .append("\" (with class name \"")
+                    .append(entity.getClassName())
+                    .append("\") has more than 1 @Id attribute."));
         }
     }
 
@@ -182,12 +205,12 @@ public class AttributeProcessor {
     public String getAttributeNameFromProperty(@Nonnull final Element element) {
         StringBuilder result = new StringBuilder();
         String elementName = element.getSimpleName().toString();
-        if (elementName.startsWith("get")) {
-            result.append(Introspector.decapitalize(elementName.substring(3)));
-        } else if (elementName.startsWith("is")) {
+        if (elementName.startsWith(PROPERTY_PREFIX)) {
+            result.append(Introspector.decapitalize(elementName.substring(PROPERTY_PREFIX_LENGTH)));
+        } else if (elementName.startsWith(BOOLEAN_PROPERTY_PREFIX)) {
             TypeMirror returnType = ((ExecutableElement)element).getReturnType();
             if (TypeKind.BOOLEAN.equals(returnType.getKind())) {
-                result.append(Introspector.decapitalize(elementName.substring(2)));
+                result.append(Introspector.decapitalize(elementName.substring(BOOLEAN_PROPERTY_PREFIX_LENGTH)));
             } else {
                 Element returnElement = this.processingEnv.getTypeUtils().asElement(returnType);
                 if (returnElement != null && ElementKind.CLASS.equals(returnElement.getKind())) {
