@@ -20,7 +20,6 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
@@ -86,7 +85,7 @@ public class Entity {
      * @return a list containing all attributes of the entity.
      */
     @Nonnull
-    public List<Attribute> getAttributes() {
+    public synchronized List<Attribute> getAttributes() {
         return this.attributes == null ? Collections.EMPTY_LIST : Collections.unmodifiableList(this.attributes);
     }
 

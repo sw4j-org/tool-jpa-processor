@@ -17,6 +17,11 @@
 package org.sw4j.tool.annotation.jpa.processor;
 
 import java.beans.Introspector;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.processing.ProcessingEnvironment;
@@ -52,8 +57,46 @@ public class AttributeProcessor {
      *
      * @param processingEnv environment to access facilities the tool framework provides to the processor.
      */
-    public void init(ProcessingEnvironment processingEnv) {
+    @SuppressWarnings("checkstyle:HiddenField")
+    public void init(@Nonnull final ProcessingEnvironment processingEnv) {
         this.processingEnv = processingEnv;
+    }
+
+    /**
+     * Process all possible attributes of an {@code Entity} class.
+     *
+     * @param entity the entity this attributes belongs to.
+     * @param possibleAttributes all enclosed elements of the element that denotes the {@code Entity}.
+     */
+    public void process(@Nonnull final Entity entity, @Nonnull final List<? extends Element> possibleAttributes) {
+        Map<String, Element> fields = new LinkedHashMap<>();
+        Map<String, Element> properties = new LinkedHashMap<>();
+        Map<String, Element> possibleIds = new LinkedHashMap<>();
+        for (Element possibleAttribute: possibleAttributes) {
+            String attributeName = null;
+            if (isField(possibleAttribute)) {
+                attributeName = possibleAttribute.getSimpleName().toString();
+                fields.put(attributeName, possibleAttribute);
+            } else if (isProperty(possibleAttribute)) {
+                attributeName = getAttributeNameFromProperty(possibleAttribute);
+                properties.put(attributeName, possibleAttribute);
+            }
+            if (attributeName != null && isPossibleIdAttribute(possibleAttribute)) {
+                possibleIds.put(attributeName, possibleAttribute);
+            }
+        }
+
+        Set<String> handledAttributes = new HashSet<>();
+        for (Map.Entry<String, Element> possibleField: fields.entrySet()) {
+            handledAttributes.add(possibleField.getKey());
+            process(entity, possibleField.getKey(), possibleField.getValue(), properties.get(possibleField.getKey()));
+        }
+        for (Map.Entry<String, Element> possibleProperty: properties.entrySet()) {
+            if (!handledAttributes.contains(possibleProperty.getKey())) {
+                handledAttributes.add(possibleProperty.getKey());
+                process(entity, possibleProperty.getKey(), null, possibleProperty.getValue());
+            }
+        }
     }
 
     /**
@@ -65,7 +108,7 @@ public class AttributeProcessor {
      * @param fieldElement the possible field of the attribute.
      * @param propertyElement the possible property of the attribute.
      */
-    public void process(@Nonnull final Entity entity, @Nonnull final String attributeName,
+    private void process(@Nonnull final Entity entity, @Nonnull final String attributeName,
             @Nullable final Element fieldElement, @Nullable final Element propertyElement) {
         if (fieldElement != null || propertyElement != null) {
             Attribute attribute = new Attribute(attributeName, isPossibleIdAttribute(fieldElement, propertyElement));
@@ -94,6 +137,17 @@ public class AttributeProcessor {
     }
 
     /**
+     * Test if the given field or property is a possible {@code @Id}.
+     *
+     * @param element the element to check.
+     * @return {@code true} if either the fieldElement or the propertyElement denote an {@code @Id}.
+     */
+    private boolean isPossibleIdAttribute(@Nonnull final Element element) {
+        Id idAnnotation = element.getAnnotation(Id.class);
+        return idAnnotation != null;
+    }
+
+    /**
      * Checks if the given element is a field.
      *
      * @param element the element to check.
@@ -112,7 +166,7 @@ public class AttributeProcessor {
     public boolean isProperty(@Nonnull final Element element) {
         boolean isProperty = false;
         if (ElementKind.METHOD.equals(element.getKind())) {
-            isProperty = !"".equals(getPropertyFromMethod(element));
+            isProperty = !"".equals(getAttributeNameFromProperty(element));
         }
         return isProperty;
     }
@@ -125,7 +179,7 @@ public class AttributeProcessor {
      * @param element the element to check.
      * @return either the property name or an empty string.
      */
-    public String getPropertyFromMethod(@Nonnull final Element element) {
+    public String getAttributeNameFromProperty(@Nonnull final Element element) {
         StringBuilder result = new StringBuilder();
         String elementName = element.getSimpleName().toString();
         if (elementName.startsWith("get")) {

@@ -19,6 +19,7 @@ package org.sw4j.tool.annotation.jpa.processor;
 import java.lang.annotation.Annotation;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.Element;
@@ -63,22 +64,25 @@ public class AttributeProcessorTest {
     }
 
     @Test
-    public void testProcessBothNull() {
+    public void testProcessEmpty() {
         final Entity testEntity =  new Entity("Test");
 
-        this.unitUnderTest.process(testEntity, "id", null, null);
+        this.unitUnderTest.process(testEntity, new LinkedList<Element>());
 
         Assert.assertTrue(testEntity.getAttributes().isEmpty(), "Expected entity with empty attributes.");
     }
 
     @Test
     public void testProcessOnlyFieldNoId() {
+        List<Element> enclosedElements = new LinkedList<>();
+
         final Entity testEntity =  new Entity("Test");
         Name idName = new NameMock("id");
         Element testElement = new VariableElementMock(idName, new HashMap<Class<?>, Annotation>(),
                 ElementKind.FIELD, null, new LinkedList<Element>());
+        enclosedElements.add(testElement);
 
-        this.unitUnderTest.process(testEntity, "id", testElement, null);
+        this.unitUnderTest.process(testEntity, enclosedElements);
 
         Assert.assertEquals(testEntity.getAttributes().size(), 1, "Expected entity with one attribute.");
         Assert.assertEquals(testEntity.getAttributes().get(0).getName(), "id",
@@ -88,6 +92,8 @@ public class AttributeProcessorTest {
 
     @Test
     public void testProcessOnlyFieldId() {
+        List<Element> enclosedElements = new LinkedList<>();
+
         final Entity testEntity =  new Entity("Test");
         Map<Class<?>, Annotation> annotations = new HashMap<>();
         Name idName = new NameMock("id");
@@ -95,8 +101,9 @@ public class AttributeProcessorTest {
         annotations.put(Id.class, id);
         Element testElement = new VariableElementMock(idName, annotations, ElementKind.FIELD, null,
                 new LinkedList<Element>());
+        enclosedElements.add(testElement);
 
-        this.unitUnderTest.process(testEntity, "id", testElement, null);
+        this.unitUnderTest.process(testEntity, enclosedElements);
 
         Assert.assertEquals(testEntity.getAttributes().size(), 1, "Expected entity with one attribute.");
         Assert.assertEquals(testEntity.getAttributes().get(0).getName(), "id",
@@ -106,12 +113,15 @@ public class AttributeProcessorTest {
 
     @Test
     public void testProcessOnlyPropertyNoId() {
+        List<Element> enclosedElements = new LinkedList<>();
+
         final Entity testEntity =  new Entity("Test");
         Name idName = new NameMock("getId");
         Element testElement = new ExecutableElementMock(idName, new HashMap<Class<?>, Annotation>(),
                 ElementKind.METHOD, null, new LinkedList<Element>(), null);
+        enclosedElements.add(testElement);
 
-        this.unitUnderTest.process(testEntity, "id", null, testElement);
+        this.unitUnderTest.process(testEntity, enclosedElements);
 
         Assert.assertEquals(testEntity.getAttributes().size(), 1, "Expected entity with one attribute.");
         Assert.assertEquals(testEntity.getAttributes().get(0).getName(), "id",
@@ -121,15 +131,18 @@ public class AttributeProcessorTest {
 
     @Test
     public void testProcessOnlyPropertyId() {
+        List<Element> enclosedElements = new LinkedList<>();
+
         final Entity testEntity =  new Entity("Test");
         Map<Class<?>, Annotation> annotations = new HashMap<>();
         Name idName = new NameMock("getId");
         Id id = new IdMock();
         annotations.put(Id.class, id);
-        Element testElement = new ExecutableElementMock(idName, annotations, ElementKind.FIELD, null,
+        Element testElement = new ExecutableElementMock(idName, annotations, ElementKind.METHOD, null,
                 new LinkedList<Element>(), null);
+        enclosedElements.add(testElement);
 
-        this.unitUnderTest.process(testEntity, "id", null, testElement);
+        this.unitUnderTest.process(testEntity, enclosedElements);
 
         Assert.assertEquals(testEntity.getAttributes().size(), 1, "Expected entity with one attribute.");
         Assert.assertEquals(testEntity.getAttributes().get(0).getName(), "id",
@@ -139,15 +152,19 @@ public class AttributeProcessorTest {
 
     @Test
     public void testProcessFieldPropertyNoId() {
+        List<Element> enclosedElements = new LinkedList<>();
+
         final Entity testEntity =  new Entity("Test");
         Name fieldName = new NameMock("id");
         Name propertyName = new NameMock("getId");
         Element fieldElement = new VariableElementMock(fieldName, new HashMap<Class<?>, Annotation>(),
                 ElementKind.FIELD, null, new LinkedList<Element>());
+        enclosedElements.add(fieldElement);
         Element propertyElement = new ExecutableElementMock(propertyName, new HashMap<Class<?>, Annotation>(),
                 ElementKind.METHOD, null, new LinkedList<Element>(), null);
+        enclosedElements.add(propertyElement);
 
-        this.unitUnderTest.process(testEntity, "id", fieldElement, propertyElement);
+        this.unitUnderTest.process(testEntity, enclosedElements);
 
         Assert.assertEquals(testEntity.getAttributes().size(), 1, "Expected entity with one attribute.");
         Assert.assertEquals(testEntity.getAttributes().get(0).getName(), "id",
@@ -157,6 +174,8 @@ public class AttributeProcessorTest {
 
     @Test
     public void testProcessFieldPropertyFieldWithId() {
+        List<Element> enclosedElements = new LinkedList<>();
+
         final Entity testEntity =  new Entity("Test");
         Map<Class<?>, Annotation> annotations = new HashMap<>();
         Name fieldName = new NameMock("id");
@@ -165,10 +184,12 @@ public class AttributeProcessorTest {
         annotations.put(Id.class, id);
         Element fieldElement = new VariableElementMock(fieldName, new HashMap<Class<?>, Annotation>(),
                 ElementKind.FIELD, null, new LinkedList<Element>());
+        enclosedElements.add(fieldElement);
         Element propertyElement = new ExecutableElementMock(propertyName, annotations, ElementKind.METHOD, null,
                 new LinkedList<Element>(), null);
+        enclosedElements.add(propertyElement);
 
-        this.unitUnderTest.process(testEntity, "id", fieldElement, propertyElement);
+        this.unitUnderTest.process(testEntity, enclosedElements);
 
         Assert.assertEquals(testEntity.getAttributes().size(), 1, "Expected entity with one attribute.");
         Assert.assertEquals(testEntity.getAttributes().get(0).getName(), "id",
@@ -178,6 +199,8 @@ public class AttributeProcessorTest {
 
     @Test
     public void testProcessFieldPropertyPropertyWithId() {
+        List<Element> enclosedElements = new LinkedList<>();
+
         final Entity testEntity =  new Entity("Test");
         Map<Class<?>, Annotation> annotations = new HashMap<>();
         Name fieldName = new NameMock("id");
@@ -186,10 +209,12 @@ public class AttributeProcessorTest {
         annotations.put(Id.class, id);
         Element fieldElement = new VariableElementMock(fieldName, annotations, ElementKind.FIELD, null,
                 new LinkedList<Element>());
+        enclosedElements.add(fieldElement);
         Element propertyElement = new ExecutableElementMock(propertyName, new HashMap<Class<?>, Annotation>(),
                 ElementKind.METHOD, null, new LinkedList<Element>(), null);
+        enclosedElements.add(propertyElement);
 
-        this.unitUnderTest.process(testEntity, "id", fieldElement, propertyElement);
+        this.unitUnderTest.process(testEntity, enclosedElements);
 
         Assert.assertEquals(testEntity.getAttributes().size(), 1, "Expected entity with one attribute.");
         Assert.assertEquals(testEntity.getAttributes().get(0).getName(), "id",
@@ -199,6 +224,8 @@ public class AttributeProcessorTest {
 
     @Test
     public void testProcessFieldPropertyBothWithId() {
+        List<Element> enclosedElements = new LinkedList<>();
+
         final Entity testEntity =  new Entity("Test");
         Map<Class<?>, Annotation> annotations = new HashMap<>();
         Name fieldName = new NameMock("id");
@@ -207,10 +234,12 @@ public class AttributeProcessorTest {
         annotations.put(Id.class, id);
         Element fieldElement = new VariableElementMock(fieldName, annotations, ElementKind.FIELD, null,
                 new LinkedList<Element>());
+        enclosedElements.add(fieldElement);
         Element propertyElement = new ExecutableElementMock(propertyName, annotations, ElementKind.METHOD, null,
                 new LinkedList<Element>(), null);
+        enclosedElements.add(propertyElement);
 
-        this.unitUnderTest.process(testEntity, "id", fieldElement, propertyElement);
+        this.unitUnderTest.process(testEntity, enclosedElements);
 
         Assert.assertEquals(testEntity.getAttributes().size(), 1, "Expected entity with one attribute.");
         Assert.assertEquals(testEntity.getAttributes().get(0).getName(), "id",
@@ -220,12 +249,15 @@ public class AttributeProcessorTest {
 
     @Test
     public void testProcessSingleAttribute() {
+        List<Element> enclosedElements = new LinkedList<>();
+
         final Entity testEntity =  new Entity("Test");
         Name testName = new NameMock("test");
         Element testElement = new VariableElementMock(testName, new HashMap<Class<?>, Annotation>(),
                 ElementKind.FIELD, null, new LinkedList<Element>());
+        enclosedElements.add(testElement);
 
-        this.unitUnderTest.process(testEntity, "test", testElement, null);
+        this.unitUnderTest.process(testEntity, enclosedElements);
 
         Assert.assertNotNull(testEntity.getAttributes(), "Expected the entity to have attributes.");
         Assert.assertEquals(testEntity.getAttributes().size(), 1, "Expected the entity to have one attribute.");
@@ -235,18 +267,20 @@ public class AttributeProcessorTest {
 
     @Test
     public void testProcessTwoAttributes() {
+        List<Element> enclosedElements = new LinkedList<>();
+
         final Entity testEntity =  new Entity("Test");
         Name testName = new NameMock("test");
         Element testElement = new VariableElementMock(testName, new HashMap<Class<?>, Annotation>(),
                 ElementKind.FIELD, null, new LinkedList<Element>());
-
-        this.unitUnderTest.process(testEntity, "test", testElement, null);
+        enclosedElements.add(testElement);
 
         testName = new NameMock("test2");
         testElement = new VariableElementMock(testName, new HashMap<Class<?>, Annotation>(),
                 ElementKind.FIELD, null, new LinkedList<Element>());
+        enclosedElements.add(testElement);
 
-        this.unitUnderTest.process(testEntity, "test2", testElement, null);
+        this.unitUnderTest.process(testEntity, enclosedElements);
 
         Assert.assertNotNull(testEntity.getAttributes(), "Expected the entity to have attributes.");
         Assert.assertEquals(testEntity.getAttributes().size(), 2, "Expected the entity to have two attributes.");

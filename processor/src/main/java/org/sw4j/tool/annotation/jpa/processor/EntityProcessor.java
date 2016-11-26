@@ -16,10 +16,6 @@
  */
 package org.sw4j.tool.annotation.jpa.processor;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.processing.ProcessingEnvironment;
@@ -57,7 +53,8 @@ public class EntityProcessor {
      *
      * @param processingEnv environment to access facilities the tool framework provides to the processor.
      */
-    public void init(ProcessingEnvironment processingEnv) {
+    @SuppressWarnings("checkstyle:HiddenField")
+    public void init(@Nonnull final ProcessingEnvironment processingEnv) {
         this.processingEnv = processingEnv;
         this.attributeProcessor.init(this.processingEnv);
     }
@@ -98,31 +95,7 @@ public class EntityProcessor {
             }
             model.addEntity(entity);
 
-            Map<String, Element> possibleFields = new HashMap<>();
-            Map<String, Element> possibleProperties = new HashMap<>();
-
-            List<? extends Element> enclosedElements = element.getEnclosedElements();
-            for (Element enclosedElement: enclosedElements) {
-                if (this.attributeProcessor.isField(enclosedElement)) {
-                    possibleFields.put(enclosedElement.getSimpleName().toString(), enclosedElement);
-                } else if (this.attributeProcessor.isProperty(enclosedElement)) {
-                    possibleProperties.put(
-                            this.attributeProcessor.getPropertyFromMethod(enclosedElement), enclosedElement);
-                }
-            }
-            Set<String> handledAttributes = new HashSet<>();
-            for (Map.Entry<String, Element> possibleField: possibleFields.entrySet()) {
-                handledAttributes.add(possibleField.getKey());
-                this.attributeProcessor.process(entity, possibleField.getKey(), possibleField.getValue(),
-                        possibleProperties.get(possibleField.getKey()));
-            }
-            for (Map.Entry<String, Element> possibleProperty: possibleProperties.entrySet()) {
-                if (!handledAttributes.contains(possibleProperty.getKey())) {
-                    handledAttributes.add(possibleProperty.getKey());
-                    this.attributeProcessor.process(entity, possibleProperty.getKey(), null,
-                            possibleProperty.getValue());
-                }
-            }
+            this.attributeProcessor.process(entity, element.getEnclosedElements());
         } else {
             this.processingEnv.getMessager().printMessage(Diagnostic.Kind.WARNING,
                     new StringBuilder("The processed entity \"").append(element.getSimpleName())

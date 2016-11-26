@@ -18,7 +18,6 @@ package org.sw4j.tool.annotation.jpa.processor;
 
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.ServiceLoader;
@@ -32,7 +31,6 @@ import javax.annotation.processing.SupportedAnnotationTypes;
 import javax.annotation.processing.SupportedOptions;
 import javax.annotation.processing.SupportedSourceVersion;
 import javax.lang.model.SourceVersion;
-import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
 import javax.persistence.Entity;
 import javax.tools.Diagnostic;
@@ -74,7 +72,7 @@ public class AnnotationProcessor extends AbstractProcessor {
      * @throws IllegalStateException if this method is called more than once.
      */
     @Override
-    public void init(ProcessingEnvironment processingEnv) {
+    public void init(@Nonnull final ProcessingEnvironment processingEnv) {
         super.init(processingEnv);
         this.entityProcessor.init(this.processingEnv);
     }
@@ -89,7 +87,6 @@ public class AnnotationProcessor extends AbstractProcessor {
     @Override
     public boolean process(@Nonnull final Set<? extends TypeElement> annotations,
             @Nonnull final RoundEnvironment roundEnv) {
-        Set<? extends Element> elements = roundEnv.getRootElements();
         this.entityProcessor.process(roundEnv.getElementsAnnotatedWith(Entity.class), model);
 
         if (roundEnv.processingOver()) {
