@@ -62,6 +62,12 @@ public class EntityProcessor {
         this.attributeProcessor.init(this.processingEnv);
     }
 
+    /**
+     * Process all entities annotated with {@code @Entity}.
+     *
+     * @param elements the elements to process (all must be an {@code @Entity}).
+     * @param model the model where the final entity is added to.
+     */
     public void process(@Nonnull final Set<? extends Element> elements, @Nonnull final Model model) {
         for (Element element: elements) {
             this.process(element, model);
@@ -81,6 +87,7 @@ public class EntityProcessor {
                     new StringBuilder("The processed class \"").append(element.getSimpleName())
                             .append("\" is not an entity.").toString(), element);
         } else if (ElementKind.CLASS.equals(element.getKind()) &&
+                element.getEnclosingElement() != null &&
                 ElementKind.PACKAGE.equals(element.getEnclosingElement().getKind())) {
             // This is a top level class therefore we can continue.
             Entity entity;
