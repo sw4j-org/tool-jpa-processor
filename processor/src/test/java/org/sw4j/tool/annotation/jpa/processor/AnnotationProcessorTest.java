@@ -16,10 +16,8 @@
  */
 package org.sw4j.tool.annotation.jpa.processor;
 
-import java.lang.annotation.Annotation;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.Map;
 import java.util.Set;
 import javax.annotation.processing.ProcessingEnvironment;
@@ -33,8 +31,8 @@ import org.sw4j.tool.annotation.jpa.processor.mock.annotation.processing.Message
 import org.sw4j.tool.annotation.jpa.processor.mock.annotation.processing.ProcessingEnvironmentMock;
 import org.sw4j.tool.annotation.jpa.processor.mock.annotation.processing.RoundEnvironmentMock;
 import org.sw4j.tool.annotation.jpa.processor.mock.persistence.EntityMock;
-import org.sw4j.tool.annotation.jpa.processor.mock.lang.model.element.NameMock;
-import org.sw4j.tool.annotation.jpa.processor.mock.lang.model.element.TypeElementMock;
+import org.sw4j.tool.annotation.jpa.processor.mock.lang.model.element.PackageElementBuilder;
+import org.sw4j.tool.annotation.jpa.processor.mock.lang.model.element.TypeElementBuilder;
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -55,18 +53,26 @@ public class AnnotationProcessorTest {
 
     private MessagerMock messager;
 
+    private TypeElementBuilder typeElementBuilder;
+
+    private PackageElementBuilder packageElementBuilder;
+
     @BeforeMethod
     public void setUp() {
         this.options = new HashMap<>();
         this.messager = new MessagerMock();
+        this.typeElementBuilder = new TypeElementBuilder();
+        this.packageElementBuilder = new PackageElementBuilder();
 
         this.unitUnderTest = new AnnotationProcessor();
         this.processingEnv = new ProcessingEnvironmentMock(this.options, this.messager);
         this.unitUnderTest.init(this.processingEnv);
 
         this.handledAnnotations = new HashSet<>();
-        this.handledAnnotations.add(new TypeElementMock(new NameMock(""), new NameMock("org.sw4j.test.Test"), null,
-                ElementKind.ANNOTATION_TYPE, null, null));
+        this.typeElementBuilder.setSimpleName("Entity");
+        this.typeElementBuilder.setQualifiedName("javax.persistence.Entity");
+        this.typeElementBuilder.setKind(ElementKind.ANNOTATION_TYPE);
+        this.handledAnnotations.add(this.typeElementBuilder.createElement());
     }
 
     @Test
@@ -80,10 +86,12 @@ public class AnnotationProcessorTest {
 
     @Test
     public void testProcessNonEntityElementSet() {
-        final Map<Class<?>, ? extends Annotation> annotations = new HashMap<>();
-        final Set<TypeElement> elements = new HashSet<>();
-        TypeElementMock nonEntity = new TypeElementMock(new NameMock(""), new NameMock("org.sw4j.test.Test"),
-                annotations, ElementKind.CLASS, null, null);
+        Set<TypeElement> elements = new HashSet<>();
+
+        this.typeElementBuilder.setSimpleName("Test");
+        this.typeElementBuilder.setQualifiedName("org.sw4j.test.Test");
+        this.typeElementBuilder.setKind(ElementKind.CLASS);
+        TypeElement nonEntity = this.typeElementBuilder.createElement();
 
         elements.add(nonEntity);
 
@@ -96,13 +104,27 @@ public class AnnotationProcessorTest {
 
     @Test
     public void testProcessSingleEntityElementSet() throws Exception {
-        final Map<Class<?>, Annotation> annotations = new HashMap<>();
-        annotations.put(Entity.class, new EntityMock(""));
-        final Set<TypeElement> elements = new HashSet<>();
-        TypeElementMock enclosingElement = new TypeElementMock(new NameMock(""), new NameMock("org.sw4j.test"),
-                new HashMap<Class<?>, Annotation>(), ElementKind.PACKAGE, null, null);
-        TypeElementMock entity1 = new TypeElementMock(new NameMock("Entity"), new NameMock("org.sw4j.test.Test"),
-                annotations, ElementKind.CLASS, enclosingElement, new LinkedList<Element>());
+        Set<TypeElement> elements = new HashSet<>();
+
+        this.packageElementBuilder.setSimpleName("org.sw4j.test");
+        this.packageElementBuilder.setQualifiedName("org.sw4j.test");
+        Element enclosingElement = this.packageElementBuilder.createElement();
+
+        this.typeElementBuilder.setSimpleName("Test");
+        this.typeElementBuilder.setQualifiedName("org.sw4j.test.Test");
+        this.typeElementBuilder.addAnnotation(Entity.class, new EntityMock(""));
+        this.typeElementBuilder.setKind(ElementKind.CLASS);
+        this.typeElementBuilder.setEnclosingElement(enclosingElement);
+        TypeElement entity1 = this.typeElementBuilder.createElement();
+
+//        elements.add(nonEntity);
+//
+//        Map<Class<?>, Annotation> annotations = new HashMap<>();
+//        annotations.put(Entity.class, new EntityMock(""));
+//        TypeElementMock enclosingElement = new TypeElementMock(new NameMock(""), new NameMock("org.sw4j.test"),
+//                new HashMap<Class<?>, Annotation>(), ElementKind.PACKAGE, null, null);
+//        TypeElementMock entity1 = new TypeElementMock(new NameMock("Entity"), new NameMock("org.sw4j.test.Test"),
+//                annotations, ElementKind.CLASS, enclosingElement, new LinkedList<Element>());
         elements.add(entity1);
 
         RoundEnvironmentMock roundEnv = new RoundEnvironmentMock(elements, elements);

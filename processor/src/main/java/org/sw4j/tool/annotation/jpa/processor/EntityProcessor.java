@@ -78,7 +78,7 @@ public class EntityProcessor {
      * @param element the element to process (must be an {@code @Entity}.
      * @param model the model where the final entity is added to.
      */
-    public void process(@Nonnull final Element element, @Nonnull final Model model) {
+    private void process(@Nonnull final Element element, @Nonnull final Model model) {
         javax.persistence.Entity entityAnnotation = element.getAnnotation(javax.persistence.Entity.class);
         if (entityAnnotation == null) {
             this.processingEnv.getMessager().printMessage(Diagnostic.Kind.WARNING,

@@ -131,8 +131,14 @@ public class AttributeProcessor {
      * @param fieldElement the field of the attribute.
      */
     private void processField(@Nonnull final Entity entity, @Nonnull final Element fieldElement) {
+        TypeMirror type = fieldElement.asType();
+        if (TypeKind.DECLARED.equals(type.getKind())) {
+            // The type is either a class or an interface
+        } else {
+            // This should be a simple type (e.g. int or float)
+        }
         Attribute attribute = new Attribute(fieldElement.getSimpleName().toString(),
-                isPossibleIdAttribute(fieldElement));
+                isPossibleIdAttribute(fieldElement), null);
         entity.addAttribute(attribute);
     }
 
@@ -144,7 +150,7 @@ public class AttributeProcessor {
      */
     private void processProperty(@Nonnull final Entity entity, @Nonnull final Element propertyElement) {
         Attribute attribute = new Attribute(getAttributeNameFromProperty(propertyElement),
-                isPossibleIdAttribute(propertyElement));
+                isPossibleIdAttribute(propertyElement), null);
         entity.addAttribute(attribute);
     }
 

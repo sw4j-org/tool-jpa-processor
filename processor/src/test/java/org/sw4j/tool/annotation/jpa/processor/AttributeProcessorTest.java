@@ -16,27 +16,20 @@
  */
 package org.sw4j.tool.annotation.jpa.processor;
 
-import java.lang.annotation.Annotation;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
-import javax.lang.model.element.Name;
 import javax.lang.model.type.TypeKind;
-import javax.lang.model.type.TypeMirror;
 import javax.persistence.Id;
 import javax.tools.Diagnostic;
 import org.sw4j.tool.annotation.jpa.generator.model.Entity;
 import org.sw4j.tool.annotation.jpa.processor.mock.annotation.processing.MessagerMock;
 import org.sw4j.tool.annotation.jpa.processor.mock.annotation.processing.ProcessingEnvironmentMock;
-import org.sw4j.tool.annotation.jpa.processor.mock.lang.model.element.ExecutableElementMock;
-import org.sw4j.tool.annotation.jpa.processor.mock.lang.model.element.NameMock;
-import org.sw4j.tool.annotation.jpa.processor.mock.lang.model.element.TypeElementMock;
-import org.sw4j.tool.annotation.jpa.processor.mock.lang.model.element.VariableElementMock;
-import org.sw4j.tool.annotation.jpa.processor.mock.lang.model.type.TypeMirrorMock;
+import org.sw4j.tool.annotation.jpa.processor.mock.lang.model.element.ExecutableElementBuilder;
+import org.sw4j.tool.annotation.jpa.processor.mock.lang.model.element.TypeElementBuilder;
+import org.sw4j.tool.annotation.jpa.processor.mock.lang.model.element.VariableElementBuilder;
 import org.sw4j.tool.annotation.jpa.processor.mock.lang.model.util.TypesMock;
 import org.sw4j.tool.annotation.jpa.processor.mock.persistence.IdMock;
 import org.testng.Assert;
@@ -57,8 +50,18 @@ public class AttributeProcessorTest {
 
     private TypesMock types;
 
+    private ExecutableElementBuilder executableElementBuilder;
+
+    private TypeElementBuilder typeElementBuilder;
+
+    private VariableElementBuilder variableElementBuilder;
+
     @BeforeMethod
     public void setUp() {
+        this.executableElementBuilder = new ExecutableElementBuilder();
+        this.typeElementBuilder = new TypeElementBuilder();
+        this.variableElementBuilder = new VariableElementBuilder();
+
         this.messager = new MessagerMock();
         this.types = new TypesMock();
 
@@ -69,14 +72,14 @@ public class AttributeProcessorTest {
 
     @Test
     public void testProcessNoAttribute() {
-        final Entity testEntity =  new Entity("Test", "org.sw4j.test.Test");
+        Entity testEntity =  new Entity("Test", "org.sw4j.test.Test");
 
         Assert.assertTrue(testEntity.getAttributes().isEmpty(), "Expected the entity to have no attributes.");
     }
 
     @Test
     public void testProcessEmpty() {
-        final Entity testEntity =  new Entity("Test", "org.sw4j.test.Test");
+        Entity testEntity =  new Entity("Test", "org.sw4j.test.Test");
 
         this.unitUnderTest.process(testEntity, new LinkedList<Element>());
 
@@ -85,12 +88,14 @@ public class AttributeProcessorTest {
 
     @Test
     public void testProcessOnlyFieldNoId() {
+        Entity testEntity =  new Entity("Test", "org.sw4j.test.Test");
+
         List<Element> enclosedElements = new LinkedList<>();
 
-        final Entity testEntity =  new Entity("Test", "org.sw4j.test.Test");
-        Name idName = new NameMock("id");
-        Element testElement = new VariableElementMock(idName, new HashMap<Class<?>, Annotation>(),
-                ElementKind.FIELD, null, new LinkedList<Element>());
+        this.variableElementBuilder.setSimpleName("id");
+        this.variableElementBuilder.setKind(ElementKind.FIELD);
+        this.variableElementBuilder.setTypeKind(TypeKind.LONG);
+        Element testElement = this.variableElementBuilder.createElement();
         enclosedElements.add(testElement);
 
         this.unitUnderTest.process(testEntity, enclosedElements);
@@ -102,15 +107,15 @@ public class AttributeProcessorTest {
 
     @Test
     public void testProcessOnlyFieldId() {
+        Entity testEntity =  new Entity("Test", "org.sw4j.test.Test");
+
         List<Element> enclosedElements = new LinkedList<>();
 
-        final Entity testEntity =  new Entity("Test", "org.sw4j.test.Test");
-        Map<Class<?>, Annotation> annotations = new HashMap<>();
-        Name idName = new NameMock("id");
-        Id id = new IdMock();
-        annotations.put(Id.class, id);
-        Element testElement = new VariableElementMock(idName, annotations, ElementKind.FIELD, null,
-                new LinkedList<Element>());
+        this.variableElementBuilder.setSimpleName("id");
+        this.variableElementBuilder.addAnnotation(Id.class, new IdMock());
+        this.variableElementBuilder.setKind(ElementKind.FIELD);
+        this.variableElementBuilder.setTypeKind(TypeKind.LONG);
+        Element testElement = this.variableElementBuilder.createElement();
         enclosedElements.add(testElement);
 
         this.unitUnderTest.process(testEntity, enclosedElements);
@@ -123,12 +128,14 @@ public class AttributeProcessorTest {
 
     @Test
     public void testProcessOnlyPropertyNoId() {
+        Entity testEntity =  new Entity("Test", "org.sw4j.test.Test");
+
         List<Element> enclosedElements = new LinkedList<>();
 
-        final Entity testEntity =  new Entity("Test", "org.sw4j.test.Test");
-        Name idName = new NameMock("getId");
-        Element testElement = new ExecutableElementMock(idName, new HashMap<Class<?>, Annotation>(),
-                ElementKind.METHOD, null, new LinkedList<Element>(), null);
+        this.executableElementBuilder.setSimpleName("getId");
+        this.executableElementBuilder.setReturnTypeKind(TypeKind.LONG);
+        this.executableElementBuilder.setKind(ElementKind.METHOD);
+        Element testElement = this.executableElementBuilder.createElement();
         enclosedElements.add(testElement);
 
         this.unitUnderTest.process(testEntity, enclosedElements);
@@ -140,15 +147,15 @@ public class AttributeProcessorTest {
 
     @Test
     public void testProcessOnlyPropertyId() {
+        Entity testEntity =  new Entity("Test", "org.sw4j.test.Test");
+
         List<Element> enclosedElements = new LinkedList<>();
 
-        final Entity testEntity =  new Entity("Test", "org.sw4j.test.Test");
-        Map<Class<?>, Annotation> annotations = new HashMap<>();
-        Name idName = new NameMock("getId");
-        Id id = new IdMock();
-        annotations.put(Id.class, id);
-        Element testElement = new ExecutableElementMock(idName, annotations, ElementKind.METHOD, null,
-                new LinkedList<Element>(), null);
+        this.executableElementBuilder.setSimpleName("getId");
+        this.executableElementBuilder.addAnnotation(Id.class, new IdMock());
+        this.executableElementBuilder.setReturnTypeKind(TypeKind.LONG);
+        this.executableElementBuilder.setKind(ElementKind.METHOD);
+        Element testElement = this.executableElementBuilder.createElement();
         enclosedElements.add(testElement);
 
         this.unitUnderTest.process(testEntity, enclosedElements);
@@ -161,16 +168,20 @@ public class AttributeProcessorTest {
 
     @Test
     public void testProcessFieldPropertyNoId() {
+        Entity testEntity =  new Entity("Test", "org.sw4j.test.Test");
+
         List<Element> enclosedElements = new LinkedList<>();
 
-        final Entity testEntity =  new Entity("Test", "org.sw4j.test.Test");
-        Name fieldName = new NameMock("id");
-        Name propertyName = new NameMock("getId");
-        Element fieldElement = new VariableElementMock(fieldName, new HashMap<Class<?>, Annotation>(),
-                ElementKind.FIELD, null, new LinkedList<Element>());
+        this.variableElementBuilder.setSimpleName("id");
+        this.variableElementBuilder.setKind(ElementKind.FIELD);
+        this.variableElementBuilder.setTypeKind(TypeKind.LONG);
+        Element fieldElement = this.variableElementBuilder.createElement();
         enclosedElements.add(fieldElement);
-        Element propertyElement = new ExecutableElementMock(propertyName, new HashMap<Class<?>, Annotation>(),
-                ElementKind.METHOD, null, new LinkedList<Element>(), null);
+
+        this.executableElementBuilder.setSimpleName("getId");
+        this.executableElementBuilder.setReturnTypeKind(TypeKind.LONG);
+        this.executableElementBuilder.setKind(ElementKind.METHOD);
+        Element propertyElement = this.executableElementBuilder.createElement();
         enclosedElements.add(propertyElement);
 
         this.unitUnderTest.process(testEntity, enclosedElements);
@@ -182,19 +193,21 @@ public class AttributeProcessorTest {
 
     @Test
     public void testProcessFieldPropertyFieldWithId() {
+        Entity testEntity =  new Entity("Test", "org.sw4j.test.Test");
+
         List<Element> enclosedElements = new LinkedList<>();
 
-        final Entity testEntity =  new Entity("Test", "org.sw4j.test.Test");
-        Map<Class<?>, Annotation> annotations = new HashMap<>();
-        Name fieldName = new NameMock("id");
-        Name propertyName = new NameMock("getId");
-        Id id = new IdMock();
-        annotations.put(Id.class, id);
-        Element fieldElement = new VariableElementMock(fieldName, new HashMap<Class<?>, Annotation>(),
-                ElementKind.FIELD, null, new LinkedList<Element>());
+        this.variableElementBuilder.setSimpleName("id");
+        this.variableElementBuilder.setKind(ElementKind.FIELD);
+        this.variableElementBuilder.setTypeKind(TypeKind.LONG);
+        Element fieldElement = this.variableElementBuilder.createElement();
         enclosedElements.add(fieldElement);
-        Element propertyElement = new ExecutableElementMock(propertyName, annotations, ElementKind.METHOD, null,
-                new LinkedList<Element>(), null);
+
+        this.executableElementBuilder.setSimpleName("getId");
+        this.executableElementBuilder.addAnnotation(Id.class, new IdMock());
+        this.executableElementBuilder.setReturnTypeKind(TypeKind.LONG);
+        this.executableElementBuilder.setKind(ElementKind.METHOD);
+        Element propertyElement = this.executableElementBuilder.createElement();
         enclosedElements.add(propertyElement);
 
         this.unitUnderTest.process(testEntity, enclosedElements);
@@ -207,19 +220,21 @@ public class AttributeProcessorTest {
 
     @Test
     public void testProcessFieldPropertyPropertyWithId() {
+        Entity testEntity =  new Entity("Test", "org.sw4j.test.Test");
+
         List<Element> enclosedElements = new LinkedList<>();
 
-        final Entity testEntity =  new Entity("Test", "org.sw4j.test.Test");
-        Map<Class<?>, Annotation> annotations = new HashMap<>();
-        Name fieldName = new NameMock("id");
-        Name propertyName = new NameMock("getId");
-        Id id = new IdMock();
-        annotations.put(Id.class, id);
-        Element fieldElement = new VariableElementMock(fieldName, annotations, ElementKind.FIELD, null,
-                new LinkedList<Element>());
+        this.variableElementBuilder.setSimpleName("id");
+        this.variableElementBuilder.addAnnotation(Id.class, new IdMock());
+        this.variableElementBuilder.setKind(ElementKind.FIELD);
+        this.variableElementBuilder.setTypeKind(TypeKind.LONG);
+        Element fieldElement = this.variableElementBuilder.createElement();
         enclosedElements.add(fieldElement);
-        Element propertyElement = new ExecutableElementMock(propertyName, new HashMap<Class<?>, Annotation>(),
-                ElementKind.METHOD, null, new LinkedList<Element>(), null);
+
+        this.executableElementBuilder.setSimpleName("getId");
+        this.executableElementBuilder.setReturnTypeKind(TypeKind.LONG);
+        this.executableElementBuilder.setKind(ElementKind.METHOD);
+        Element propertyElement = this.executableElementBuilder.createElement();
         enclosedElements.add(propertyElement);
 
         this.unitUnderTest.process(testEntity, enclosedElements);
@@ -232,19 +247,22 @@ public class AttributeProcessorTest {
 
     @Test
     public void testProcessFieldPropertyBothWithId() {
+        Entity testEntity =  new Entity("Test", "org.sw4j.test.Test");
+
         List<Element> enclosedElements = new LinkedList<>();
 
-        final Entity testEntity =  new Entity("Test", "org.sw4j.test.Test");
-        Map<Class<?>, Annotation> annotations = new HashMap<>();
-        Name fieldName = new NameMock("id");
-        Name propertyName = new NameMock("getId");
-        Id id = new IdMock();
-        annotations.put(Id.class, id);
-        Element fieldElement = new VariableElementMock(fieldName, annotations, ElementKind.FIELD, null,
-                new LinkedList<Element>());
+        this.variableElementBuilder.setSimpleName("id");
+        this.variableElementBuilder.addAnnotation(Id.class, new IdMock());
+        this.variableElementBuilder.setKind(ElementKind.FIELD);
+        this.variableElementBuilder.setTypeKind(TypeKind.LONG);
+        Element fieldElement = this.variableElementBuilder.createElement();
         enclosedElements.add(fieldElement);
-        Element propertyElement = new ExecutableElementMock(propertyName, annotations, ElementKind.METHOD, null,
-                new LinkedList<Element>(), null);
+
+        this.executableElementBuilder.setSimpleName("getId");
+        this.executableElementBuilder.addAnnotation(Id.class, new IdMock());
+        this.executableElementBuilder.setReturnTypeKind(TypeKind.LONG);
+        this.executableElementBuilder.setKind(ElementKind.METHOD);
+        Element propertyElement = this.executableElementBuilder.createElement();
         enclosedElements.add(propertyElement);
 
         this.unitUnderTest.process(testEntity, enclosedElements);
@@ -257,23 +275,22 @@ public class AttributeProcessorTest {
 
     @Test
     public void testProcessPropertyWithPrimitiveBoolean() {
+        Entity testEntity =  new Entity("Test", "org.sw4j.test.Test");
+
         List<Element> enclosedElements = new LinkedList<>();
 
-        final Entity testEntity =  new Entity("Test", "org.sw4j.test.Test");
-
-        Map<Class<?>, Annotation> annotations = new HashMap<>();
-        Name booleanName = new NameMock("isFlag");
-        TypeMirror returnType = new TypeMirrorMock(TypeKind.BOOLEAN);
-        Element propertyElement = new ExecutableElementMock(booleanName, annotations, ElementKind.METHOD, null,
-                new LinkedList<Element>(), returnType);
+        this.executableElementBuilder.setSimpleName("isFlag");
+        this.executableElementBuilder.setReturnTypeKind(TypeKind.BOOLEAN);
+        this.executableElementBuilder.setKind(ElementKind.METHOD);
+        Element propertyElement = this.executableElementBuilder.createElement();
         enclosedElements.add(propertyElement);
 
-        annotations = new HashMap<>();
-        Name idName = new NameMock("getId");
-        Id id = new IdMock();
-        annotations.put(Id.class, id);
-        Element idElement = new ExecutableElementMock(idName, annotations, ElementKind.METHOD, null,
-                new LinkedList<Element>(), null);
+        this.executableElementBuilder.setSimpleName("getId");
+        this.executableElementBuilder.addAnnotation(Id.class, new IdMock());
+        this.executableElementBuilder.setReturnTypeKind(TypeKind.LONG);
+        this.executableElementBuilder.setKind(ElementKind.METHOD);
+        this.variableElementBuilder.setTypeKind(TypeKind.LONG);
+        Element idElement = this.executableElementBuilder.createElement();
         enclosedElements.add(idElement);
 
         this.unitUnderTest.process(testEntity, enclosedElements);
@@ -289,26 +306,27 @@ public class AttributeProcessorTest {
 
     @Test
     public void testProcessPropertyWithObjectBoolean() {
+        Entity testEntity =  new Entity("Test", "org.sw4j.test.Test");
+
         List<Element> enclosedElements = new LinkedList<>();
 
-        final Entity testEntity =  new Entity("Test", "org.sw4j.test.Test");
-
-        Map<Class<?>, Annotation> annotations = new HashMap<>();
-        Name booleanName = new NameMock("isFlag");
-        TypeMirrorMock returnType = new TypeMirrorMock(TypeKind.DECLARED);
-        Element returnElement = new TypeElementMock(new NameMock("Boolean"), new NameMock("java.lang.Boolean"),
-                new HashMap<Class<?>, Annotation>(), ElementKind.CLASS, null, new LinkedList<Element>());
-        this.types.asElement(returnElement);
-        Element propertyElement = new ExecutableElementMock(booleanName, annotations, ElementKind.METHOD, null,
-                new LinkedList<Element>(), returnType);
+        this.executableElementBuilder.setSimpleName("isFlag");
+        this.executableElementBuilder.setReturnTypeKind(TypeKind.DECLARED);
+        this.executableElementBuilder.setKind(ElementKind.METHOD);
+        Element propertyElement = this.executableElementBuilder.createElement();
         enclosedElements.add(propertyElement);
 
-        annotations = new HashMap<>();
-        Name idName = new NameMock("getId");
-        Id id = new IdMock();
-        annotations.put(Id.class, id);
-        Element idElement = new ExecutableElementMock(idName, annotations, ElementKind.METHOD, null,
-                new LinkedList<Element>(), null);
+        this.typeElementBuilder.setSimpleName("Boolean");
+        this.typeElementBuilder.setQualifiedName("java.lang.Boolean");
+        this.typeElementBuilder.setKind(ElementKind.CLASS);
+        Element returnElement = this.typeElementBuilder.createElement();
+        this.types.asElement(returnElement);
+
+        this.executableElementBuilder.setSimpleName("getId");
+        this.executableElementBuilder.addAnnotation(Id.class, new IdMock());
+        this.executableElementBuilder.setReturnTypeKind(TypeKind.LONG);
+        this.executableElementBuilder.setKind(ElementKind.METHOD);
+        Element idElement = this.executableElementBuilder.createElement();
         enclosedElements.add(idElement);
 
         this.unitUnderTest.process(testEntity, enclosedElements);
@@ -324,26 +342,27 @@ public class AttributeProcessorTest {
 
     @Test
     public void testProcessPropertyWithoutBoolean() {
+        Entity testEntity =  new Entity("Test", "org.sw4j.test.Test");
+
         List<Element> enclosedElements = new LinkedList<>();
 
-        final Entity testEntity =  new Entity("Test", "org.sw4j.test.Test");
-
-        Map<Class<?>, Annotation> annotations = new HashMap<>();
-        Name booleanName = new NameMock("isFlag");
-        TypeMirrorMock returnType = new TypeMirrorMock(TypeKind.DECLARED);
-        Element returnElement = new TypeElementMock(new NameMock("Integer"), new NameMock("java.lang.Integer"),
-                new HashMap<Class<?>, Annotation>(), ElementKind.CLASS, null, new LinkedList<Element>());
-        this.types.asElement(returnElement);
-        Element propertyElement = new ExecutableElementMock(booleanName, annotations, ElementKind.METHOD, null,
-                new LinkedList<Element>(), returnType);
+        this.executableElementBuilder.setSimpleName("isFlag");
+        this.executableElementBuilder.setReturnTypeKind(TypeKind.DECLARED);
+        this.executableElementBuilder.setKind(ElementKind.METHOD);
+        Element propertyElement = this.executableElementBuilder.createElement();
         enclosedElements.add(propertyElement);
 
-        annotations = new HashMap<>();
-        Name idName = new NameMock("getId");
-        Id id = new IdMock();
-        annotations.put(Id.class, id);
-        Element idElement = new ExecutableElementMock(idName, annotations, ElementKind.METHOD, null,
-                new LinkedList<Element>(), null);
+        this.typeElementBuilder.setSimpleName("Integer");
+        this.typeElementBuilder.setQualifiedName("java.lang.Integer");
+        this.typeElementBuilder.setKind(ElementKind.CLASS);
+        Element returnElement = this.typeElementBuilder.createElement();
+        this.types.asElement(returnElement);
+
+        this.executableElementBuilder.setSimpleName("getId");
+        this.executableElementBuilder.addAnnotation(Id.class, new IdMock());
+        this.executableElementBuilder.setReturnTypeKind(TypeKind.LONG);
+        this.executableElementBuilder.setKind(ElementKind.METHOD);
+        Element idElement = this.executableElementBuilder.createElement();
         enclosedElements.add(idElement);
 
         this.unitUnderTest.process(testEntity, enclosedElements);
@@ -356,12 +375,15 @@ public class AttributeProcessorTest {
 
     @Test
     public void testProcessSingleAttribute() {
+        Entity testEntity =  new Entity("Test", "org.sw4j.test.Test");
+
         List<Element> enclosedElements = new LinkedList<>();
 
-        final Entity testEntity =  new Entity("Test", "org.sw4j.test.Test");
-        Name testName = new NameMock("test");
-        Element testElement = new VariableElementMock(testName, new HashMap<Class<?>, Annotation>(),
-                ElementKind.FIELD, null, new LinkedList<Element>());
+        this.variableElementBuilder.setSimpleName("test");
+        this.variableElementBuilder.setTypeKind(TypeKind.INT);
+        this.variableElementBuilder.setKind(ElementKind.FIELD);
+        this.variableElementBuilder.setTypeKind(TypeKind.LONG);
+        Element testElement = this.variableElementBuilder.createElement();
         enclosedElements.add(testElement);
 
         this.unitUnderTest.process(testEntity, enclosedElements);
@@ -373,17 +395,20 @@ public class AttributeProcessorTest {
 
     @Test
     public void testProcessTwoAttributes() {
+        final Entity testEntity =  new Entity("Test", "org.sw4j.test.Test");
+
         List<Element> enclosedElements = new LinkedList<>();
 
-        final Entity testEntity =  new Entity("Test", "org.sw4j.test.Test");
-        Name testName = new NameMock("test");
-        Element testElement = new VariableElementMock(testName, new HashMap<Class<?>, Annotation>(),
-                ElementKind.FIELD, null, new LinkedList<Element>());
+        this.variableElementBuilder.setSimpleName("test");
+        this.variableElementBuilder.setTypeKind(TypeKind.INT);
+        this.variableElementBuilder.setKind(ElementKind.FIELD);
+        Element testElement = this.variableElementBuilder.createElement();
         enclosedElements.add(testElement);
 
-        testName = new NameMock("test2");
-        testElement = new VariableElementMock(testName, new HashMap<Class<?>, Annotation>(),
-                ElementKind.FIELD, null, new LinkedList<Element>());
+        this.variableElementBuilder.setSimpleName("test2");
+        this.variableElementBuilder.setTypeKind(TypeKind.INT);
+        this.variableElementBuilder.setKind(ElementKind.FIELD);
+        testElement = this.variableElementBuilder.createElement();
         enclosedElements.add(testElement);
 
         this.unitUnderTest.process(testEntity, enclosedElements);
