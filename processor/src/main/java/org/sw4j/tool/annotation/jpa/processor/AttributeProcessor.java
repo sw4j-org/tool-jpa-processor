@@ -17,13 +17,10 @@
 package org.sw4j.tool.annotation.jpa.processor;
 
 import java.beans.Introspector;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
@@ -31,6 +28,7 @@ import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
+import javax.persistence.AccessType;
 import javax.persistence.Id;
 import javax.tools.Diagnostic;
 import org.sw4j.tool.annotation.jpa.generator.model.Attribute;
@@ -82,17 +80,18 @@ public class AttributeProcessor {
      * @param possibleAttributes all enclosed elements of the element that denotes the {@code Entity}.
      */
     public void process(@Nonnull final Entity entity, @Nonnull final List<? extends Element> possibleAttributes) {
-        Map<String, Element> fields = new LinkedHashMap<>();
-        Map<String, Element> properties = new LinkedHashMap<>();
+        AccessType accessType = null;
+        Map<String, Element> possibleFields = new LinkedHashMap<>();
+        Map<String, Element> possibleProperties = new LinkedHashMap<>();
         Map<String, Element> possibleIds = new LinkedHashMap<>();
         for (Element possibleAttribute: possibleAttributes) {
             String attributeName = null;
             if (isField(possibleAttribute)) {
                 attributeName = possibleAttribute.getSimpleName().toString();
-                fields.put(attributeName, possibleAttribute);
+                possibleFields.put(attributeName, possibleAttribute);
             } else if (isProperty(possibleAttribute)) {
                 attributeName = getAttributeNameFromProperty(possibleAttribute);
-                properties.put(attributeName, possibleAttribute);
+                possibleProperties.put(attributeName, possibleAttribute);
             }
             if (attributeName != null && isPossibleIdAttribute(possibleAttribute)) {
                 possibleIds.put(attributeName, possibleAttribute);
@@ -100,16 +99,19 @@ public class AttributeProcessor {
         }
 
         if (possibleIds.size() == 1) {
-            Set<String> handledAttributes = new HashSet<>();
-            for (Map.Entry<String, Element> possibleField: fields.entrySet()) {
-                handledAttributes.add(possibleField.getKey());
-                process(entity, possibleField.getKey(), possibleField.getValue(),
-                        properties.get(possibleField.getKey()));
+            Map.Entry<String, Element> id = possibleIds.entrySet().iterator().next();
+            if (isField(id.getValue())) {
+                accessType = AccessType.FIELD;
+            } else if (isProperty(id.getValue())) {
+                accessType = AccessType.PROPERTY;
             }
-            for (Map.Entry<String, Element> possibleProperty: properties.entrySet()) {
-                if (!handledAttributes.contains(possibleProperty.getKey())) {
-                    handledAttributes.add(possibleProperty.getKey());
-                    process(entity, possibleProperty.getKey(), null, possibleProperty.getValue());
+            if (accessType == AccessType.FIELD) {
+                for (Map.Entry<String, Element> possibleField: possibleFields.entrySet()) {
+                    processField(entity, possibleField.getValue());
+                }
+            } else {
+                for (Map.Entry<String, Element> possibleProperty: possibleProperties.entrySet()) {
+                    processProperty(entity, possibleProperty.getValue());
                 }
             }
         } else {
@@ -123,40 +125,27 @@ public class AttributeProcessor {
     }
 
     /**
-     * Process a single entity annotated with {@code @Entity}. An attribute may be defined by either a field or a
-     * property or both. Which one is used depends on the access of the entity.
+     * Process a single field attribute.
      *
      * @param entity the entity this attribute belongs to.
-     * @param attributeName the name of the attribute.
-     * @param fieldElement the possible field of the attribute.
-     * @param propertyElement the possible property of the attribute.
+     * @param fieldElement the field of the attribute.
      */
-    private void process(@Nonnull final Entity entity, @Nonnull final String attributeName,
-            @Nullable final Element fieldElement, @Nullable final Element propertyElement) {
-        if (fieldElement != null || propertyElement != null) {
-            Attribute attribute = new Attribute(attributeName, isPossibleIdAttribute(fieldElement, propertyElement));
-            entity.addAttribute(attribute);
-        }
+    private void processField(@Nonnull final Entity entity, @Nonnull final Element fieldElement) {
+        Attribute attribute = new Attribute(fieldElement.getSimpleName().toString(),
+                isPossibleIdAttribute(fieldElement));
+        entity.addAttribute(attribute);
     }
 
     /**
-     * Test if the given field or property is a possible {@code Id}. The caller is responsible to ensure that the
-     * elements denote the same attribute.
+     * Process a single property attribute.
      *
-     * @param fieldElement the field element to check.
-     * @param propertyElement the property element to check.
-     * @return {@code true} if either the fieldElement or the propertyElement denote an {@code Id}.
+     * @param entity the entity this attribute belongs to.
+     * @param propertyElement the property of the attribute.
      */
-    private boolean isPossibleIdAttribute(@Nullable final Element fieldElement,
-            @Nullable final Element propertyElement) {
-        Id idAnnotation = null;
-        if (fieldElement != null) {
-            idAnnotation = fieldElement.getAnnotation(Id.class);
-        }
-        if (idAnnotation == null && propertyElement != null) {
-            idAnnotation = propertyElement.getAnnotation(Id.class);
-        }
-        return idAnnotation != null;
+    private void processProperty(@Nonnull final Entity entity, @Nonnull final Element propertyElement) {
+        Attribute attribute = new Attribute(getAttributeNameFromProperty(propertyElement),
+                isPossibleIdAttribute(propertyElement));
+        entity.addAttribute(attribute);
     }
 
     /**
@@ -186,7 +175,7 @@ public class AttributeProcessor {
      * @param element the element to check.
      * @return {@code true} if the element is the getter of a property.
      */
-    public boolean isProperty(@Nonnull final Element element) {
+    private boolean isProperty(@Nonnull final Element element) {
         boolean isProperty = false;
         if (ElementKind.METHOD.equals(element.getKind())) {
             isProperty = !"".equals(getAttributeNameFromProperty(element));
@@ -202,7 +191,7 @@ public class AttributeProcessor {
      * @param element the element to check.
      * @return either the property name or an empty string.
      */
-    public String getAttributeNameFromProperty(@Nonnull final Element element) {
+    private String getAttributeNameFromProperty(@Nonnull final Element element) {
         StringBuilder result = new StringBuilder();
         String elementName = element.getSimpleName().toString();
         if (elementName.startsWith(PROPERTY_PREFIX)) {

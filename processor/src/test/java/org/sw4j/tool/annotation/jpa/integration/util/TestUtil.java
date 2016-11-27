@@ -18,6 +18,8 @@ package org.sw4j.tool.annotation.jpa.integration.util;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.StringWriter;
+import java.io.Writer;
 import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -95,7 +97,8 @@ public class TestUtil {
         opts.add("-d");
         opts.add(TARGET_FOLDER);
         opts.addAll(Arrays.asList(options));
-        compiler.getTask(null, fileManager, null, opts, null, entities).call();
+        Writer writer = new StringWriter();
+        compiler.getTask(writer, fileManager, null, opts, null, entities).call();
 
         DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
         resultDocument = builder.parse(new File(resultFile));

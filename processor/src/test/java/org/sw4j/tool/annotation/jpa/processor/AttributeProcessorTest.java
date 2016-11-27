@@ -26,12 +26,12 @@ import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.Name;
 import javax.lang.model.type.TypeKind;
+import javax.lang.model.type.TypeMirror;
 import javax.persistence.Id;
 import javax.tools.Diagnostic;
 import org.sw4j.tool.annotation.jpa.generator.model.Entity;
 import org.sw4j.tool.annotation.jpa.processor.mock.annotation.processing.MessagerMock;
 import org.sw4j.tool.annotation.jpa.processor.mock.annotation.processing.ProcessingEnvironmentMock;
-import org.sw4j.tool.annotation.jpa.processor.mock.lang.model.element.ElementMock;
 import org.sw4j.tool.annotation.jpa.processor.mock.lang.model.element.ExecutableElementMock;
 import org.sw4j.tool.annotation.jpa.processor.mock.lang.model.element.NameMock;
 import org.sw4j.tool.annotation.jpa.processor.mock.lang.model.element.TypeElementMock;
@@ -256,6 +256,105 @@ public class AttributeProcessorTest {
     }
 
     @Test
+    public void testProcessPropertyWithPrimitiveBoolean() {
+        List<Element> enclosedElements = new LinkedList<>();
+
+        final Entity testEntity =  new Entity("Test", "org.sw4j.test.Test");
+
+        Map<Class<?>, Annotation> annotations = new HashMap<>();
+        Name booleanName = new NameMock("isFlag");
+        TypeMirror returnType = new TypeMirrorMock(TypeKind.BOOLEAN);
+        Element propertyElement = new ExecutableElementMock(booleanName, annotations, ElementKind.METHOD, null,
+                new LinkedList<Element>(), returnType);
+        enclosedElements.add(propertyElement);
+
+        annotations = new HashMap<>();
+        Name idName = new NameMock("getId");
+        Id id = new IdMock();
+        annotations.put(Id.class, id);
+        Element idElement = new ExecutableElementMock(idName, annotations, ElementKind.METHOD, null,
+                new LinkedList<Element>(), null);
+        enclosedElements.add(idElement);
+
+        this.unitUnderTest.process(testEntity, enclosedElements);
+
+        Assert.assertEquals(testEntity.getAttributes().size(), 2, "Expected entity with two attributes.");
+        Assert.assertEquals(testEntity.getAttributes().get(0).getName(), "flag",
+                "Expected entity with attribute named \"flag\".");
+        Assert.assertFalse(testEntity.getAttributes().get(0).isId(), "Expected attribute is noId.");
+        Assert.assertEquals(testEntity.getAttributes().get(1).getName(), "id",
+                "Expected entity with attribute named \"id\".");
+        Assert.assertTrue(testEntity.getAttributes().get(1).isId(), "Expected attribute is Id.");
+    }
+
+    @Test
+    public void testProcessPropertyWithObjectBoolean() {
+        List<Element> enclosedElements = new LinkedList<>();
+
+        final Entity testEntity =  new Entity("Test", "org.sw4j.test.Test");
+
+        Map<Class<?>, Annotation> annotations = new HashMap<>();
+        Name booleanName = new NameMock("isFlag");
+        TypeMirrorMock returnType = new TypeMirrorMock(TypeKind.DECLARED);
+        Element returnElement = new TypeElementMock(new NameMock("Boolean"), new NameMock("java.lang.Boolean"),
+                new HashMap<Class<?>, Annotation>(), ElementKind.CLASS, null, new LinkedList<Element>());
+        this.types.asElement(returnElement);
+        Element propertyElement = new ExecutableElementMock(booleanName, annotations, ElementKind.METHOD, null,
+                new LinkedList<Element>(), returnType);
+        enclosedElements.add(propertyElement);
+
+        annotations = new HashMap<>();
+        Name idName = new NameMock("getId");
+        Id id = new IdMock();
+        annotations.put(Id.class, id);
+        Element idElement = new ExecutableElementMock(idName, annotations, ElementKind.METHOD, null,
+                new LinkedList<Element>(), null);
+        enclosedElements.add(idElement);
+
+        this.unitUnderTest.process(testEntity, enclosedElements);
+
+        Assert.assertEquals(testEntity.getAttributes().size(), 2, "Expected entity with two attributes.");
+        Assert.assertEquals(testEntity.getAttributes().get(0).getName(), "flag",
+                "Expected entity with attribute named \"flag\".");
+        Assert.assertFalse(testEntity.getAttributes().get(0).isId(), "Expected attribute is no Id.");
+        Assert.assertEquals(testEntity.getAttributes().get(1).getName(), "id",
+                "Expected entity with attribute named \"id\".");
+        Assert.assertTrue(testEntity.getAttributes().get(1).isId(), "Expected attribute is Id.");
+    }
+
+    @Test
+    public void testProcessPropertyWithoutBoolean() {
+        List<Element> enclosedElements = new LinkedList<>();
+
+        final Entity testEntity =  new Entity("Test", "org.sw4j.test.Test");
+
+        Map<Class<?>, Annotation> annotations = new HashMap<>();
+        Name booleanName = new NameMock("isFlag");
+        TypeMirrorMock returnType = new TypeMirrorMock(TypeKind.DECLARED);
+        Element returnElement = new TypeElementMock(new NameMock("Integer"), new NameMock("java.lang.Integer"),
+                new HashMap<Class<?>, Annotation>(), ElementKind.CLASS, null, new LinkedList<Element>());
+        this.types.asElement(returnElement);
+        Element propertyElement = new ExecutableElementMock(booleanName, annotations, ElementKind.METHOD, null,
+                new LinkedList<Element>(), returnType);
+        enclosedElements.add(propertyElement);
+
+        annotations = new HashMap<>();
+        Name idName = new NameMock("getId");
+        Id id = new IdMock();
+        annotations.put(Id.class, id);
+        Element idElement = new ExecutableElementMock(idName, annotations, ElementKind.METHOD, null,
+                new LinkedList<Element>(), null);
+        enclosedElements.add(idElement);
+
+        this.unitUnderTest.process(testEntity, enclosedElements);
+
+        Assert.assertEquals(testEntity.getAttributes().size(), 1, "Expected entity with two attributes.");
+        Assert.assertEquals(testEntity.getAttributes().get(0).getName(), "id",
+                "Expected entity with attribute named \"id\".");
+        Assert.assertTrue(testEntity.getAttributes().get(0).isId(), "Expected attribute is Id.");
+    }
+
+    @Test
     public void testProcessSingleAttribute() {
         List<Element> enclosedElements = new LinkedList<>();
 
@@ -292,104 +391,6 @@ public class AttributeProcessorTest {
         Assert.assertEquals(this.messager.getMessages().size(), 1, "Expected one message to be created.");
         Assert.assertEquals(this.messager.getMessages().get(0).getKind(), Diagnostic.Kind.ERROR,
                 "Expected a message with level ERROR to be created.");
-    }
-
-    @Test
-    public void testIsFieldWithField() {
-        Name testName = new NameMock("test");
-        Element testElement = new VariableElementMock(testName, new HashMap<Class<?>, Annotation>(),
-                ElementKind.FIELD, null, new LinkedList<Element>());
-
-        Assert.assertTrue(this.unitUnderTest.isField(testElement), "Expected the field to be a field.");
-    }
-
-    @Test
-    public void testIsFieldWithMethod() {
-        Name testName = new NameMock("test");
-        Element testElement = new ExecutableElementMock(testName, new HashMap<Class<?>, Annotation>(),
-                ElementKind.METHOD, null, new LinkedList<Element>(), null);
-
-        Assert.assertFalse(this.unitUnderTest.isField(testElement), "Expected the method not to be a field.");
-    }
-
-    @Test
-    public void testIsPropertyWithField() {
-        Name testName = new NameMock("test");
-        Element testElement = new VariableElementMock(testName, new HashMap<Class<?>, Annotation>(),
-                ElementKind.FIELD, null, new LinkedList<Element>());
-
-        Assert.assertFalse(this.unitUnderTest.isProperty(testElement),
-                "Expected the field not to be a property.");
-    }
-
-    @Test
-    public void testIsPropertyWithNonGetterMethod() {
-        Name testName = new NameMock("test");
-        Element testElement = new ExecutableElementMock(testName, new HashMap<Class<?>, Annotation>(),
-                ElementKind.METHOD, null, new LinkedList<Element>(), null);
-
-        Assert.assertFalse(this.unitUnderTest.isProperty(testElement),
-                "Expected the method not to be a property.");
-    }
-
-    @Test
-    public void testIsPropertyWithGetterMethodPrimitiveResult() {
-        Name entityName = new NameMock("Test");
-        Name className = new NameMock("org.sw4j.test.Test");
-        Element classElement = new TypeElementMock(entityName, className, new HashMap<Class<?>, Annotation>(),
-                ElementKind.CLASS, null, null);
-        Name methodName = new NameMock("getTest");
-        Element methodElement = new ExecutableElementMock(methodName, new HashMap<Class<?>, Annotation>(),
-                ElementKind.METHOD, classElement, new LinkedList<Element>(), new TypeMirrorMock(TypeKind.INT));
-
-        Assert.assertTrue(this.unitUnderTest.isProperty(methodElement),
-                "Expected the method to be a property with primitive return type.");
-    }
-
-    @Test
-    public void testIsPropertyWithGetterMethodObjectResult() {
-        Name entityName = new NameMock("Test");
-        Name className = new NameMock("org.sw4j.test.Test");
-        Element classElement = new TypeElementMock(entityName, className, new HashMap<Class<?>, Annotation>(),
-                ElementKind.CLASS, null, null);
-        Name methodName = new NameMock("getTest");
-        Element methodElement = new ExecutableElementMock(methodName, new HashMap<Class<?>, Annotation>(),
-                ElementKind.METHOD, classElement, new LinkedList<Element>(), new TypeMirrorMock(TypeKind.INT));
-
-        Assert.assertTrue(this.unitUnderTest.isProperty(methodElement),
-                "Expected the method to be a property with primitive return type.");
-    }
-
-    @Test
-    public void testIsPropertyWithGetterMethodPrimitiveBooleanResult() {
-        Name entityName = new NameMock("Test");
-        Name className = new NameMock("org.sw4j.test.Test");
-        Element classElement = new TypeElementMock(entityName, className, new HashMap<Class<?>, Annotation>(),
-                ElementKind.CLASS, null, null);
-        Name methodName = new NameMock("isTest");
-        Element methodElement = new ExecutableElementMock(methodName, new HashMap<Class<?>, Annotation>(),
-                ElementKind.METHOD, classElement, new LinkedList<Element>(), new TypeMirrorMock(TypeKind.BOOLEAN));
-
-        Assert.assertTrue(this.unitUnderTest.isProperty(methodElement),
-                "Expected the method to be a property with primitive return type.");
-    }
-
-    @Test
-    public void testIsPropertyWithGetterMethodObjectBooleanResult() {
-        Element asElement = new TypeElementMock(new NameMock("Boolean"), new NameMock("java.lang.Boolean"),
-                new HashMap<Class<?>, Annotation>(), ElementKind.CLASS, null, null);
-        this.types.asElement(asElement);
-
-        Name entityName = new NameMock("Test");
-        Name className = new NameMock("org.sw4j.test.Test");
-        Element classElement = new TypeElementMock(entityName, className, new HashMap<Class<?>, Annotation>(),
-                ElementKind.CLASS, null, null);
-        Name methodName = new NameMock("isTest");
-        Element methodElement = new ExecutableElementMock(methodName, new HashMap<Class<?>, Annotation>(),
-                ElementKind.METHOD, classElement, new LinkedList<Element>(), new TypeMirrorMock(TypeKind.DECLARED));
-
-        Assert.assertTrue(this.unitUnderTest.isProperty(methodElement),
-                "Expected the method to be a property with primitive return type.");
     }
 
 }
