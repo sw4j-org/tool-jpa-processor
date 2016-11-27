@@ -117,14 +117,6 @@ public class AnnotationProcessorTest {
         this.typeElementBuilder.setEnclosingElement(enclosingElement);
         TypeElement entity1 = this.typeElementBuilder.createElement();
 
-//        elements.add(nonEntity);
-//
-//        Map<Class<?>, Annotation> annotations = new HashMap<>();
-//        annotations.put(Entity.class, new EntityMock(""));
-//        TypeElementMock enclosingElement = new TypeElementMock(new NameMock(""), new NameMock("org.sw4j.test"),
-//                new HashMap<Class<?>, Annotation>(), ElementKind.PACKAGE, null, null);
-//        TypeElementMock entity1 = new TypeElementMock(new NameMock("Entity"), new NameMock("org.sw4j.test.Test"),
-//                annotations, ElementKind.CLASS, enclosingElement, new LinkedList<Element>());
         elements.add(entity1);
 
         RoundEnvironmentMock roundEnv = new RoundEnvironmentMock(elements, elements);
@@ -132,7 +124,7 @@ public class AnnotationProcessorTest {
         this.unitUnderTest.process(this.handledAnnotations, roundEnv);
 
         Assert.assertEquals(this.messager.getMessages().size(), 1, "Expected one message to be created.");
-        Assert.assertEquals(this.messager.getMessages().get(0).getKind(), Diagnostic.Kind.ERROR,
+        Assert.assertEquals(this.messager.getMessages().get(0).getKind(), Diagnostic.Kind.WARNING,
                 "Expected a message with level ERROR to be created.");
     }
 

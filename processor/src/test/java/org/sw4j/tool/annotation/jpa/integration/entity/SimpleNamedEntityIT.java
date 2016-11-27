@@ -57,8 +57,11 @@ public class SimpleNamedEntityIT extends TestSuperclass {
         Assert.assertNotNull(attributeId, "Expected the entity with name \"NamedEntity\" to have an attribute " +
                 "with name \"id\" to exist.");
         Assert.assertEquals(attributeId.getNodeType(), Node.ELEMENT_NODE, "Expected an element.");
-        Assert.assertEquals(attributeId.getAttributes().getNamedItem("name").getNodeValue(),
-                "id", "Expected the entity with name \"NamedEntity\" to have an attribute with the name \"id\"");
+        Assert.assertEquals(attributeId.getAttributes().getNamedItem("name").getNodeValue(), "id",
+                "Expected the entity with name \"NamedEntity\" to have an attribute with the name \"id\"");
+        Assert.assertEquals(attributeId.getAttributes().getNamedItem("dataType").getNodeValue(), "int",
+                "Expected the entity with name \"NamedEntity\" to have an attribute with the name \"id\" " +
+                        "that has the data type \"int\"");
     }
 
 }

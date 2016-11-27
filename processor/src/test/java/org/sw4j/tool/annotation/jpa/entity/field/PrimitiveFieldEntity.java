@@ -25,7 +25,7 @@ import javax.persistence.Id;
  * @author Uwe Plonus
  */
 @Entity
-public class SimpleFieldEntity {
+public class PrimitiveFieldEntity {
 
     @Id
     private int id;

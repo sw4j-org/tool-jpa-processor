@@ -94,7 +94,14 @@ public class AttributeProcessor {
                 possibleProperties.put(attributeName, possibleAttribute);
             }
             if (attributeName != null && isPossibleIdAttribute(possibleAttribute)) {
-                possibleIds.put(attributeName, possibleAttribute);
+                if (possibleIds.put(attributeName, possibleAttribute) != null) {
+                    this.processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR,
+                            new StringBuilder("The entity \"")
+                                    .append(entity.getName())
+                                    .append("\" (with class name \"")
+                                    .append(entity.getClassName())
+                                    .append("\") has the same attribute annotated with @Id twice."));
+                }
             }
         }
 
@@ -114,6 +121,13 @@ public class AttributeProcessor {
                     processProperty(entity, possibleProperty.getValue());
                 }
             }
+        } else if (possibleIds.isEmpty()) {
+            this.processingEnv.getMessager().printMessage(Diagnostic.Kind.WARNING, new StringBuilder(
+                    "This annotation processor does not support entities without @Id annotations. The entity \"")
+                    .append(entity.getName())
+                    .append("\" (with class name \"")
+                    .append(entity.getClassName())
+                    .append("\") has no @Id attributes."));
         } else {
             this.processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, new StringBuilder(
                     "This annotation processor does not support entities with multiple @Id annotations. The entity \"")
@@ -131,14 +145,23 @@ public class AttributeProcessor {
      * @param fieldElement the field of the attribute.
      */
     private void processField(@Nonnull final Entity entity, @Nonnull final Element fieldElement) {
+        String dataType = "";
         TypeMirror type = fieldElement.asType();
-        if (TypeKind.DECLARED.equals(type.getKind())) {
-            // The type is either a class or an interface
+        if (type.getKind().isPrimitive()) {
+            // This is a primitive type (e.g. int or float)
+            dataType = type.toString();
         } else {
-            // This should be a simple type (e.g. int or float)
+            // The type is either a class or an interface
+            Element dataTypeElement = this.processingEnv.getTypeUtils().asElement(fieldElement.asType());
+            if (dataTypeElement != null) {
+                ElementKind dataTypeKind = dataTypeElement.getKind();
+                if (dataTypeKind.isClass() || dataTypeKind.isInterface()) {
+                    dataType = ((TypeElement)dataTypeElement).getQualifiedName().toString();
+                }
+            }
         }
         Attribute attribute = new Attribute(fieldElement.getSimpleName().toString(),
-                isPossibleIdAttribute(fieldElement), null);
+                isPossibleIdAttribute(fieldElement), dataType);
         entity.addAttribute(attribute);
     }
 
@@ -149,8 +172,9 @@ public class AttributeProcessor {
      * @param propertyElement the property of the attribute.
      */
     private void processProperty(@Nonnull final Entity entity, @Nonnull final Element propertyElement) {
+        String dataType = "";
         Attribute attribute = new Attribute(getAttributeNameFromProperty(propertyElement),
-                isPossibleIdAttribute(propertyElement), null);
+                isPossibleIdAttribute(propertyElement), dataType);
         entity.addAttribute(attribute);
     }
 

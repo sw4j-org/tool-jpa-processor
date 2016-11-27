@@ -46,6 +46,7 @@ public class Attribute {
      *
      * @param name the name of the attribute.
      * @param isId if this attribute should be marked as Id.
+     * @param dataType the Java datatype of the attribute
      */
     public Attribute(@Nonnull final String name, final boolean isId, @Nonnull final String dataType) {
         this.name = name;
