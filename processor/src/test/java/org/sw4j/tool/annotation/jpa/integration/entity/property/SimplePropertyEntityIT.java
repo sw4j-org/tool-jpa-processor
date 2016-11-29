@@ -35,67 +35,75 @@ public class SimplePropertyEntityIT extends TestSuperclass {
 
     @Test
     public void testSimpleEntity() throws XPathExpressionException {
-        Node entity = getNode("/model/entities/entity[@name=\"SimplePropertyEntity\"]");
+        Node entity = getNode("/model/entity[@name=\"SimplePropertyEntity\"]");
 
         Assert.assertNotNull(entity, "Expected an entity with name \"SimplePropertyEntity\" to exist.");
         Assert.assertEquals(entity.getNodeType(), Node.ELEMENT_NODE, "Expected an element.");
-        Assert.assertEquals(entity.getAttributes().getNamedItem("name").getNodeValue(),
-                "SimplePropertyEntity", "Expected the entity name to be \"SimplePropertyEntity\"");
-    }
-
-    @Test
-    public void testSimpleEntityHasAttributes() throws XPathExpressionException {
-        Node attributes = getNode("/model/entities/entity[@name=\"SimplePropertyEntity\"]/attributes");
-
-        Assert.assertNotNull(attributes, "Expected the entity with name \"SimplePropertyEntity\" to have attributes.");
+        Assert.assertEquals(getAttribute("name", entity).getNodeValue(), "SimplePropertyEntity",
+                "Expected the entity name to be \"SimplePropertyEntity\"");
+        Assert.assertEquals(getAttribute("className", entity).getNodeValue(),
+                "org.sw4j.tool.annotation.jpa.entity.properties.SimplePropertyEntity",
+                "Expected the class name to be \"org.sw4j.tool.annotation.jpa.entity.properties.SimplePropertyEntity\"");
     }
 
     @Test
     public void testSimpleEntityId() throws XPathExpressionException {
-        Node attributeId = getNode("/model/entities/entity[@name=\"SimplePropertyEntity\"]/attributes/" +
-                "attribute[@name=\"id\"]");
+        Node attributeId = getNode("/model/entity[@name=\"SimplePropertyEntity\"]/attribute[@name=\"id\"]");
 
         Assert.assertNotNull(attributeId, "Expected the entity with name \"SimplePropertyEntity\" to have an " +
                 "attribute with name \"id\" to exist.");
         Assert.assertEquals(attributeId.getNodeType(), Node.ELEMENT_NODE, "Expected an element.");
-        Assert.assertEquals(attributeId.getAttributes().getNamedItem("name").getNodeValue(), "id",
-                "Expected the entity with name \"SimplePropertyEntity\" to have an attribute with the name \"id\"");
+        Assert.assertEquals(getAttribute("name", attributeId).getNodeValue(), "id",
+                "Expected the entity with name \"SimplePropertyEntity\" to have an attribute with the name \"id\".");
+        Assert.assertEquals(getAttribute("isId", attributeId).getNodeValue(), "true",
+                "Expected the entity with name \"SimplePropertyEntity\" to have an attribute \"isId\" set to true.");
+        Assert.assertEquals(getAttribute("dataType", attributeId).getNodeValue(), "int",
+                "Expected the entity with name \"SimplePropertyEntity\" to have an attribute with the dataType \"int\".");
     }
 
     @Test
     public void testSimpleEntityValue() throws XPathExpressionException {
-        Node attributeId = getNode("/model/entities/entity[@name=\"SimplePropertyEntity\"]/attributes/" +
-                "attribute[@name=\"value\"]");
+        Node attributeId = getNode("/model/entity[@name=\"SimplePropertyEntity\"]/attribute[@name=\"value\"]");
 
         Assert.assertNotNull(attributeId, "Expected the entity with name \"SimplePropertyEntity\" to have an " +
                 "attribute with name \"value\" to exist.");
         Assert.assertEquals(attributeId.getNodeType(), Node.ELEMENT_NODE, "Expected an element.");
-        Assert.assertEquals(attributeId.getAttributes().getNamedItem("name").getNodeValue(), "value",
-                "Expected the entity with name \"SimplePropertyEntity\" to have an attribute with the name \"value\"");
+        Assert.assertEquals(getAttribute("name", attributeId).getNodeValue(), "value",
+                "Expected the entity with name \"SimplePropertyEntity\" to have an attribute with the name \"value\".");
+        Assert.assertEquals(getAttribute("isId", attributeId).getNodeValue(), "false",
+                "Expected the entity with name \"SimplePropertyEntity\" to have an attribute \"isId\" set to false.");
+        Assert.assertEquals(getAttribute("dataType", attributeId).getNodeValue(), "int",
+                "Expected the entity with name \"SimplePropertyEntity\" to have an attribute with the dataType \"int\".");
     }
 
     @Test
     public void testSimpleEntityFlag() throws XPathExpressionException {
-        Node attributeId = getNode("/model/entities/entity[@name=\"SimplePropertyEntity\"]/attributes/" +
-                "attribute[@name=\"flag\"]");
+        Node attributeId = getNode("/model/entity[@name=\"SimplePropertyEntity\"]/attribute[@name=\"flag\"]");
 
         Assert.assertNotNull(attributeId, "Expected the entity with name \"SimplePropertyEntity\" to have an " +
                 "attribute with name \"flag\" to exist.");
         Assert.assertEquals(attributeId.getNodeType(), Node.ELEMENT_NODE, "Expected an element.");
-        Assert.assertEquals(attributeId.getAttributes().getNamedItem("name").getNodeValue(), "flag",
-                "Expected the entity with name \"SimplePropertyEntity\" to have an attribute with the name \"flag\"");
+        Assert.assertEquals(getAttribute("name", attributeId).getNodeValue(), "flag",
+                "Expected the entity with name \"SimplePropertyEntity\" to have an attribute with the name \"flag\".");
+        Assert.assertEquals(getAttribute("isId", attributeId).getNodeValue(), "false",
+                "Expected the entity with name \"SimplePropertyEntity\" to have an attribute \"isId\" set to false.");
+        Assert.assertEquals(getAttribute("dataType", attributeId).getNodeValue(), "boolean",
+                "Expected the entity with name \"SimplePropertyEntity\" to have an attribute with the dataType \"boolean\".");
     }
 
     @Test
     public void testSimpleEntityClassFlag() throws XPathExpressionException {
-        Node attributeId = getNode("/model/entities/entity[@name=\"SimplePropertyEntity\"]/attributes/" +
-                "attribute[@name=\"classFlag\"]");
+        Node attributeId = getNode("/model/entity[@name=\"SimplePropertyEntity\"]/attribute[@name=\"classFlag\"]");
 
         Assert.assertNotNull(attributeId, "Expected the entity with name \"SimplePropertyEntity\" to have an " +
                 "attribute with name \"classFlag\" to exist.");
         Assert.assertEquals(attributeId.getNodeType(), Node.ELEMENT_NODE, "Expected an element.");
-        Assert.assertEquals(attributeId.getAttributes().getNamedItem("name").getNodeValue(), "classFlag",
-                "Expected the entity with name \"SimplePropertyEntity\" to have an attribute with the name \"classFlag\"");
+        Assert.assertEquals(getAttribute("name", attributeId).getNodeValue(), "classFlag",
+                "Expected the entity with name \"SimplePropertyEntity\" to have an attribute with the name \"classFlag\".");
+        Assert.assertEquals(getAttribute("isId", attributeId).getNodeValue(), "false",
+                "Expected the entity with name \"SimplePropertyEntity\" to have an attribute \"isId\" set to false.");
+        Assert.assertEquals(getAttribute("dataType", attributeId).getNodeValue(), "java.lang.Boolean",
+                "Expected the entity with name \"SimplePropertyEntity\" to have an attribute with the dataType \"java.lang.Boolean\".");
     }
 
 }

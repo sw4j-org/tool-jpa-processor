@@ -16,11 +16,10 @@
  */
 package org.sw4j.tool.annotation.jpa.integration.processor;
 
-import javax.xml.xpath.XPathExpressionException;
 import org.sw4j.tool.annotation.jpa.integration.util.TestSuperclass;
+import org.sw4j.tool.annotation.jpa.processor.AnnotationProcessor;
 import org.testng.Assert;
 import org.testng.annotations.Test;
-import org.w3c.dom.Node;
 
 /**
  * Class to test the {@link AnnotationProcessor}.
@@ -39,13 +38,6 @@ public class AnnotationProcessorIT extends TestSuperclass {
 
         Assert.assertEquals(getRootElement().getNodeName(), "model",
                 "Expected the root element to be named \"model\".");
-    }
-
-    @Test
-    public void testEntities() throws XPathExpressionException {
-        Node element = getNode("/model/entities");
-
-        Assert.assertNotNull(element, "Expected the model to contain an element \"entities\".");
     }
 
 }

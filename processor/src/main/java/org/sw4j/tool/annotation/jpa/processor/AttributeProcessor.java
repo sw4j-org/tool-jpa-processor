@@ -145,23 +145,8 @@ public class AttributeProcessor {
      * @param fieldElement the field of the attribute.
      */
     private void processField(@Nonnull final Entity entity, @Nonnull final Element fieldElement) {
-        String dataType = "";
-        TypeMirror type = fieldElement.asType();
-        if (type.getKind().isPrimitive()) {
-            // This is a primitive type (e.g. int or float)
-            dataType = type.toString();
-        } else {
-            // The type is either a class or an interface
-            Element dataTypeElement = this.processingEnv.getTypeUtils().asElement(fieldElement.asType());
-            if (dataTypeElement != null) {
-                ElementKind dataTypeKind = dataTypeElement.getKind();
-                if (dataTypeKind.isClass() || dataTypeKind.isInterface()) {
-                    dataType = ((TypeElement)dataTypeElement).getQualifiedName().toString();
-                }
-            }
-        }
         Attribute attribute = new Attribute(fieldElement.getSimpleName().toString(),
-                isPossibleIdAttribute(fieldElement), dataType);
+                isPossibleIdAttribute(fieldElement), getDataTypeFromType(fieldElement.asType()));
         entity.addAttribute(attribute);
     }
 
@@ -172,10 +157,34 @@ public class AttributeProcessor {
      * @param propertyElement the property of the attribute.
      */
     private void processProperty(@Nonnull final Entity entity, @Nonnull final Element propertyElement) {
-        String dataType = "";
+        TypeMirror returnType = ((ExecutableElement)propertyElement).getReturnType();
         Attribute attribute = new Attribute(getAttributeNameFromProperty(propertyElement),
-                isPossibleIdAttribute(propertyElement), dataType);
+                isPossibleIdAttribute(propertyElement), getDataTypeFromType(returnType));
         entity.addAttribute(attribute);
+    }
+
+    /**
+     * Return the datatype as String deom the given TypeMirror.
+     *
+     * @param type the type to convert.
+     * @return the datatype of the type.
+     */
+    private String getDataTypeFromType(TypeMirror type) {
+        String dataType = "";
+        if (type.getKind().isPrimitive()) {
+            // This is a primitive type (e.g. int or float)
+            dataType = type.toString();
+        } else {
+            // The type is either a class or an interface
+            Element dataTypeElement = this.processingEnv.getTypeUtils().asElement(type);
+            if (dataTypeElement != null) {
+                ElementKind dataTypeKind = dataTypeElement.getKind();
+                if (dataTypeKind.isClass() || dataTypeKind.isInterface()) {
+                    dataType = ((TypeElement)dataTypeElement).getQualifiedName().toString();
+                }
+            }
+        }
+        return dataType;
     }
 
     /**
@@ -195,7 +204,7 @@ public class AttributeProcessor {
      * @param element the element to check.
      * @return {@code true} if the element is a field.
      */
-    public boolean isField(@Nonnull final Element element) {
+    private boolean isField(@Nonnull final Element element) {
         return ElementKind.FIELD.equals(element.getKind());
     }
 

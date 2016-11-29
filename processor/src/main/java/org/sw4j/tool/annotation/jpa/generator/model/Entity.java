@@ -24,7 +24,6 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlType;
 
 /**
@@ -48,7 +47,6 @@ public class Entity {
     private final String className;
 
     /** The entities of the model. */
-    @XmlElementWrapper(name = "attributes", required = false)
     @XmlElement(name = "attribute")
     private List<Attribute> attributes;
 

@@ -96,4 +96,15 @@ public abstract class TestSuperclass {
         return testUtil.getNode(path);
     }
 
+    /**
+     * Returns the given attribute of the given element.
+     *
+     * @param name the name of the attribute to get.
+     * @param node the element to get the attribute from.
+     * @return the named attribute.
+     */
+    public Node getAttribute(String name, Node node) {
+        return testUtil.getAttribute(name, node);
+    }
+
 }

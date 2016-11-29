@@ -38,6 +38,7 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 import org.testng.Assert;
+import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
@@ -127,7 +128,11 @@ public class TestUtil {
      * check is done with {@link Assert}.
      */
     public void checkVisitedNodes() {
-        checkVisitedNodes(resultDocument.getDocumentElement());
+        StringBuilder sb = new StringBuilder();
+        checkVisitedNodes(resultDocument.getDocumentElement(), sb);
+        if (sb.length() > 0) {
+            Assert.fail(sb.toString());
+        }
     }
 
     /**
@@ -136,30 +141,58 @@ public class TestUtil {
      *
      * @param node the node to check.
      */
-    private void checkVisitedNodes(Element node) {
+    private void checkVisitedNodes(final Element node, final StringBuilder sb) {
         if (!visitedNodes.contains(node)) {
-            StringBuilder path = new StringBuilder();
-            Node parent = node;
-            while (parent != null) {
-                if (parent.getNodeType() != Node.DOCUMENT_NODE) {
-                    path.insert(0, handleElementAttributes(parent));
-                    path.insert(0, parent.getNodeName());
-                    path.insert(0, "/");
-                }
-                parent = parent.getParentNode();
+            sb.append("Expected the element \"").append(getPathToNode(node)).append("\" to be tested.\n");
+        }
+        NamedNodeMap attributes = node.getAttributes();
+        for (int i = 0; i < attributes.getLength(); i++) {
+            Attr attr = (Attr)attributes.item(i);
+            if (!visitedNodes.contains(attr)) {
+                sb.append("Expected the attribute \"").append(getPathToNode(attr)).append("\" to be tested.\n");
             }
-            Assert.fail(new StringBuilder("Expected the node \"").append(path)
-                        .append("\" to be tested.").toString());
         }
         NodeList children = node.getChildNodes();
         for (int i = 0; i < children.getLength(); i++) {
             Node child = children.item(i);
             if (child.getNodeType() == Node.ELEMENT_NODE) {
-                checkVisitedNodes((Element)child);
+                checkVisitedNodes((Element)child, sb);
             }
         }
     }
 
+    /**
+     * Returns the XPath to the given node.
+     *
+     * @param node the node to get the path for.
+     * @return the path to the node.
+     */
+    private String getPathToNode(final Node node) {
+        StringBuilder path = new StringBuilder();
+        Node parent;
+        if (node.getNodeType() == Node.ELEMENT_NODE) {
+            parent = node;
+        } else {
+            parent = ((Attr)node).getOwnerElement();
+            path.append("/@").append(node.getNodeName());
+        }
+        while (parent != null) {
+            if (parent.getNodeType() != Node.DOCUMENT_NODE) {
+                path.insert(0, handleElementAttributes(parent));
+                path.insert(0, parent.getNodeName());
+                path.insert(0, "/");
+            }
+            parent = parent.getParentNode();
+        }
+        return path.toString();
+    }
+
+    /**
+     * Handle the attributes for an element in an XPath expression.
+     *
+     * @param node the node to get the attributes from.
+     * @return the attributes of the node as XPath expression.
+     */
     private StringBuilder handleElementAttributes(Node node) {
         StringBuilder attributePath = new StringBuilder();
         if (node.hasAttributes()) {
@@ -203,6 +236,19 @@ public class TestUtil {
         Node result = (Node)xpath.evaluate(path, resultDocument, XPathConstants.NODE);
         visitedNodes.add(result);
         return result;
+    }
+
+    /**
+     * Returns the given attribute of the given element.
+     *
+     * @param name the name of the attribute to get.
+     * @param node the element to get the attribute from.
+     * @return the named attribute.
+     */
+    public Node getAttribute(String name, Node node) {
+        Node attribute = node.getAttributes().getNamedItem(name);
+        visitedNodes.add(attribute);
+        return attribute;
     }
 
 }

@@ -35,49 +35,45 @@ public class PrimitiveFieldEntityIT extends TestSuperclass {
 
     @Test
     public void testSimpleEntity() throws XPathExpressionException {
-        Node entity = getNode("/model/entities/entity[@name=\"PrimitiveFieldEntity\"]");
+        Node entity = getNode("/model/entity[@name=\"PrimitiveFieldEntity\"]");
 
         Assert.assertNotNull(entity, "Expected an entity with name \"PrimitiveFieldEntity\" to exist.");
         Assert.assertEquals(entity.getNodeType(), Node.ELEMENT_NODE, "Expected an element.");
-        Assert.assertEquals(entity.getAttributes().getNamedItem("name").getNodeValue(),
-                "PrimitiveFieldEntity", "Expected the entity name to be \"PrimitiveFieldEntity\"");
-    }
-
-    @Test
-    public void testSimpleEntityHasAttributes() throws XPathExpressionException {
-        Node attributes = getNode("/model/entities/entity[@name=\"PrimitiveFieldEntity\"]/attributes");
-
-        Assert.assertNotNull(attributes, "Expected the entity with name \"PrimitiveFieldEntity\" to have attributes.");
+        Assert.assertEquals(getAttribute("name", entity).getNodeValue(), "PrimitiveFieldEntity",
+                "Expected the entity name to be \"PrimitiveFieldEntity\"");
+        Assert.assertEquals(getAttribute("className", entity).getNodeValue(),
+                "org.sw4j.tool.annotation.jpa.entity.field.PrimitiveFieldEntity",
+                "Expected the class name to be \"org.sw4j.tool.annotation.jpa.entity.field.PrimitiveFieldEntity\"");
     }
 
     @Test
     public void testSimpleEntityId() throws XPathExpressionException {
-        Node attributeId = getNode("/model/entities/entity[@name=\"PrimitiveFieldEntity\"]/attributes/" +
-                "attribute[@name=\"id\"]");
+        Node attributeId = getNode("/model/entity[@name=\"PrimitiveFieldEntity\"]/attribute[@name=\"id\"]");
 
-        Assert.assertNotNull(attributeId, "Expected the entity with name \"PrimitiveFieldEntity\" to have an attribute " +
-                "with name \"id\" to exist.");
+        Assert.assertNotNull(attributeId, "Expected the entity with name \"PrimitiveFieldEntity\" to have an " +
+                "attribute with name \"id\" to exist.");
         Assert.assertEquals(attributeId.getNodeType(), Node.ELEMENT_NODE, "Expected an element.");
-        Assert.assertEquals(attributeId.getAttributes().getNamedItem("name").getNodeValue(), "id",
-                "Expected the entity with name \"PrimitiveFieldEntity\" to have an attribute with the name \"id\"");
-        Assert.assertEquals(attributeId.getAttributes().getNamedItem("dataType").getNodeValue(), "int",
-                "Expected the entity with name \"PrimitiveFieldEntity\" to have an attribute with the name \"id\" " +
-                        "that has the data type \"int\"");
+        Assert.assertEquals(getAttribute("name", attributeId).getNodeValue(), "id",
+                "Expected the entity with name \"PrimitiveFieldEntity\" to have an attribute with the name \"id\".");
+        Assert.assertEquals(getAttribute("isId", attributeId).getNodeValue(), "true",
+                "Expected the entity with name \"PrimitiveFieldEntity\" to have an attribute \"isId\" set to true.");
+        Assert.assertEquals(getAttribute("dataType", attributeId).getNodeValue(), "int",
+                "Expected the entity with name \"PrimitiveFieldEntity\" to have an attribute with the dataType \"int\".");
     }
 
     @Test
     public void testSimpleEntityValue() throws XPathExpressionException {
-        Node attributeId = getNode("/model/entities/entity[@name=\"PrimitiveFieldEntity\"]/attributes/" +
-                "attribute[@name=\"value\"]");
+        Node attributeId = getNode("/model/entity[@name=\"PrimitiveFieldEntity\"]/attribute[@name=\"value\"]");
 
-        Assert.assertNotNull(attributeId, "Expected the entity with name \"PrimitiveFieldEntity\" to have an attribute " +
-                "with name \"value\" to exist.");
+        Assert.assertNotNull(attributeId, "Expected the entity with name \"PrimitiveFieldEntity\" to have an " +
+                "attribute with name \"value\" to exist.");
         Assert.assertEquals(attributeId.getNodeType(), Node.ELEMENT_NODE, "Expected an element.");
-        Assert.assertEquals(attributeId.getAttributes().getNamedItem("name").getNodeValue(), "value",
-                "Expected the entity with name \"PrimitiveFieldEntity\" to have an attribute with the name \"value\"");
-        Assert.assertEquals(attributeId.getAttributes().getNamedItem("dataType").getNodeValue(), "int",
-                "Expected the entity with name \"PrimitiveFieldEntity\" to have an attribute with the name \"value\" " +
-                        "that has the data type \"int\"");
+        Assert.assertEquals(getAttribute("name", attributeId).getNodeValue(), "value",
+                "Expected the entity with name \"PrimitiveFieldEntity\" to have an attribute with the name \"value\".");
+        Assert.assertEquals(getAttribute("isId", attributeId).getNodeValue(), "false",
+                "Expected the entity with name \"PrimitiveFieldEntity\" to have an attribute \"isId\" set to false.");
+        Assert.assertEquals(getAttribute("dataType", attributeId).getNodeValue(), "int",
+                "Expected the entity with name \"PrimitiveFieldEntity\" to have an attribute with the dataType \"int\".");
     }
 
 }
