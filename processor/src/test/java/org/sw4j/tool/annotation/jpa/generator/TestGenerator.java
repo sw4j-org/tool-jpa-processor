@@ -17,6 +17,8 @@
 package org.sw4j.tool.annotation.jpa.generator;
 
 import java.io.IOException;
+import java.util.Properties;
+import javax.annotation.Nullable;
 import org.sw4j.tool.annotation.jpa.generator.model.Model;
 
 /**
@@ -41,16 +43,12 @@ public class TestGenerator implements GeneratorService {
     }
 
     /**
-     * Sets the name of the properties file of the generator.
+     * Sets the properties of the generator.
      *
-     * @param propertiesFileName the name of the properties file.
-     * @throws IOException if the loading of the given properties file fails.
+     * @param properties the properties.
      */
     @Override
-    public void setPropertiesFileName(String propertiesFileName) throws IOException {
-        if (TestGeneratorConfiguration.getInstance().setPropertiesThrowsIOException()) {
-            throw new IOException();
-        }
+    public void setProperties(@Nullable final Properties properties) {
     }
 
     /**
@@ -84,20 +82,10 @@ public class TestGenerator implements GeneratorService {
 
         private static final TestGeneratorConfiguration INSTANCE = new TestGeneratorConfiguration();
 
-        private boolean setPropertiesThrowsIOException;
-
         private boolean processThrowsIOException;
 
         public static TestGeneratorConfiguration getInstance() {
             return INSTANCE;
-        }
-
-        public void setPropertiesThrowsIOException(boolean setPropertiesThrowsIOException) {
-            this.setPropertiesThrowsIOException = setPropertiesThrowsIOException;
-        }
-
-        public boolean setPropertiesThrowsIOException() {
-            return this.setPropertiesThrowsIOException;
         }
 
         public void processThrowsIOException(boolean processThrowsIOException) {

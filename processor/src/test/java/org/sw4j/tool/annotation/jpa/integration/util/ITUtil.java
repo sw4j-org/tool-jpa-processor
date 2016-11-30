@@ -51,7 +51,7 @@ import org.xml.sax.SAXException;
  *
  * @author Uwe Plonus
  */
-public class TestUtil {
+public class ITUtil {
 
     /** The target folder for the compiled classes. */
     private static final String TARGET_FOLDER = "target/jpa-classes/";
@@ -62,7 +62,7 @@ public class TestUtil {
     /** */
     private final Set<Node> visitedNodes;
 
-    public TestUtil() {
+    public ITUtil() {
         visitedNodes = new HashSet<>();
     }
 

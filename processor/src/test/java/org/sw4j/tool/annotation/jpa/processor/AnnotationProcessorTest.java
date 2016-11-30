@@ -139,86 +139,13 @@ public class AnnotationProcessorTest {
     }
 
     @Test
-    public void testGeneratorServiceLoadingWithOptionsOnlyPrefix() {
-        this.options.put("tool.jpa.properties", "test");
-
-        RoundEnvironmentMock roundEnv = new RoundEnvironmentMock(new HashSet<Element>(), new HashSet<Element>());
-        roundEnv.processingOver(true);
-
-        this.unitUnderTest.process(this.handledAnnotations, roundEnv);
-    }
-
-    @Test
-    public void testGeneratorServiceLoadingWithLoadProperties() throws Exception {
-        this.options.put("tool.jpa.properties", "test=test.properties");
+    public void testGeneratorServiceLoadingWithoutLoadProperties() throws Exception {
+        this.options.put("tool.jpa.properties", "unittest.properties");
 
         RoundEnvironmentMock roundEnv = new RoundEnvironmentMock(new HashSet<Element>(), new HashSet<Element>());
         roundEnv.processingOver(true);
 
         TestGenerator.TestGeneratorConfiguration.getInstance().processThrowsIOException(false);
-        TestGenerator.TestGeneratorConfiguration.getInstance().setPropertiesThrowsIOException(false);
-
-        this.unitUnderTest.process(this.handledAnnotations, roundEnv);
-
-        Assert.assertEquals(this.messager.getMessages().size(), 0, "Expected no message to be created.");
-    }
-
-    @Test
-    public void testGeneratorServiceLoadingWithLoadPropertiesException() throws Exception {
-        this.options.put("tool.jpa.properties", "test=test.properties");
-
-        RoundEnvironmentMock roundEnv = new RoundEnvironmentMock(new HashSet<Element>(), new HashSet<Element>());
-        roundEnv.processingOver(true);
-
-        TestGenerator.TestGeneratorConfiguration.getInstance().processThrowsIOException(false);
-        TestGenerator.TestGeneratorConfiguration.getInstance().setPropertiesThrowsIOException(true);
-
-        this.unitUnderTest.process(this.handledAnnotations, roundEnv);
-
-        Assert.assertEquals(this.messager.getMessages().size(), 1, "Expected one message to be created.");
-        Assert.assertEquals(this.messager.getMessages().get(0).getKind(), Diagnostic.Kind.ERROR,
-                "Expected a message with level ERROR to be created.");
-    }
-
-    @Test
-    public void testGeneratorServiceLoadingWithGeneratorNoProperties() throws Exception {
-        this.options.put("tool.jpa.properties", "test=test.properties");
-
-        RoundEnvironmentMock roundEnv = new RoundEnvironmentMock(new HashSet<Element>(), new HashSet<Element>());
-        roundEnv.processingOver(true);
-
-        TestGenerator.TestGeneratorConfiguration.getInstance().processThrowsIOException(false);
-        TestGenerator.TestGeneratorConfiguration.getInstance().setPropertiesThrowsIOException(false);
-
-        this.unitUnderTest.process(handledAnnotations, roundEnv);
-
-        Assert.assertEquals(this.messager.getMessages().size(), 0, "Expected no message to be created.");
-    }
-
-    @Test
-    public void testGeneratorServiceLoadingWithGeneratorWithProperties() throws Exception {
-        this.options.put("tool.jpa.properties", "test=test.properties");
-
-        RoundEnvironmentMock roundEnv = new RoundEnvironmentMock(new HashSet<Element>(), new HashSet<Element>());
-        roundEnv.processingOver(true);
-
-        TestGenerator.TestGeneratorConfiguration.getInstance().processThrowsIOException(false);
-        TestGenerator.TestGeneratorConfiguration.getInstance().setPropertiesThrowsIOException(false);
-
-        this.unitUnderTest.process(this.handledAnnotations, roundEnv);
-
-        Assert.assertEquals(this.messager.getMessages().size(), 0, "Expected no message to be created.");
-    }
-
-    @Test
-    public void testGeneratorServiceLoadingWithGeneratorCall() throws Exception {
-        this.options.put("tool.jpa.properties", "test=test.properties");
-
-        RoundEnvironmentMock roundEnv = new RoundEnvironmentMock(new HashSet<Element>(), new HashSet<Element>());
-        roundEnv.processingOver(true);
-
-        TestGenerator.TestGeneratorConfiguration.getInstance().processThrowsIOException(false);
-        TestGenerator.TestGeneratorConfiguration.getInstance().setPropertiesThrowsIOException(false);
 
         this.unitUnderTest.process(this.handledAnnotations, roundEnv);
 
@@ -227,19 +154,46 @@ public class AnnotationProcessorTest {
 
     @Test
     public void testGeneratorServiceLoadingWithGeneratorCallIOException() throws Exception {
-        this.options.put("tool.jpa.properties", "test=test.properties");
+        this.options.put("tool.jpa.properties", "unittest.properties");
 
         RoundEnvironmentMock roundEnv = new RoundEnvironmentMock(new HashSet<Element>(), new HashSet<Element>());
         roundEnv.processingOver(true);
 
         TestGenerator.TestGeneratorConfiguration.getInstance().processThrowsIOException(true);
-        TestGenerator.TestGeneratorConfiguration.getInstance().setPropertiesThrowsIOException(false);
 
         this.unitUnderTest.process(this.handledAnnotations, roundEnv);
 
         Assert.assertEquals(this.messager.getMessages().size(), 1, "Expected one message to be created.");
         Assert.assertEquals(this.messager.getMessages().get(0).getKind(), Diagnostic.Kind.ERROR,
                 "Expected a message with level ERROR to be created.");
+    }
+
+    @Test
+    public void testGeneratorServiceLoadingWithProperties() throws Exception {
+        this.options.put("tool.jpa.properties", "src/test/resources/unittest.properties");
+
+        RoundEnvironmentMock roundEnv = new RoundEnvironmentMock(new HashSet<Element>(), new HashSet<Element>());
+        roundEnv.processingOver(true);
+
+        TestGenerator.TestGeneratorConfiguration.getInstance().processThrowsIOException(false);
+
+        this.unitUnderTest.process(this.handledAnnotations, roundEnv);
+
+        Assert.assertEquals(this.messager.getMessages().size(), 0, "Expected no message to be created.");
+    }
+
+    @Test
+    public void testGeneratorServiceLoadingWithEmpty() throws Exception {
+        this.options.put("tool.jpa.properties", "src/test/resources/empty.properties");
+
+        RoundEnvironmentMock roundEnv = new RoundEnvironmentMock(new HashSet<Element>(), new HashSet<Element>());
+        roundEnv.processingOver(true);
+
+        TestGenerator.TestGeneratorConfiguration.getInstance().processThrowsIOException(false);
+
+        this.unitUnderTest.process(this.handledAnnotations, roundEnv);
+
+        Assert.assertEquals(this.messager.getMessages().size(), 0, "Expected no message to be created.");
     }
 
 }

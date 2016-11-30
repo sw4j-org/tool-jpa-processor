@@ -468,4 +468,64 @@ public class AttributeProcessorTest {
                 "Expected attribute is data type java.lang.String.");
     }
 
+    /**
+     * Test that the non primitive data type of a field is correctly added to the model.
+     */
+    @Test
+    public void testProcessFieldInterfaceDataType() {
+        Entity testEntity =  new Entity("Test", "org.sw4j.test.Test");
+
+        List<Element> enclosedElements = new LinkedList<>();
+
+        this.variableElementBuilder.setSimpleName("id");
+        this.variableElementBuilder.addAnnotation(Id.class, new IdMock());
+        this.variableElementBuilder.setTypeKind(TypeKind.DECLARED);
+        this.variableElementBuilder.setKind(ElementKind.FIELD);
+        Element idElement = this.variableElementBuilder.createElement();
+        enclosedElements.add(idElement);
+
+        this.typeElementBuilder.setSimpleName("Serializable");
+        this.typeElementBuilder.setQualifiedName("java.io.Serializable");
+        this.typeElementBuilder.setKind(ElementKind.INTERFACE);
+        this.types.asElement(this.typeElementBuilder.createElement());
+
+        this.unitUnderTest.process(testEntity, enclosedElements);
+
+        Assert.assertEquals(testEntity.getAttributes().size(), 1, "Expected entity with a single @Id attribute.");
+        Assert.assertEquals(testEntity.getAttributes().get(0).getName(), "id",
+                "Expected entity with attribute named \"id\".");
+        Assert.assertEquals(testEntity.getAttributes().get(0).getDataType(), "java.io.Serializable",
+                "Expected attribute is data type java.io.Serializable.");
+    }
+
+    /**
+     * Test that an entity with two fields that are annotated with @Id emit an error.
+     */
+    @Test
+    public void testProcessFieldDupplicateId() {
+        Entity testEntity =  new Entity("Test", "org.sw4j.test.Test");
+
+        List<Element> enclosedElements = new LinkedList<>();
+
+        this.variableElementBuilder.setSimpleName("id");
+        this.variableElementBuilder.addAnnotation(Id.class, new IdMock());
+        this.variableElementBuilder.setKind(ElementKind.FIELD);
+        this.variableElementBuilder.setTypeKind(TypeKind.LONG);
+        Element testElement = this.variableElementBuilder.createElement();
+        enclosedElements.add(testElement);
+
+        this.variableElementBuilder.setSimpleName("id2");
+        this.variableElementBuilder.addAnnotation(Id.class, new IdMock());
+        this.variableElementBuilder.setKind(ElementKind.FIELD);
+        this.variableElementBuilder.setTypeKind(TypeKind.LONG);
+        testElement = this.variableElementBuilder.createElement();
+        enclosedElements.add(testElement);
+
+        this.unitUnderTest.process(testEntity, enclosedElements);
+
+        Assert.assertEquals(this.messager.getMessages().size(), 1, "Expected one message to be created.");
+        Assert.assertEquals(this.messager.getMessages().get(0).getKind(), Diagnostic.Kind.ERROR,
+                "Expected a message with level ERROR to be created.");
+    }
+
 }

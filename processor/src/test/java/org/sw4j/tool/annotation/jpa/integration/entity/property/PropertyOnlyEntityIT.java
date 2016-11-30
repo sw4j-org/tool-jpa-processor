@@ -17,7 +17,7 @@
 package org.sw4j.tool.annotation.jpa.integration.entity.property;
 
 import javax.xml.xpath.XPathExpressionException;
-import org.sw4j.tool.annotation.jpa.integration.util.TestSuperclass;
+import org.sw4j.tool.annotation.jpa.integration.util.ITSuperclass;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 import org.w3c.dom.Node;
@@ -27,7 +27,7 @@ import org.w3c.dom.Node;
  *
  * @author Uwe Plonus
  */
-public class PropertyOnlyEntityIT extends TestSuperclass {
+public class PropertyOnlyEntityIT extends ITSuperclass {
 
     /** Default constructor. */
     public PropertyOnlyEntityIT() {

@@ -14,30 +14,26 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.sw4j.tool.annotation.jpa.integration.processor;
+package org.sw4j.tool.annotation.jpa.entity;
 
-import org.sw4j.tool.annotation.jpa.integration.util.ITSuperclass;
-import org.sw4j.tool.annotation.jpa.processor.AnnotationProcessor;
-import org.testng.Assert;
-import org.testng.annotations.Test;
+import javax.persistence.Entity;
 
 /**
- * Class to test the {@link AnnotationProcessor}.
+ * An entity without an @Id.
  *
  * @author Uwe Plonus
  */
-public class AnnotationProcessorIT extends ITSuperclass {
+@Entity
+public class NoIdEntity {
 
-    /** Default constructor. */
-    public AnnotationProcessorIT() {
+    private int id;
+
+    public int getId() {
+        return id;
     }
 
-    @Test
-    public void testRootElement() {
-        Assert.assertNotNull(getRootElement(), "Expected a document to be read.");
-
-        Assert.assertEquals(getRootElement().getNodeName(), "model",
-                "Expected the root element to be named \"model\".");
+    public void setId(int id) {
+        this.id = id;
     }
 
 }

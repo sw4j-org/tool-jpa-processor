@@ -17,6 +17,7 @@
 package org.sw4j.tool.annotation.jpa.generator;
 
 import java.io.IOException;
+import java.util.Properties;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import org.sw4j.tool.annotation.jpa.generator.model.Model;
@@ -37,13 +38,12 @@ public interface GeneratorService {
     String getPrefix();
 
     /**
-     * Sets the name of the properties file of the generator. The properties are used to configure the generator. The
+     * Sets the the properties of the generator. The properties are used to configure the generator. The
      * recognized properties are generator dependent and must be described at the generator.
      *
-     * @param propertiesdFileName the name of the properties properties used to configure the generator.
-     * @throws IOException if the loading of the given properties file failes.
+     * @param properties the properties used to configure the generator.
      */
-    void setPropertiesFileName(@Nullable String propertiesdFileName) throws IOException;
+    void setProperties(@Nullable Properties properties);
 
     /**
      * Flag to indicate that the generator can process a model. For this the generator should be able to read the

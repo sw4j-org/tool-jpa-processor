@@ -17,7 +17,7 @@
 package org.sw4j.tool.annotation.jpa.integration.entity.field;
 
 import javax.xml.xpath.XPathExpressionException;
-import org.sw4j.tool.annotation.jpa.integration.util.TestSuperclass;
+import org.sw4j.tool.annotation.jpa.integration.util.ITSuperclass;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 import org.w3c.dom.Node;
@@ -27,7 +27,7 @@ import org.w3c.dom.Node;
  *
  * @author Uwe Plonus
  */
-public class ObjectFieldEntityIT extends TestSuperclass {
+public class ObjectFieldEntityIT extends ITSuperclass {
 
     /** Default constructor. */
     public ObjectFieldEntityIT() {

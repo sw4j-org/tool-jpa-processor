@@ -16,10 +16,13 @@
  */
 package org.sw4j.tool.annotation.jpa.processor;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Properties;
 import java.util.ServiceLoader;
 import java.util.Set;
 import javax.annotation.Nonnull;
@@ -87,11 +90,12 @@ public class AnnotationProcessor extends AbstractProcessor {
     @Override
     public boolean process(@Nonnull final Set<? extends TypeElement> annotations,
             @Nonnull final RoundEnvironment roundEnv) {
+        String propertiesOption = this.processingEnv.getOptions().get(PROPERTIES_OPTION);
+        Map<String, Properties> properties = readProperties(propertiesOption);
         this.entityProcessor.process(roundEnv.getElementsAnnotatedWith(Entity.class), model);
 
         if (roundEnv.processingOver()) {
-            String outputOption = this.processingEnv.getOptions().get(PROPERTIES_OPTION);
-            ServiceLoader<GeneratorService> generatorServiceLoader = setupGenerators(outputOption);
+            ServiceLoader<GeneratorService> generatorServiceLoader = setupGenerators(properties);
             Iterator<GeneratorService> generators = generatorServiceLoader.iterator();
             while (generators.hasNext()) {
                 GeneratorService generator = generators.next();
@@ -110,32 +114,58 @@ public class AnnotationProcessor extends AbstractProcessor {
     }
 
     /**
+     * Reads all properties from the given property file and splits them according to the used prefix.
+     *
+     * @param fileName the name of the file of the properties file.
+     * @return a map containing properties splitted according to the prefix.
+     */
+    private Map<String, Properties> readProperties(@Nullable final String fileName) {
+        Map<String, Properties> result = new HashMap<>();
+        if (fileName != null) {
+            File propertiesFile = new File(fileName);
+            if (propertiesFile.exists()) {
+                Properties allProperties = new Properties();
+                try (FileInputStream fis = new FileInputStream(propertiesFile)) {
+                    allProperties.load(fis);
+                } catch (IOException ioex) {
+                    this.processingEnv.getMessager().printMessage(Diagnostic.Kind.WARNING,
+                            new StringBuilder("Cannot access the file \"").append(fileName)
+                                    .append("\". Ignoring Properties.\nError: ").append(ioex.getMessage()));
+                }
+                if (!allProperties.isEmpty()) {
+                    for (String propertyName: allProperties.stringPropertyNames()) {
+                        int dotPos = propertyName.indexOf('.');
+                        if (dotPos >= 0) {
+                            String prefix = propertyName.substring(0, dotPos);
+                            String suffix = propertyName.substring(dotPos + 1);
+                            Properties prefixedProperties = result.get(prefix);
+                            if (prefixedProperties == null) {
+                                prefixedProperties = new Properties();
+                                result.put(prefix, prefixedProperties);
+                            }
+                            prefixedProperties.setProperty(suffix, allProperties.getProperty(propertyName));
+                        }
+                    }
+                }
+            }
+        }
+        return result;
+    }
+
+    /**
      * Load all available generators and set them up with their properties.
      *
      * @param outputOption the configuration string provided to the annotation processor.
      * @return the configured generators.
      */
     @Nonnull
-    private ServiceLoader<GeneratorService> setupGenerators(@Nullable final String outputOption) {
-        Map<String, String> outputParts = new HashMap<>();
-        if (outputOption != null) {
-            for (String o: outputOption.split(",")) {
-                String[] singleOption = o.split("=");
-                if (singleOption.length == 2) {
-                    outputParts.put(singleOption[0], singleOption[1]);
-                }
-            }
-        }
+    private ServiceLoader<GeneratorService> setupGenerators(@Nonnull final Map<String, Properties> properties) {
         ServiceLoader<GeneratorService> generatorServiceLoader = ServiceLoader.load(GeneratorService.class);
         Iterator<GeneratorService> generators = generatorServiceLoader.iterator();
         while (generators.hasNext()) {
             GeneratorService generator = generators.next();
-            if (outputParts.containsKey(generator.getPrefix())) {
-                try {
-                    generator.setPropertiesFileName(outputParts.get(generator.getPrefix()));
-                } catch (IOException ioex) {
-                    this.processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, ioex.toString());
-                }
+            if (properties.containsKey(generator.getPrefix())) {
+                generator.setProperties(properties.get(generator.getPrefix()));
             }
         }
         return generatorServiceLoader;
