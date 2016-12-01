@@ -9,7 +9,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="Date-Revision-yyyymmdd" content="20161201" />
     <meta http-equiv="Content-Language" content="en" />
-    <title>JPA Annotation Processor (Annotation Processor) &#x2013; Dependency Information</title>
+    <title>JPA Annotation Processor (Annotation Processor) &#x2013; Processed Annotations</title>
     <link rel="stylesheet" href="./css/apache-maven-fluido-1.5.min.css" />
     <link rel="stylesheet" href="./css/site.css" />
     <link rel="stylesheet" href="./css/print.css" media="print" />
@@ -77,62 +77,18 @@
         Restrictions</a>
             </li>
                 
-      <li>
+      <li class="active">
   
-                          <a href="processed.html" title="Processed Annotations">
-          <span class="none"></span>
-        Processed Annotations</a>
-            </li>
+            <a href="#"><span class="none"></span>Processed Annotations</a>
+          </li>
                               <li class="nav-header">Project Documentation</li>
-                                                                                                                                                                                    
+                                                                                                                                                                          
       <li>
   
                           <a href="project-info.html" title="Project Information">
-          <span class="icon-chevron-down"></span>
+          <span class="icon-chevron-right"></span>
         Project Information</a>
-                    <ul class="nav nav-list">
-                    
-      <li>
-  
-                          <a href="index.html" title="About">
-          <span class="none"></span>
-        About</a>
-            </li>
-                    
-      <li>
-  
-                          <a href="project-summary.html" title="Project Summary">
-          <span class="none"></span>
-        Project Summary</a>
-            </li>
-                    
-      <li>
-  
-                          <a href="license.html" title="Project License">
-          <span class="none"></span>
-        Project License</a>
-            </li>
-                    
-      <li class="active">
-  
-            <a href="#"><span class="none"></span>Dependency Information</a>
-          </li>
-                    
-      <li>
-  
-                          <a href="dependencies.html" title="Dependencies">
-          <span class="none"></span>
-        Dependencies</a>
-            </li>
-                    
-      <li>
-  
-                          <a href="plugins.html" title="Project Plugins">
-          <span class="none"></span>
-        Project Plugins</a>
-            </li>
-              </ul>
-        </li>
+                  </li>
                                                                                                                                                                                                                                                                                                                               
       <li>
   
@@ -160,37 +116,21 @@
                 
         <div id="bodyColumn"  class="span10" >
                                   
-            <div class="section">
-<h2><a name="Dependency_Information"></a>Dependency Information</h2><a name="Dependency_Information"></a>
+            <h1>Processed Annotations</h1>
+<p>The following Annotations are processed at the moment:</p>
+
+<ul>
+  
+<li><a href="#aEntity">@Entity</a></li>
+  
+<li><a href="#aId">@Id</a></li>
+</ul>
 <div class="section">
-<h3><a name="Apache_Maven"></a>Apache Maven</h3><a name="Apache_Maven"></a>
-<div class="source"><pre class="prettyprint">&lt;dependency&gt;
-  &lt;groupId&gt;org.sw4j.tool.annotation.jpa&lt;/groupId&gt;
-  &lt;artifactId&gt;processor&lt;/artifactId&gt;
-  &lt;version&gt;0.1.0-SNAPSHOT&lt;/version&gt;
-&lt;/dependency&gt;</pre></div></div>
+<h2><a name="aEntity"></a>@Entity</h2>
+<p>The @Entity annotation is processed completely. If the @Entity does not have a name then the simple name of the class is used as entity name.</p></div>
 <div class="section">
-<h3><a name="Apache_Buildr"></a>Apache Buildr</h3><a name="Apache_Buildr"></a>
-<div class="source"><pre class="prettyprint">'org.sw4j.tool.annotation.jpa:processor:jar:0.1.0-SNAPSHOT'</pre></div></div>
-<div class="section">
-<h3><a name="Apache_Ivy"></a>Apache Ivy</h3><a name="Apache_Ivy"></a>
-<div class="source"><pre class="prettyprint">&lt;dependency org=&quot;org.sw4j.tool.annotation.jpa&quot; name=&quot;processor&quot; rev=&quot;0.1.0-SNAPSHOT&quot;&gt;
-  &lt;artifact name=&quot;processor&quot; type=&quot;jar&quot; /&gt;
-&lt;/dependency&gt;</pre></div></div>
-<div class="section">
-<h3><a name="Groovy_Grape"></a>Groovy Grape</h3><a name="Groovy_Grape"></a>
-<div class="source"><pre class="prettyprint">@Grapes(
-@Grab(group='org.sw4j.tool.annotation.jpa', module='processor', version='0.1.0-SNAPSHOT')
-)</pre></div></div>
-<div class="section">
-<h3><a name="Grails"></a>Grails</h3><a name="Grails"></a>
-<div class="source"><pre class="prettyprint">compile 'org.sw4j.tool.annotation.jpa:processor:0.1.0-SNAPSHOT'</pre></div></div>
-<div class="section">
-<h3><a name="Leiningen"></a>Leiningen</h3><a name="Leiningen"></a>
-<div class="source"><pre class="prettyprint">[org.sw4j.tool.annotation.jpa/processor &quot;0.1.0-SNAPSHOT&quot;]</pre></div></div>
-<div class="section">
-<h3><a name="SBT"></a>SBT</h3><a name="SBT"></a>
-<div class="source"><pre class="prettyprint">libraryDependencies += &quot;org.sw4j.tool.annotation.jpa&quot; % &quot;processor&quot; % &quot;0.1.0-SNAPSHOT&quot;</pre></div></div></div>
+<h2><a name="aId"></a>@Id</h2>
+<p>The @Id annotation is processed and determines the default access type of an entity.</p></div>
                   </div>
             </div>
           </div>

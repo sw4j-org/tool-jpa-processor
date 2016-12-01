@@ -37,16 +37,22 @@ public class Attribute {
     @XmlAttribute(name = &quot;isId&quot;)
     private final boolean isId;
 
+    /** The Java datatype of this attribute. */
+    @XmlAttribute(name = &quot;dataType&quot;)
+    private final String dataType;
+
     /**
      * Constructor for an attribute.
      *
      * @param name the name of the attribute.
      * @param isId if this attribute should be marked as Id.
+     * @param dataType the Java datatype of the attribute
      */
-<span class="fc" id="L46">    public Attribute(@Nonnull final String name, final boolean isId) {</span>
-<span class="fc" id="L47">        this.name = name;</span>
-<span class="fc" id="L48">        this.isId = isId;</span>
-<span class="fc" id="L49">    }</span>
+<span class="fc" id="L51">    public Attribute(@Nonnull final String name, final boolean isId, @Nonnull final String dataType) {</span>
+<span class="fc" id="L52">        this.name = name;</span>
+<span class="fc" id="L53">        this.isId = isId;</span>
+<span class="fc" id="L54">        this.dataType = dataType;</span>
+<span class="fc" id="L55">    }</span>
 
     /**
      * Returns the name of the attribute.
@@ -55,15 +61,25 @@ public class Attribute {
      */
     @Nonnull
     public String getName() {
-<span class="fc" id="L58">        return name;</span>
+<span class="fc" id="L64">        return this.name;</span>
     }
 
     /**
      * Returns if this attribute is an Id.
+     *
      * @return {@code true} if this attribute is an Id.
      */
     public boolean isId() {
-<span class="fc" id="L66">        return isId;</span>
+<span class="fc" id="L73">        return this.isId;</span>
+    }
+
+    /**
+     * Returns the java data type of this attribute.
+     *
+     * @return the data type of this attribute.
+     */
+    public String getDataType() {
+<span class="fc" id="L82">        return this.dataType;</span>
     }
 
 }

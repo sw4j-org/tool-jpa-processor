@@ -17,8 +17,10 @@
 package org.sw4j.tool.annotation.jpa.processor;
 
 import java.beans.Introspector;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
@@ -26,7 +28,9 @@ import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
+import javax.persistence.AccessType;
 import javax.persistence.Id;
+import javax.tools.Diagnostic;
 import org.sw4j.tool.annotation.jpa.generator.model.Attribute;
 import org.sw4j.tool.annotation.jpa.generator.model.Entity;
 
@@ -37,6 +41,18 @@ import org.sw4j.tool.annotation.jpa.generator.model.Entity;
  */
 public class AttributeProcessor {
 
+    /** The prefix of a generic property. */
+    private static final String PROPERTY_PREFIX = &quot;get&quot;;
+
+    /** The length of the prefix of a generic property. */
+<span class="fc" id="L48">    private static final int PROPERTY_PREFIX_LENGTH = &quot;get&quot;.length();</span>
+
+    /** The prefix of a boolean property. */
+    private static final String BOOLEAN_PROPERTY_PREFIX = &quot;is&quot;;
+
+    /** The length of the prefix of a boolean property. */
+<span class="fc" id="L54">    private static final int BOOLEAN_PROPERTY_PREFIX_LENGTH = &quot;is&quot;.length();</span>
+
     /** The processing environment used to access the tool facilities. */
     private ProcessingEnvironment processingEnv;
 
@@ -44,53 +60,142 @@ public class AttributeProcessor {
      * Default constructor for the attribute processor.
      *
      */
-<span class="fc" id="L47">    public AttributeProcessor() {</span>
-<span class="fc" id="L48">    }</span>
+<span class="fc" id="L63">    public AttributeProcessor() {</span>
+<span class="fc" id="L64">    }</span>
 
     /**
      * Initializes the processor with the processing environment.
      *
      * @param processingEnv environment to access facilities the tool framework provides to the processor.
      */
-    public void init(ProcessingEnvironment processingEnv) {
-<span class="fc" id="L56">        this.processingEnv = processingEnv;</span>
-<span class="fc" id="L57">    }</span>
-
-    /**
-     * Process a single entity annotated with {@code @Entity}. An attribute may be defined by either a field or a
-     * property or both. Which one is used depends on the access of the entity.
-     *
-     * @param entity the entity this attribute belongs to.
-     * @param attributeName the name of the attribute.
-     * @param fieldElement the possible field of the attribute.
-     * @param propertyElement the possible property of the attribute.
-     */
-    public void process(@Nonnull final Entity entity, @Nonnull final String attributeName,
-            @Nullable final Element fieldElement, @Nullable final Element propertyElement) {
-<span class="fc bfc" id="L70" title="All 4 branches covered.">        if (fieldElement != null || propertyElement != null) {</span>
-<span class="fc" id="L71">            Attribute attribute = new Attribute(attributeName, isPossibleIdAttribute(fieldElement, propertyElement));</span>
-<span class="fc" id="L72">            entity.addAttribute(attribute);</span>
-        }
+    @SuppressWarnings(&quot;checkstyle:HiddenField&quot;)
+    public void init(@Nonnull final ProcessingEnvironment processingEnv) {
+<span class="fc" id="L73">        this.processingEnv = processingEnv;</span>
 <span class="fc" id="L74">    }</span>
 
     /**
-     * Test if the given field or property is a possible {@code Id}. The caller is responsible to ensure that the
-     * elements denote the same attribute.
+     * Process all possible attributes of an {@code Entity} class.
      *
-     * @param fieldElement the field element to check.
-     * @param propertyElement the property element to check.
-     * @return {@code true} if either the fieldElement or the propertyElement denote an {@code Id}.
+     * @param entity the entity this attributes belongs to.
+     * @param possibleAttributes all enclosed elements of the element that denotes the {@code Entity}.
      */
-    private boolean isPossibleIdAttribute(@Nullable final Element fieldElement,
-            @Nullable final Element propertyElement) {
-<span class="fc" id="L86">        Id idAnnotation = null;</span>
-<span class="fc bfc" id="L87" title="All 2 branches covered.">        if (fieldElement != null) {</span>
-<span class="fc" id="L88">            idAnnotation = fieldElement.getAnnotation(Id.class);</span>
+    public void process(@Nonnull final Entity entity, @Nonnull final List&lt;? extends Element&gt; possibleAttributes) {
+<span class="fc" id="L83">        AccessType accessType = null;</span>
+<span class="fc" id="L84">        Map&lt;String, Element&gt; possibleFields = new LinkedHashMap&lt;&gt;();</span>
+<span class="fc" id="L85">        Map&lt;String, Element&gt; possibleProperties = new LinkedHashMap&lt;&gt;();</span>
+<span class="fc" id="L86">        Map&lt;String, Element&gt; possibleIds = new LinkedHashMap&lt;&gt;();</span>
+<span class="fc bfc" id="L87" title="All 2 branches covered.">        for (Element possibleAttribute: possibleAttributes) {</span>
+<span class="fc" id="L88">            String attributeName = null;</span>
+<span class="fc bfc" id="L89" title="All 2 branches covered.">            if (isField(possibleAttribute)) {</span>
+<span class="fc" id="L90">                attributeName = possibleAttribute.getSimpleName().toString();</span>
+<span class="fc" id="L91">                possibleFields.put(attributeName, possibleAttribute);</span>
+<span class="fc bfc" id="L92" title="All 2 branches covered.">            } else if (isProperty(possibleAttribute)) {</span>
+<span class="fc" id="L93">                attributeName = getAttributeNameFromProperty(possibleAttribute);</span>
+<span class="fc" id="L94">                possibleProperties.put(attributeName, possibleAttribute);</span>
+            }
+<span class="fc bfc" id="L96" title="All 4 branches covered.">            if (attributeName != null &amp;&amp; isPossibleIdAttribute(possibleAttribute)) {</span>
+<span class="fc bfc" id="L97" title="All 2 branches covered.">                if (possibleIds.put(attributeName, possibleAttribute) != null) {</span>
+<span class="fc" id="L98">                    this.processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR,</span>
+                            new StringBuilder(&quot;The entity \&quot;&quot;)
+                                    .append(entity.getName())
+                                    .append(&quot;\&quot; (with class name \&quot;&quot;)
+                                    .append(entity.getClassName())
+                                    .append(&quot;\&quot;) has the same attribute annotated with @Id twice.&quot;));
+                }
+            }
+<span class="fc" id="L106">        }</span>
+
+<span class="fc bfc" id="L108" title="All 2 branches covered.">        if (possibleIds.size() == 1) {</span>
+<span class="fc" id="L109">            Map.Entry&lt;String, Element&gt; id = possibleIds.entrySet().iterator().next();</span>
+<span class="fc bfc" id="L110" title="All 2 branches covered.">            if (isField(id.getValue())) {</span>
+<span class="fc" id="L111">                accessType = AccessType.FIELD;</span>
+<span class="pc bpc" id="L112" title="1 of 2 branches missed.">            } else if (isProperty(id.getValue())) {</span>
+<span class="fc" id="L113">                accessType = AccessType.PROPERTY;</span>
+            }
+<span class="fc bfc" id="L115" title="All 2 branches covered.">            if (accessType == AccessType.FIELD) {</span>
+<span class="fc bfc" id="L116" title="All 2 branches covered.">                for (Map.Entry&lt;String, Element&gt; possibleField: possibleFields.entrySet()) {</span>
+<span class="fc" id="L117">                    processField(entity, possibleField.getValue());</span>
+<span class="fc" id="L118">                }</span>
+            } else {
+<span class="fc bfc" id="L120" title="All 2 branches covered.">                for (Map.Entry&lt;String, Element&gt; possibleProperty: possibleProperties.entrySet()) {</span>
+<span class="fc" id="L121">                    processProperty(entity, possibleProperty.getValue());</span>
+<span class="fc" id="L122">                }</span>
+            }
+<span class="fc bfc" id="L124" title="All 2 branches covered.">        } else if (possibleIds.isEmpty()) {</span>
+<span class="fc" id="L125">            this.processingEnv.getMessager().printMessage(Diagnostic.Kind.WARNING, new StringBuilder(</span>
+                    &quot;This annotation processor does not support entities without @Id annotations. The entity \&quot;&quot;)
+                    .append(entity.getName())
+                    .append(&quot;\&quot; (with class name \&quot;&quot;)
+                    .append(entity.getClassName())
+                    .append(&quot;\&quot;) has no @Id attributes.&quot;));
+        } else {
+<span class="fc" id="L132">            this.processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, new StringBuilder(</span>
+                    &quot;This annotation processor does not support entities with multiple @Id annotations. The entity \&quot;&quot;)
+                    .append(entity.getName())
+                    .append(&quot;\&quot; (with class name \&quot;&quot;)
+                    .append(entity.getClassName())
+                    .append(&quot;\&quot;) has more than 1 @Id attribute.&quot;));
         }
-<span class="fc bfc" id="L90" title="All 4 branches covered.">        if (idAnnotation == null &amp;&amp; propertyElement != null) {</span>
-<span class="fc" id="L91">            idAnnotation = propertyElement.getAnnotation(Id.class);</span>
+<span class="fc" id="L139">    }</span>
+
+    /**
+     * Process a single field attribute.
+     *
+     * @param entity the entity this attribute belongs to.
+     * @param fieldElement the field of the attribute.
+     */
+    private void processField(@Nonnull final Entity entity, @Nonnull final Element fieldElement) {
+<span class="fc" id="L148">        Attribute attribute = new Attribute(fieldElement.getSimpleName().toString(),</span>
+                isPossibleIdAttribute(fieldElement), getDataTypeFromType(fieldElement.asType()));
+<span class="fc" id="L150">        entity.addAttribute(attribute);</span>
+<span class="fc" id="L151">    }</span>
+
+    /**
+     * Process a single property attribute.
+     *
+     * @param entity the entity this attribute belongs to.
+     * @param propertyElement the property of the attribute.
+     */
+    private void processProperty(@Nonnull final Entity entity, @Nonnull final Element propertyElement) {
+<span class="fc" id="L160">        TypeMirror returnType = ((ExecutableElement)propertyElement).getReturnType();</span>
+<span class="fc" id="L161">        Attribute attribute = new Attribute(getAttributeNameFromProperty(propertyElement),</span>
+                isPossibleIdAttribute(propertyElement), getDataTypeFromType(returnType));
+<span class="fc" id="L163">        entity.addAttribute(attribute);</span>
+<span class="fc" id="L164">    }</span>
+
+    /**
+     * Return the datatype as String deom the given TypeMirror.
+     *
+     * @param type the type to convert.
+     * @return the datatype of the type.
+     */
+    private String getDataTypeFromType(TypeMirror type) {
+<span class="fc" id="L173">        String dataType = &quot;&quot;;</span>
+<span class="fc bfc" id="L174" title="All 2 branches covered.">        if (type.getKind().isPrimitive()) {</span>
+            // This is a primitive type (e.g. int or float)
+<span class="fc" id="L176">            dataType = type.toString();</span>
+        } else {
+            // The type is either a class or an interface
+<span class="fc" id="L179">            Element dataTypeElement = this.processingEnv.getTypeUtils().asElement(type);</span>
+<span class="pc bpc" id="L180" title="1 of 2 branches missed.">            if (dataTypeElement != null) {</span>
+<span class="fc" id="L181">                ElementKind dataTypeKind = dataTypeElement.getKind();</span>
+<span class="pc bpc" id="L182" title="1 of 4 branches missed.">                if (dataTypeKind.isClass() || dataTypeKind.isInterface()) {</span>
+<span class="fc" id="L183">                    dataType = ((TypeElement)dataTypeElement).getQualifiedName().toString();</span>
+                }
+            }
         }
-<span class="fc bfc" id="L93" title="All 2 branches covered.">        return idAnnotation != null;</span>
+<span class="fc" id="L187">        return dataType;</span>
+    }
+
+    /**
+     * Test if the given field or property is a possible {@code @Id}.
+     *
+     * @param element the element to check.
+     * @return {@code true} if either the fieldElement or the propertyElement denote an {@code @Id}.
+     */
+    private boolean isPossibleIdAttribute(@Nonnull final Element element) {
+<span class="fc" id="L197">        Id idAnnotation = element.getAnnotation(Id.class);</span>
+<span class="fc bfc" id="L198" title="All 2 branches covered.">        return idAnnotation != null;</span>
     }
 
     /**
@@ -99,8 +204,8 @@ public class AttributeProcessor {
      * @param element the element to check.
      * @return {@code true} if the element is a field.
      */
-    public boolean isField(@Nonnull final Element element) {
-<span class="fc" id="L103">        return ElementKind.FIELD.equals(element.getKind());</span>
+    private boolean isField(@Nonnull final Element element) {
+<span class="fc" id="L208">        return ElementKind.FIELD.equals(element.getKind());</span>
     }
 
     /**
@@ -109,12 +214,12 @@ public class AttributeProcessor {
      * @param element the element to check.
      * @return {@code true} if the element is the getter of a property.
      */
-    public boolean isProperty(@Nonnull final Element element) {
-<span class="fc" id="L113">        boolean isProperty = false;</span>
-<span class="fc bfc" id="L114" title="All 2 branches covered.">        if (ElementKind.METHOD.equals(element.getKind())) {</span>
-<span class="fc bfc" id="L115" title="All 2 branches covered.">            isProperty = !&quot;&quot;.equals(getPropertyFromMethod(element));</span>
+    private boolean isProperty(@Nonnull final Element element) {
+<span class="fc" id="L218">        boolean isProperty = false;</span>
+<span class="pc bpc" id="L219" title="1 of 2 branches missed.">        if (ElementKind.METHOD.equals(element.getKind())) {</span>
+<span class="fc bfc" id="L220" title="All 2 branches covered.">            isProperty = !&quot;&quot;.equals(getAttributeNameFromProperty(element));</span>
         }
-<span class="fc" id="L117">        return isProperty;</span>
+<span class="fc" id="L222">        return isProperty;</span>
     }
 
     /**
@@ -125,25 +230,25 @@ public class AttributeProcessor {
      * @param element the element to check.
      * @return either the property name or an empty string.
      */
-    public String getPropertyFromMethod(@Nonnull final Element element) {
-<span class="fc" id="L129">        StringBuilder result = new StringBuilder();</span>
-<span class="fc" id="L130">        String elementName = element.getSimpleName().toString();</span>
-<span class="fc bfc" id="L131" title="All 2 branches covered.">        if (elementName.startsWith(&quot;get&quot;)) {</span>
-<span class="fc" id="L132">            result.append(Introspector.decapitalize(elementName.substring(3)));</span>
-<span class="fc bfc" id="L133" title="All 2 branches covered.">        } else if (elementName.startsWith(&quot;is&quot;)) {</span>
-<span class="fc" id="L134">            TypeMirror returnType = ((ExecutableElement)element).getReturnType();</span>
-<span class="pc bpc" id="L135" title="1 of 2 branches missed.">            if (TypeKind.BOOLEAN.equals(returnType.getKind())) {</span>
-<span class="fc" id="L136">                result.append(Introspector.decapitalize(elementName.substring(2)));</span>
+    private String getAttributeNameFromProperty(@Nonnull final Element element) {
+<span class="fc" id="L234">        StringBuilder result = new StringBuilder();</span>
+<span class="fc" id="L235">        String elementName = element.getSimpleName().toString();</span>
+<span class="fc bfc" id="L236" title="All 2 branches covered.">        if (elementName.startsWith(PROPERTY_PREFIX)) {</span>
+<span class="fc" id="L237">            result.append(Introspector.decapitalize(elementName.substring(PROPERTY_PREFIX_LENGTH)));</span>
+<span class="pc bpc" id="L238" title="1 of 2 branches missed.">        } else if (elementName.startsWith(BOOLEAN_PROPERTY_PREFIX)) {</span>
+<span class="fc" id="L239">            TypeMirror returnType = ((ExecutableElement)element).getReturnType();</span>
+<span class="fc bfc" id="L240" title="All 2 branches covered.">            if (TypeKind.BOOLEAN.equals(returnType.getKind())) {</span>
+<span class="fc" id="L241">                result.append(Introspector.decapitalize(elementName.substring(BOOLEAN_PROPERTY_PREFIX_LENGTH)));</span>
             } else {
-<span class="nc" id="L138">                Element returnElement = this.processingEnv.getTypeUtils().asElement(returnType);</span>
-<span class="nc bnc" id="L139" title="All 4 branches missed.">                if (returnElement != null &amp;&amp; ElementKind.CLASS.equals(returnElement.getKind())) {</span>
-<span class="nc bnc" id="L140" title="All 2 branches missed.">                    if (Boolean.class.getName().equals(((TypeElement)returnElement).getQualifiedName().toString())) {</span>
-<span class="nc" id="L141">                        result.append(Introspector.decapitalize(elementName.substring(2)));</span>
+<span class="fc" id="L243">                Element returnElement = this.processingEnv.getTypeUtils().asElement(returnType);</span>
+<span class="pc bpc" id="L244" title="2 of 4 branches missed.">                if (returnElement != null &amp;&amp; ElementKind.CLASS.equals(returnElement.getKind())) {</span>
+<span class="fc bfc" id="L245" title="All 2 branches covered.">                    if (Boolean.class.getName().equals(((TypeElement)returnElement).getQualifiedName().toString())) {</span>
+<span class="fc" id="L246">                        result.append(Introspector.decapitalize(elementName.substring(2)));</span>
                     }
                 }
             }
         }
-<span class="fc" id="L146">        return result.toString();</span>
+<span class="fc" id="L251">        return result.toString();</span>
     }
 
 }

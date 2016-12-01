@@ -23,7 +23,6 @@ import javax.annotation.Nonnull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
@@ -41,16 +40,15 @@ import javax.xml.bind.annotation.XmlType;
 public class Model {
 
     /** The entities of the model. */
-    @XmlElementWrapper(name = &quot;entities&quot;)
     @XmlElement(name = &quot;entity&quot;)
     private final List&lt;Entity&gt; entities;
 
     /**
      * Default constructor.
      */
-<span class="fc" id="L51">    public Model() {</span>
-<span class="fc" id="L52">        entities = new LinkedList&lt;&gt;();</span>
-<span class="fc" id="L53">    }</span>
+<span class="fc" id="L49">    public Model() {</span>
+<span class="fc" id="L50">        entities = new LinkedList&lt;&gt;();</span>
+<span class="fc" id="L51">    }</span>
 
     /**
      * Adds an entity to the model.
@@ -58,8 +56,8 @@ public class Model {
      * @param entity the entity to add.
      */
     public void addEntity(@Nonnull final Entity entity) {
-<span class="fc" id="L61">        entities.add(entity);</span>
-<span class="fc" id="L62">    }</span>
+<span class="fc" id="L59">        entities.add(entity);</span>
+<span class="fc" id="L60">    }</span>
 
     /**
      * Returns all entities of the model.
@@ -67,7 +65,7 @@ public class Model {
      * @return a list containing all elements of the model.
      */
     public List&lt;Entity&gt; getEntities() {
-<span class="fc" id="L70">        return Collections.unmodifiableList(entities);</span>
+<span class="fc" id="L68">        return Collections.unmodifiableList(entities);</span>
     }
 
 }

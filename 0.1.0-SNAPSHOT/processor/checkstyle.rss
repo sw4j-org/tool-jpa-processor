@@ -27,8 +27,8 @@ under the License.
     <item>
       <title>File: 10,
              Errors: 0,
-             Warnings: 7,
-             Infos: 4
+             Warnings: 4,
+             Infos: 6
       </title>
             <link>https://sw4j-org.github.io/tool-jpa-processor/0.1.0-SNAPSHOT/processor//checkstyle.html</link>
       <description>
@@ -136,7 +136,7 @@ under the License.
                   0
                 </td>
                 <td>
-                  4
+                  0
                 </td>
                 <td>
                   0
@@ -161,10 +161,10 @@ under the License.
                   <a href="https://sw4j-org.github.io/tool-jpa-processor/0.1.0-SNAPSHOT/processor//checkstyle.html#org.sw4j.tool.annotation.jpa.processor.AnnotationProcessor.java">org/sw4j/tool/annotation/jpa/processor/AnnotationProcessor.java</a>
                 </td>
                 <td>
-                  0
+                  3
                 </td>
                 <td>
-                  1
+                  2
                 </td>
                 <td>
                   0
@@ -175,7 +175,7 @@ under the License.
                   <a href="https://sw4j-org.github.io/tool-jpa-processor/0.1.0-SNAPSHOT/processor//checkstyle.html#org.sw4j.tool.annotation.jpa.generator.model.Entity.java">org/sw4j/tool/annotation/jpa/generator/model/Entity.java</a>
                 </td>
                 <td>
-                  1
+                  0
                 </td>
                 <td>
                   0

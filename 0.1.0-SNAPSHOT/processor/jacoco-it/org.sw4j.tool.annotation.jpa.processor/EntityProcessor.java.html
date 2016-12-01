@@ -16,15 +16,12 @@
  */
 package org.sw4j.tool.annotation.jpa.processor;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
+import javax.lang.model.element.TypeElement;
 import javax.tools.Diagnostic;
 import org.sw4j.tool.annotation.jpa.generator.model.Entity;
 import org.sw4j.tool.annotation.jpa.generator.model.Model;
@@ -48,25 +45,32 @@ public class EntityProcessor {
      * Default constructor for the entity processor.
      *
      */
-<span class="fc" id="L51">    public EntityProcessor() {</span>
-<span class="fc" id="L52">        this.attributeProcessor = new AttributeProcessor();</span>
-<span class="fc" id="L53">    }</span>
+<span class="fc" id="L48">    public EntityProcessor() {</span>
+<span class="fc" id="L49">        this.attributeProcessor = new AttributeProcessor();</span>
+<span class="fc" id="L50">    }</span>
 
     /**
      * Initializes the processor with the processing environment.
      *
      * @param processingEnv environment to access facilities the tool framework provides to the processor.
      */
-    public void init(ProcessingEnvironment processingEnv) {
-<span class="fc" id="L61">        this.processingEnv = processingEnv;</span>
-<span class="fc" id="L62">        this.attributeProcessor.init(this.processingEnv);</span>
-<span class="fc" id="L63">    }</span>
+    @SuppressWarnings(&quot;checkstyle:HiddenField&quot;)
+    public void init(@Nonnull final ProcessingEnvironment processingEnv) {
+<span class="fc" id="L59">        this.processingEnv = processingEnv;</span>
+<span class="fc" id="L60">        this.attributeProcessor.init(this.processingEnv);</span>
+<span class="fc" id="L61">    }</span>
 
+    /**
+     * Process all entities annotated with {@code @Entity}.
+     *
+     * @param elements the elements to process (all must be an {@code @Entity}).
+     * @param model the model where the final entity is added to.
+     */
     public void process(@Nonnull final Set&lt;? extends Element&gt; elements, @Nonnull final Model model) {
-<span class="fc bfc" id="L66" title="All 2 branches covered.">        for (Element element: elements) {</span>
-<span class="fc" id="L67">            this.process(element, model);</span>
-<span class="fc" id="L68">        }</span>
-<span class="fc" id="L69">    }</span>
+<span class="fc bfc" id="L70" title="All 2 branches covered.">        for (Element element: elements) {</span>
+<span class="fc" id="L71">            this.process(element, model);</span>
+<span class="fc" id="L72">        }</span>
+<span class="fc" id="L73">    }</span>
 
     /**
      * Process a single entity annotated with {@code @Entity}.
@@ -74,67 +78,33 @@ public class EntityProcessor {
      * @param element the element to process (must be an {@code @Entity}.
      * @param model the model where the final entity is added to.
      */
-    public void process(@Nonnull final Element element, @Nonnull final Model model) {
-<span class="fc" id="L78">        javax.persistence.Entity entityAnnotation = element.getAnnotation(javax.persistence.Entity.class);</span>
-<span class="pc bpc" id="L79" title="1 of 2 branches missed.">        if (entityAnnotation == null) {</span>
-<span class="nc" id="L80">            this.processingEnv.getMessager().printMessage(Diagnostic.Kind.WARNING,</span>
+    private void process(@Nonnull final Element element, @Nonnull final Model model) {
+<span class="fc" id="L82">        javax.persistence.Entity entityAnnotation = element.getAnnotation(javax.persistence.Entity.class);</span>
+<span class="pc bpc" id="L83" title="1 of 2 branches missed.">        if (entityAnnotation == null) {</span>
+<span class="nc" id="L84">            this.processingEnv.getMessager().printMessage(Diagnostic.Kind.WARNING,</span>
                     new StringBuilder(&quot;The processed class \&quot;&quot;).append(element.getSimpleName())
                             .append(&quot;\&quot; is not an entity.&quot;).toString(), element);
-<span class="pc bpc" id="L83" title="2 of 4 branches missed.">        } else if (ElementKind.CLASS.equals(element.getKind()) &amp;&amp;</span>
+<span class="pc bpc" id="L87" title="1 of 6 branches missed.">        } else if (ElementKind.CLASS.equals(element.getKind()) &amp;&amp;</span>
+                element.getEnclosingElement() != null &amp;&amp;
                 ElementKind.PACKAGE.equals(element.getEnclosingElement().getKind())) {
             // This is a top level class therefore we can continue.
+<span class="fc" id="L91">            TypeElement typeElement = (TypeElement)element;</span>
+<span class="fc" id="L92">            String className = typeElement.getQualifiedName().toString();</span>
             Entity entity;
-<span class="fc bfc" id="L87" title="All 2 branches covered.">            if (&quot;&quot;.equals(entityAnnotation.name())) {</span>
-<span class="fc" id="L88">                entity = new Entity(element.getSimpleName().toString());</span>
+<span class="fc bfc" id="L94" title="All 2 branches covered.">            if (&quot;&quot;.equals(entityAnnotation.name())) {</span>
+<span class="fc" id="L95">                entity = new Entity(element.getSimpleName().toString(), className);</span>
             } else {
-<span class="fc" id="L90">                entity = new Entity(entityAnnotation.name());</span>
+<span class="fc" id="L97">                entity = new Entity(entityAnnotation.name(), className);</span>
             }
-<span class="fc" id="L92">            model.addEntity(entity);</span>
+<span class="fc" id="L99">            model.addEntity(entity);</span>
 
-<span class="fc" id="L94">            Map&lt;String, Element&gt; possibleFields = new HashMap&lt;&gt;();</span>
-<span class="fc" id="L95">            Map&lt;String, Element&gt; possibleProperties = new HashMap&lt;&gt;();</span>
-
-<span class="fc" id="L97">            List&lt;? extends Element&gt; enclosedElements = element.getEnclosedElements();</span>
-<span class="fc bfc" id="L98" title="All 2 branches covered.">            for (Element enclosedElement: enclosedElements) {</span>
-<span class="fc bfc" id="L99" title="All 2 branches covered.">                if (this.attributeProcessor.isField(enclosedElement)) {</span>
-<span class="fc" id="L100">                    possibleFields.put(enclosedElement.getSimpleName().toString(), enclosedElement);</span>
-<span class="fc bfc" id="L101" title="All 2 branches covered.">                } else if (this.attributeProcessor.isProperty(enclosedElement)) {</span>
-<span class="fc" id="L102">                    possibleProperties.put(</span>
-                            this.attributeProcessor.getPropertyFromMethod(enclosedElement), enclosedElement);
-                }
-<span class="fc" id="L105">            }</span>
-<span class="fc" id="L106">            Set&lt;String&gt; handledAttributes = new HashSet&lt;&gt;();</span>
-<span class="fc bfc" id="L107" title="All 2 branches covered.">            for (Map.Entry&lt;String, Element&gt; possibleField: possibleFields.entrySet()) {</span>
-<span class="fc" id="L108">                handledAttributes.add(possibleField.getKey());</span>
-<span class="fc" id="L109">                this.attributeProcessor.process(entity, possibleField.getKey(), possibleField.getValue(),</span>
-                        possibleProperties.get(possibleField.getKey()));
-<span class="fc" id="L111">            }</span>
-<span class="fc bfc" id="L112" title="All 2 branches covered.">            for (Map.Entry&lt;String, Element&gt; possibleProperty: possibleProperties.entrySet()) {</span>
-<span class="fc bfc" id="L113" title="All 2 branches covered.">                if (!handledAttributes.contains(possibleProperty.getKey())) {</span>
-<span class="fc" id="L114">                    handledAttributes.add(possibleProperty.getKey());</span>
-<span class="fc" id="L115">                    this.attributeProcessor.process(entity, possibleProperty.getKey(), null,</span>
-                            possibleProperty.getValue());
-                }
-<span class="fc" id="L118">            }</span>
-<span class="fc" id="L119">        } else {</span>
-<span class="nc" id="L120">            this.processingEnv.getMessager().printMessage(Diagnostic.Kind.WARNING,</span>
+<span class="fc" id="L101">            this.attributeProcessor.process(entity, element.getEnclosedElements());</span>
+<span class="fc" id="L102">        } else {</span>
+<span class="fc" id="L103">            this.processingEnv.getMessager().printMessage(Diagnostic.Kind.WARNING,</span>
                     new StringBuilder(&quot;The processed entity \&quot;&quot;).append(element.getSimpleName())
                             .append(&quot;\&quot; is no top level class.&quot;), element);
         }
-<span class="fc" id="L124">    }</span>
-
-    /**
-     * Checks if the given element is a field.
-     *
-     * @param element the element to check.
-     * @return {@code true} if the element is a field.
-     */
-    public boolean isEntity(@Nonnull final Element element) {
-<span class="pc bpc" id="L133" title="2 of 8 branches missed.">        return ElementKind.CLASS.equals(element.getKind()) &amp;&amp;</span>
-                element.getEnclosingElement() != null &amp;&amp;
-                ElementKind.PACKAGE.equals(element.getEnclosingElement().getKind()) &amp;&amp;
-                element.getAnnotation(javax.persistence.Entity.class) != null;
-    }
+<span class="fc" id="L107">    }</span>
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.7.201606060606</span></div></body></html>

@@ -20,12 +20,10 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlType;
 
 /**
@@ -41,11 +39,14 @@ import javax.xml.bind.annotation.XmlType;
 public class Entity {
 
     /** The name of the entity. */
-    @XmlAttribute(name = &quot;name&quot;)
+    @XmlAttribute(name = &quot;name&quot;, required = true)
     private final String name;
 
+    /** The class name of the entity. */
+    @XmlAttribute(name = &quot;className&quot;, required = true)
+    private final String className;
+
     /** The entities of the model. */
-    @XmlElementWrapper(name = &quot;attributes&quot;, required = false)
     @XmlElement(name = &quot;attribute&quot;)
     private List&lt;Attribute&gt; attributes;
 
@@ -53,10 +54,12 @@ public class Entity {
      * Constructor for an entity.
      *
      * @param name the name of the entity.
+     * @param className the class name of the entity.
      */
-<span class="fc" id="L57">    public Entity(@Nonnull final String name) {</span>
-<span class="fc" id="L58">        this.name = name;</span>
-<span class="fc" id="L59">    }</span>
+<span class="fc" id="L59">    public Entity(@Nonnull final String name, @Nonnull final String className) {</span>
+<span class="fc" id="L60">        this.name = name;</span>
+<span class="fc" id="L61">        this.className = className;</span>
+<span class="fc" id="L62">    }</span>
 
     /**
      * Returns the name of the entity.
@@ -65,7 +68,17 @@ public class Entity {
      */
     @Nonnull
     public String getName() {
-<span class="nc" id="L68">        return name;</span>
+<span class="fc" id="L71">        return this.name;</span>
+    }
+
+    /**
+     * Returns the class name of the entity.
+     *
+     * @return the class name.
+     */
+    @Nonnull
+    public String getClassName() {
+<span class="fc" id="L81">        return this.className;</span>
     }
 
     /**
@@ -74,11 +87,11 @@ public class Entity {
      * @param attribute the attribute to add.
      */
     public synchronized void addAttribute(@Nonnull final Attribute attribute) {
-<span class="fc bfc" id="L77" title="All 2 branches covered.">        if (attributes == null) {</span>
-<span class="fc" id="L78">            attributes = new LinkedList&lt;&gt;();</span>
+<span class="fc bfc" id="L90" title="All 2 branches covered.">        if (this.attributes == null) {</span>
+<span class="fc" id="L91">            this.attributes = new LinkedList&lt;&gt;();</span>
         }
-<span class="fc" id="L80">        attributes.add(attribute);</span>
-<span class="fc" id="L81">    }</span>
+<span class="fc" id="L93">        this.attributes.add(attribute);</span>
+<span class="fc" id="L94">    }</span>
 
     /**
      * Returns all attributes of the entity.
@@ -86,8 +99,8 @@ public class Entity {
      * @return a list containing all attributes of the entity.
      */
     @Nonnull
-    public List&lt;Attribute&gt; getAttributes() {
-<span class="nc bnc" id="L90" title="All 2 branches missed.">        return this.attributes == null ? Collections.EMPTY_LIST : Collections.unmodifiableList(this.attributes);</span>
+    public synchronized List&lt;Attribute&gt; getAttributes() {
+<span class="nc bnc" id="L103" title="All 2 branches missed.">        return this.attributes == null ? Collections.EMPTY_LIST : Collections.unmodifiableList(this.attributes);</span>
     }
 
 }
