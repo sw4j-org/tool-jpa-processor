@@ -17,8 +17,10 @@
 package org.sw4j.tool.annotation.jpa.processor;
 
 import java.beans.Introspector;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
@@ -26,7 +28,9 @@ import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
+import javax.persistence.AccessType;
 import javax.persistence.Id;
+import javax.tools.Diagnostic;
 import org.sw4j.tool.annotation.jpa.generator.model.Attribute;
 import org.sw4j.tool.annotation.jpa.generator.model.Entity;
 
@@ -36,6 +40,18 @@ import org.sw4j.tool.annotation.jpa.generator.model.Entity;
  * @author Uwe Plonus
  */
 public class AttributeProcessor {
+
+    /** The prefix of a generic property. */
+    private static final String PROPERTY_PREFIX = "get";
+
+    /** The length of the prefix of a generic property. */
+    private static final int PROPERTY_PREFIX_LENGTH = "get".length();
+
+    /** The prefix of a boolean property. */
+    private static final String BOOLEAN_PROPERTY_PREFIX = "is";
+
+    /** The length of the prefix of a boolean property. */
+    private static final int BOOLEAN_PROPERTY_PREFIX_LENGTH = "is".length();
 
     /** The processing environment used to access the tool facilities. */
     private ProcessingEnvironment processingEnv;
@@ -52,44 +68,133 @@ public class AttributeProcessor {
      *
      * @param processingEnv environment to access facilities the tool framework provides to the processor.
      */
-    public void init(ProcessingEnvironment processingEnv) {
+    @SuppressWarnings("checkstyle:HiddenField")
+    public void init(@Nonnull final ProcessingEnvironment processingEnv) {
         this.processingEnv = processingEnv;
     }
 
     /**
-     * Process a single entity annotated with {@code @Entity}. An attribute may be defined by either a field or a
-     * property or both. Which one is used depends on the access of the entity.
+     * Process all possible attributes of an {@code Entity} class.
      *
-     * @param entity the entity this attribute belongs to.
-     * @param attributeName the name of the attribute.
-     * @param fieldElement the possible field of the attribute.
-     * @param propertyElement the possible property of the attribute.
+     * @param entity the entity this attributes belongs to.
+     * @param possibleAttributes all enclosed elements of the element that denotes the {@code Entity}.
      */
-    public void process(@Nonnull final Entity entity, @Nonnull final String attributeName,
-            @Nullable final Element fieldElement, @Nullable final Element propertyElement) {
-        if (fieldElement != null || propertyElement != null) {
-            Attribute attribute = new Attribute(attributeName, isPossibleIdAttribute(fieldElement, propertyElement));
-            entity.addAttribute(attribute);
+    public void process(@Nonnull final Entity entity, @Nonnull final List<? extends Element> possibleAttributes) {
+        AccessType accessType = null;
+        Map<String, Element> possibleFields = new LinkedHashMap<>();
+        Map<String, Element> possibleProperties = new LinkedHashMap<>();
+        Map<String, Element> possibleIds = new LinkedHashMap<>();
+        for (Element possibleAttribute: possibleAttributes) {
+            String attributeName = null;
+            if (isField(possibleAttribute)) {
+                attributeName = possibleAttribute.getSimpleName().toString();
+                possibleFields.put(attributeName, possibleAttribute);
+            } else if (isProperty(possibleAttribute)) {
+                attributeName = getAttributeNameFromProperty(possibleAttribute);
+                possibleProperties.put(attributeName, possibleAttribute);
+            }
+            if (attributeName != null && isPossibleIdAttribute(possibleAttribute)) {
+                if (possibleIds.put(attributeName, possibleAttribute) != null) {
+                    this.processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR,
+                            new StringBuilder("The entity \"")
+                                    .append(entity.getName())
+                                    .append("\" (with class name \"")
+                                    .append(entity.getClassName())
+                                    .append("\") has the same attribute annotated with @Id twice."));
+                }
+            }
+        }
+
+        if (possibleIds.size() == 1) {
+            Map.Entry<String, Element> id = possibleIds.entrySet().iterator().next();
+            if (isField(id.getValue())) {
+                accessType = AccessType.FIELD;
+            } else if (isProperty(id.getValue())) {
+                accessType = AccessType.PROPERTY;
+            }
+            if (accessType == AccessType.FIELD) {
+                for (Map.Entry<String, Element> possibleField: possibleFields.entrySet()) {
+                    processField(entity, possibleField.getValue());
+                }
+            } else {
+                for (Map.Entry<String, Element> possibleProperty: possibleProperties.entrySet()) {
+                    processProperty(entity, possibleProperty.getValue());
+                }
+            }
+        } else if (possibleIds.isEmpty()) {
+            this.processingEnv.getMessager().printMessage(Diagnostic.Kind.WARNING, new StringBuilder(
+                    "This annotation processor does not support entities without @Id annotations. The entity \"")
+                    .append(entity.getName())
+                    .append("\" (with class name \"")
+                    .append(entity.getClassName())
+                    .append("\") has no @Id attributes."));
+        } else {
+            this.processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, new StringBuilder(
+                    "This annotation processor does not support entities with multiple @Id annotations. The entity \"")
+                    .append(entity.getName())
+                    .append("\" (with class name \"")
+                    .append(entity.getClassName())
+                    .append("\") has more than 1 @Id attribute."));
         }
     }
 
     /**
-     * Test if the given field or property is a possible {@code Id}. The caller is responsible to ensure that the
-     * elements denote the same attribute.
+     * Process a single field attribute.
      *
-     * @param fieldElement the field element to check.
-     * @param propertyElement the property element to check.
-     * @return {@code true} if either the fieldElement or the propertyElement denote an {@code Id}.
+     * @param entity the entity this attribute belongs to.
+     * @param fieldElement the field of the attribute.
      */
-    private boolean isPossibleIdAttribute(@Nullable final Element fieldElement,
-            @Nullable final Element propertyElement) {
-        Id idAnnotation = null;
-        if (fieldElement != null) {
-            idAnnotation = fieldElement.getAnnotation(Id.class);
+    private void processField(@Nonnull final Entity entity, @Nonnull final Element fieldElement) {
+        Attribute attribute = new Attribute(fieldElement.getSimpleName().toString(),
+                isPossibleIdAttribute(fieldElement), getDataTypeFromType(fieldElement.asType()));
+        entity.addAttribute(attribute);
+    }
+
+    /**
+     * Process a single property attribute.
+     *
+     * @param entity the entity this attribute belongs to.
+     * @param propertyElement the property of the attribute.
+     */
+    private void processProperty(@Nonnull final Entity entity, @Nonnull final Element propertyElement) {
+        TypeMirror returnType = ((ExecutableElement)propertyElement).getReturnType();
+        Attribute attribute = new Attribute(getAttributeNameFromProperty(propertyElement),
+                isPossibleIdAttribute(propertyElement), getDataTypeFromType(returnType));
+        entity.addAttribute(attribute);
+    }
+
+    /**
+     * Return the datatype as String deom the given TypeMirror.
+     *
+     * @param type the type to convert.
+     * @return the datatype of the type.
+     */
+    private String getDataTypeFromType(TypeMirror type) {
+        String dataType = "";
+        if (type.getKind().isPrimitive()) {
+            // This is a primitive type (e.g. int or float)
+            dataType = type.toString();
+        } else {
+            // The type is either a class or an interface
+            Element dataTypeElement = this.processingEnv.getTypeUtils().asElement(type);
+            if (dataTypeElement != null) {
+                ElementKind dataTypeKind = dataTypeElement.getKind();
+                if (dataTypeKind.isClass() || dataTypeKind.isInterface()) {
+                    dataType = ((TypeElement)dataTypeElement).getQualifiedName().toString();
+                }
+            }
         }
-        if (idAnnotation == null && propertyElement != null) {
-            idAnnotation = propertyElement.getAnnotation(Id.class);
-        }
+        return dataType;
+    }
+
+    /**
+     * Test if the given field or property is a possible {@code @Id}.
+     *
+     * @param element the element to check.
+     * @return {@code true} if either the fieldElement or the propertyElement denote an {@code @Id}.
+     */
+    private boolean isPossibleIdAttribute(@Nonnull final Element element) {
+        Id idAnnotation = element.getAnnotation(Id.class);
         return idAnnotation != null;
     }
 
@@ -99,7 +204,7 @@ public class AttributeProcessor {
      * @param element the element to check.
      * @return {@code true} if the element is a field.
      */
-    public boolean isField(@Nonnull final Element element) {
+    private boolean isField(@Nonnull final Element element) {
         return ElementKind.FIELD.equals(element.getKind());
     }
 
@@ -109,10 +214,10 @@ public class AttributeProcessor {
      * @param element the element to check.
      * @return {@code true} if the element is the getter of a property.
      */
-    public boolean isProperty(@Nonnull final Element element) {
+    private boolean isProperty(@Nonnull final Element element) {
         boolean isProperty = false;
         if (ElementKind.METHOD.equals(element.getKind())) {
-            isProperty = !"".equals(getPropertyFromMethod(element));
+            isProperty = !"".equals(getAttributeNameFromProperty(element));
         }
         return isProperty;
     }
@@ -125,15 +230,15 @@ public class AttributeProcessor {
      * @param element the element to check.
      * @return either the property name or an empty string.
      */
-    public String getPropertyFromMethod(@Nonnull final Element element) {
+    private String getAttributeNameFromProperty(@Nonnull final Element element) {
         StringBuilder result = new StringBuilder();
         String elementName = element.getSimpleName().toString();
-        if (elementName.startsWith("get")) {
-            result.append(Introspector.decapitalize(elementName.substring(3)));
-        } else if (elementName.startsWith("is")) {
+        if (elementName.startsWith(PROPERTY_PREFIX)) {
+            result.append(Introspector.decapitalize(elementName.substring(PROPERTY_PREFIX_LENGTH)));
+        } else if (elementName.startsWith(BOOLEAN_PROPERTY_PREFIX)) {
             TypeMirror returnType = ((ExecutableElement)element).getReturnType();
             if (TypeKind.BOOLEAN.equals(returnType.getKind())) {
-                result.append(Introspector.decapitalize(elementName.substring(2)));
+                result.append(Introspector.decapitalize(elementName.substring(BOOLEAN_PROPERTY_PREFIX_LENGTH)));
             } else {
                 Element returnElement = this.processingEnv.getTypeUtils().asElement(returnType);
                 if (returnElement != null && ElementKind.CLASS.equals(returnElement.getKind())) {

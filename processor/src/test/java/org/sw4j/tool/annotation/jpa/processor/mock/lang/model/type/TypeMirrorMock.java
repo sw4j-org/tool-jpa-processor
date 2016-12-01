@@ -42,4 +42,28 @@ public class TypeMirrorMock implements TypeMirror {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
+    @Override
+    public String toString() {
+        switch (this.kind) {
+            case BOOLEAN:
+                return "boolean";
+            case BYTE:
+                return "byte";
+            case CHAR:
+                return "char";
+            case DOUBLE:
+                return "double";
+            case FLOAT:
+                return "float";
+            case INT:
+                return "int";
+            case LONG:
+                return "long";
+            case SHORT:
+                return "short";
+            default:
+                return "unknown";
+        }
+    }
+
 }

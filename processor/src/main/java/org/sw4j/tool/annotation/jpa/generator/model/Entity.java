@@ -20,12 +20,10 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlType;
 
 /**
@@ -41,11 +39,14 @@ import javax.xml.bind.annotation.XmlType;
 public class Entity {
 
     /** The name of the entity. */
-    @XmlAttribute(name = "name")
+    @XmlAttribute(name = "name", required = true)
     private final String name;
 
+    /** The class name of the entity. */
+    @XmlAttribute(name = "className", required = true)
+    private final String className;
+
     /** The entities of the model. */
-    @XmlElementWrapper(name = "attributes", required = false)
     @XmlElement(name = "attribute")
     private List<Attribute> attributes;
 
@@ -53,9 +54,11 @@ public class Entity {
      * Constructor for an entity.
      *
      * @param name the name of the entity.
+     * @param className the class name of the entity.
      */
-    public Entity(@Nonnull final String name) {
+    public Entity(@Nonnull final String name, @Nonnull final String className) {
         this.name = name;
+        this.className = className;
     }
 
     /**
@@ -65,7 +68,17 @@ public class Entity {
      */
     @Nonnull
     public String getName() {
-        return name;
+        return this.name;
+    }
+
+    /**
+     * Returns the class name of the entity.
+     *
+     * @return the class name.
+     */
+    @Nonnull
+    public String getClassName() {
+        return this.className;
     }
 
     /**
@@ -74,10 +87,10 @@ public class Entity {
      * @param attribute the attribute to add.
      */
     public synchronized void addAttribute(@Nonnull final Attribute attribute) {
-        if (attributes == null) {
-            attributes = new LinkedList<>();
+        if (this.attributes == null) {
+            this.attributes = new LinkedList<>();
         }
-        attributes.add(attribute);
+        this.attributes.add(attribute);
     }
 
     /**
@@ -86,7 +99,7 @@ public class Entity {
      * @return a list containing all attributes of the entity.
      */
     @Nonnull
-    public List<Attribute> getAttributes() {
+    public synchronized List<Attribute> getAttributes() {
         return this.attributes == null ? Collections.EMPTY_LIST : Collections.unmodifiableList(this.attributes);
     }
 

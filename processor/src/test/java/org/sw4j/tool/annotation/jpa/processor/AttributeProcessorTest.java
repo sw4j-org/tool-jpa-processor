@@ -16,23 +16,21 @@
  */
 package org.sw4j.tool.annotation.jpa.processor;
 
-import java.lang.annotation.Annotation;
-import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.Map;
+import java.util.List;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
-import javax.lang.model.element.Name;
 import javax.lang.model.type.TypeKind;
 import javax.persistence.Id;
+import javax.tools.Diagnostic;
 import org.sw4j.tool.annotation.jpa.generator.model.Entity;
+import org.sw4j.tool.annotation.jpa.processor.mock.annotation.processing.MessagerMock;
 import org.sw4j.tool.annotation.jpa.processor.mock.annotation.processing.ProcessingEnvironmentMock;
-import org.sw4j.tool.annotation.jpa.processor.mock.lang.model.element.ExecutableElementMock;
-import org.sw4j.tool.annotation.jpa.processor.mock.lang.model.element.NameMock;
-import org.sw4j.tool.annotation.jpa.processor.mock.lang.model.element.TypeElementMock;
-import org.sw4j.tool.annotation.jpa.processor.mock.lang.model.element.VariableElementMock;
-import org.sw4j.tool.annotation.jpa.processor.mock.lang.model.type.TypeMirrorMock;
+import org.sw4j.tool.annotation.jpa.processor.mock.lang.model.element.ExecutableElementBuilder;
+import org.sw4j.tool.annotation.jpa.processor.mock.lang.model.element.TypeElementBuilder;
+import org.sw4j.tool.annotation.jpa.processor.mock.lang.model.element.VariableElementBuilder;
+import org.sw4j.tool.annotation.jpa.processor.mock.lang.model.util.TypesMock;
 import org.sw4j.tool.annotation.jpa.processor.mock.persistence.IdMock;
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
@@ -48,55 +46,114 @@ public class AttributeProcessorTest {
 
     private ProcessingEnvironment processingEnv;
 
+    private MessagerMock messager;
+
+    private TypesMock types;
+
+    private ExecutableElementBuilder executableElementBuilder;
+
+    private TypeElementBuilder typeElementBuilder;
+
+    private VariableElementBuilder variableElementBuilder;
+
     @BeforeMethod
     public void setUp() {
+        this.executableElementBuilder = new ExecutableElementBuilder();
+        this.typeElementBuilder = new TypeElementBuilder();
+        this.variableElementBuilder = new VariableElementBuilder();
+
+        this.messager = new MessagerMock();
+        this.types = new TypesMock();
+
         this.unitUnderTest = new AttributeProcessor();
-        this.processingEnv = new ProcessingEnvironmentMock();
+        this.processingEnv = new ProcessingEnvironmentMock(this.messager, this.types);
         this.unitUnderTest.init(this.processingEnv);
     }
 
+    /**
+     * Test that an empty entity has no attributes but a collection.
+     */
     @Test
     public void testProcessNoAttribute() {
-        final Entity testEntity =  new Entity("Test");
+        Entity testEntity =  new Entity("Test", "org.sw4j.test.Test");
 
+        Assert.assertNotNull(testEntity.getAttributes(), "Expected the entity to have an attributes collection.");
         Assert.assertTrue(testEntity.getAttributes().isEmpty(), "Expected the entity to have no attributes.");
     }
 
+    /**
+     * Test that an empty attributes list has no attributes in the model.
+     */
     @Test
-    public void testProcessBothNull() {
-        final Entity testEntity =  new Entity("Test");
+    public void testProcessEmptyAttributesList() {
+        Entity testEntity =  new Entity("Test", "org.sw4j.test.Test");
 
-        this.unitUnderTest.process(testEntity, "id", null, null);
+        this.unitUnderTest.process(testEntity, new LinkedList<Element>());
 
         Assert.assertTrue(testEntity.getAttributes().isEmpty(), "Expected entity with empty attributes.");
     }
 
+    /**
+     * Test that an entity with a single field that is not annotated with @Id emits a warning.
+     */
     @Test
-    public void testProcessOnlyFieldNoId() {
-        final Entity testEntity =  new Entity("Test");
-        Name idName = new NameMock("id");
-        Element testElement = new VariableElementMock(idName, new HashMap<Class<?>, Annotation>(),
-                ElementKind.FIELD, null, new LinkedList<Element>());
+    public void testProcessFieldNoId() {
+        Entity testEntity =  new Entity("Test", "org.sw4j.test.Test");
 
-        this.unitUnderTest.process(testEntity, "id", testElement, null);
+        List<Element> enclosedElements = new LinkedList<>();
 
-        Assert.assertEquals(testEntity.getAttributes().size(), 1, "Expected entity with one attribute.");
-        Assert.assertEquals(testEntity.getAttributes().get(0).getName(), "id",
-                "Expected entity with attribute named \"id\".");
-        Assert.assertFalse(testEntity.getAttributes().get(0).isId(), "Expected attribute is no Id.");
+        this.variableElementBuilder.setSimpleName("id");
+        this.variableElementBuilder.setKind(ElementKind.FIELD);
+        this.variableElementBuilder.setTypeKind(TypeKind.LONG);
+        Element testElement = this.variableElementBuilder.createElement();
+        enclosedElements.add(testElement);
+
+        this.unitUnderTest.process(testEntity, enclosedElements);
+
+        Assert.assertEquals(this.messager.getMessages().size(), 1, "Expected one message to be created.");
+        Assert.assertEquals(this.messager.getMessages().get(0).getKind(), Diagnostic.Kind.WARNING,
+                "Expected a message with level WARNING to be created.");
     }
 
+    /**
+     * Test that an entity with a single property that is not annotated with @Id emits a warning.
+     */
     @Test
-    public void testProcessOnlyFieldId() {
-        final Entity testEntity =  new Entity("Test");
-        Map<Class<?>, Annotation> annotations = new HashMap<>();
-        Name idName = new NameMock("id");
-        Id id = new IdMock();
-        annotations.put(Id.class, id);
-        Element testElement = new VariableElementMock(idName, annotations, ElementKind.FIELD, null,
-                new LinkedList<Element>());
+    public void testProcessPropertyNoId() {
+        Entity testEntity =  new Entity("Test", "org.sw4j.test.Test");
 
-        this.unitUnderTest.process(testEntity, "id", testElement, null);
+        List<Element> enclosedElements = new LinkedList<>();
+
+        this.executableElementBuilder.setSimpleName("getId");
+        this.executableElementBuilder.setReturnTypeKind(TypeKind.LONG);
+        this.executableElementBuilder.setKind(ElementKind.METHOD);
+        Element testElement = this.executableElementBuilder.createElement();
+        enclosedElements.add(testElement);
+
+        this.unitUnderTest.process(testEntity, enclosedElements);
+
+        Assert.assertEquals(this.messager.getMessages().size(), 1, "Expected one message to be created.");
+        Assert.assertEquals(this.messager.getMessages().get(0).getKind(), Diagnostic.Kind.WARNING,
+                "Expected a message with level WARNING to be created.");
+    }
+
+    /**
+     * Test that an entity with a single field that is annotated with @Id is added to the model.
+     */
+    @Test
+    public void testProcessFieldId() {
+        Entity testEntity =  new Entity("Test", "org.sw4j.test.Test");
+
+        List<Element> enclosedElements = new LinkedList<>();
+
+        this.variableElementBuilder.setSimpleName("id");
+        this.variableElementBuilder.addAnnotation(Id.class, new IdMock());
+        this.variableElementBuilder.setKind(ElementKind.FIELD);
+        this.variableElementBuilder.setTypeKind(TypeKind.LONG);
+        Element testElement = this.variableElementBuilder.createElement();
+        enclosedElements.add(testElement);
+
+        this.unitUnderTest.process(testEntity, enclosedElements);
 
         Assert.assertEquals(testEntity.getAttributes().size(), 1, "Expected entity with one attribute.");
         Assert.assertEquals(testEntity.getAttributes().get(0).getName(), "id",
@@ -104,32 +161,23 @@ public class AttributeProcessorTest {
         Assert.assertTrue(testEntity.getAttributes().get(0).isId(), "Expected attribute is Id.");
     }
 
+    /**
+     * Test that an entity with a single property that is annotated with @Id is added to the model.
+     */
     @Test
-    public void testProcessOnlyPropertyNoId() {
-        final Entity testEntity =  new Entity("Test");
-        Name idName = new NameMock("getId");
-        Element testElement = new ExecutableElementMock(idName, new HashMap<Class<?>, Annotation>(),
-                ElementKind.METHOD, null, new LinkedList<Element>(), null);
+    public void testProcessPropertyId() {
+        Entity testEntity =  new Entity("Test", "org.sw4j.test.Test");
 
-        this.unitUnderTest.process(testEntity, "id", null, testElement);
+        List<Element> enclosedElements = new LinkedList<>();
 
-        Assert.assertEquals(testEntity.getAttributes().size(), 1, "Expected entity with one attribute.");
-        Assert.assertEquals(testEntity.getAttributes().get(0).getName(), "id",
-                "Expected entity with attribute named \"id\".");
-        Assert.assertFalse(testEntity.getAttributes().get(0).isId(), "Expected attribute is no Id.");
-    }
+        this.executableElementBuilder.setSimpleName("getId");
+        this.executableElementBuilder.addAnnotation(Id.class, new IdMock());
+        this.executableElementBuilder.setReturnTypeKind(TypeKind.LONG);
+        this.executableElementBuilder.setKind(ElementKind.METHOD);
+        Element testElement = this.executableElementBuilder.createElement();
+        enclosedElements.add(testElement);
 
-    @Test
-    public void testProcessOnlyPropertyId() {
-        final Entity testEntity =  new Entity("Test");
-        Map<Class<?>, Annotation> annotations = new HashMap<>();
-        Name idName = new NameMock("getId");
-        Id id = new IdMock();
-        annotations.put(Id.class, id);
-        Element testElement = new ExecutableElementMock(idName, annotations, ElementKind.FIELD, null,
-                new LinkedList<Element>(), null);
-
-        this.unitUnderTest.process(testEntity, "id", null, testElement);
+        this.unitUnderTest.process(testEntity, enclosedElements);
 
         Assert.assertEquals(testEntity.getAttributes().size(), 1, "Expected entity with one attribute.");
         Assert.assertEquals(testEntity.getAttributes().get(0).getName(), "id",
@@ -137,200 +185,347 @@ public class AttributeProcessorTest {
         Assert.assertTrue(testEntity.getAttributes().get(0).isId(), "Expected attribute is Id.");
     }
 
+    /**
+     * Test that an entity with a single field and a single property that is not annotated with @Id emits a warning.
+     */
     @Test
     public void testProcessFieldPropertyNoId() {
-        final Entity testEntity =  new Entity("Test");
-        Name fieldName = new NameMock("id");
-        Name propertyName = new NameMock("getId");
-        Element fieldElement = new VariableElementMock(fieldName, new HashMap<Class<?>, Annotation>(),
-                ElementKind.FIELD, null, new LinkedList<Element>());
-        Element propertyElement = new ExecutableElementMock(propertyName, new HashMap<Class<?>, Annotation>(),
-                ElementKind.METHOD, null, new LinkedList<Element>(), null);
+        Entity testEntity =  new Entity("Test", "org.sw4j.test.Test");
 
-        this.unitUnderTest.process(testEntity, "id", fieldElement, propertyElement);
+        List<Element> enclosedElements = new LinkedList<>();
 
-        Assert.assertEquals(testEntity.getAttributes().size(), 1, "Expected entity with one attribute.");
-        Assert.assertEquals(testEntity.getAttributes().get(0).getName(), "id",
-                "Expected entity with attribute named \"id\".");
-        Assert.assertFalse(testEntity.getAttributes().get(0).isId(), "Expected attribute is no Id.");
+        this.variableElementBuilder.setSimpleName("id");
+        this.variableElementBuilder.setKind(ElementKind.FIELD);
+        this.variableElementBuilder.setTypeKind(TypeKind.LONG);
+        Element fieldElement = this.variableElementBuilder.createElement();
+        enclosedElements.add(fieldElement);
+
+        this.executableElementBuilder.setSimpleName("getId");
+        this.executableElementBuilder.setReturnTypeKind(TypeKind.LONG);
+        this.executableElementBuilder.setKind(ElementKind.METHOD);
+        Element propertyElement = this.executableElementBuilder.createElement();
+        enclosedElements.add(propertyElement);
+
+        this.unitUnderTest.process(testEntity, enclosedElements);
+
+        Assert.assertEquals(this.messager.getMessages().size(), 1, "Expected one message to be created.");
+        Assert.assertEquals(this.messager.getMessages().get(0).getKind(), Diagnostic.Kind.WARNING,
+                "Expected a message with level WARNING to be created.");
     }
 
+    /**
+     * Test that an entity with a single field and a single property where the field is annotated with @Id adds the
+     * field to the model.
+     */
     @Test
-    public void testProcessFieldPropertyFieldWithId() {
-        final Entity testEntity =  new Entity("Test");
-        Map<Class<?>, Annotation> annotations = new HashMap<>();
-        Name fieldName = new NameMock("id");
-        Name propertyName = new NameMock("getId");
-        Id id = new IdMock();
-        annotations.put(Id.class, id);
-        Element fieldElement = new VariableElementMock(fieldName, new HashMap<Class<?>, Annotation>(),
-                ElementKind.FIELD, null, new LinkedList<Element>());
-        Element propertyElement = new ExecutableElementMock(propertyName, annotations, ElementKind.METHOD, null,
-                new LinkedList<Element>(), null);
+    public void testProcessFieldPropertyFieldId() {
+        Entity testEntity =  new Entity("Test", "org.sw4j.test.Test");
 
-        this.unitUnderTest.process(testEntity, "id", fieldElement, propertyElement);
+        List<Element> enclosedElements = new LinkedList<>();
+
+        this.variableElementBuilder.setSimpleName("id1");
+        this.variableElementBuilder.addAnnotation(Id.class, new IdMock());
+        this.variableElementBuilder.setKind(ElementKind.FIELD);
+        this.variableElementBuilder.setTypeKind(TypeKind.LONG);
+        Element fieldElement = this.variableElementBuilder.createElement();
+        enclosedElements.add(fieldElement);
+
+        this.executableElementBuilder.setSimpleName("getId2");
+        this.executableElementBuilder.setReturnTypeKind(TypeKind.LONG);
+        this.executableElementBuilder.setKind(ElementKind.METHOD);
+        Element propertyElement = this.executableElementBuilder.createElement();
+        enclosedElements.add(propertyElement);
+
+        this.unitUnderTest.process(testEntity, enclosedElements);
 
         Assert.assertEquals(testEntity.getAttributes().size(), 1, "Expected entity with one attribute.");
-        Assert.assertEquals(testEntity.getAttributes().get(0).getName(), "id",
-                "Expected entity with attribute named \"id\".");
+        Assert.assertEquals(testEntity.getAttributes().get(0).getName(), "id1",
+                "Expected entity with attribute named \"id1\".");
         Assert.assertTrue(testEntity.getAttributes().get(0).isId(), "Expected attribute is Id.");
     }
 
+    /**
+     * Test that an entity with a single field and a single property where the property is annotated with @Id adds the
+     * property to the model.
+     */
     @Test
-    public void testProcessFieldPropertyPropertyWithId() {
-        final Entity testEntity =  new Entity("Test");
-        Map<Class<?>, Annotation> annotations = new HashMap<>();
-        Name fieldName = new NameMock("id");
-        Name propertyName = new NameMock("getId");
-        Id id = new IdMock();
-        annotations.put(Id.class, id);
-        Element fieldElement = new VariableElementMock(fieldName, annotations, ElementKind.FIELD, null,
-                new LinkedList<Element>());
-        Element propertyElement = new ExecutableElementMock(propertyName, new HashMap<Class<?>, Annotation>(),
-                ElementKind.METHOD, null, new LinkedList<Element>(), null);
+    public void testProcessFieldPropertyPropertyId() {
+        Entity testEntity =  new Entity("Test", "org.sw4j.test.Test");
 
-        this.unitUnderTest.process(testEntity, "id", fieldElement, propertyElement);
+        List<Element> enclosedElements = new LinkedList<>();
+
+        this.variableElementBuilder.setSimpleName("id1");
+        this.variableElementBuilder.setKind(ElementKind.FIELD);
+        this.variableElementBuilder.setTypeKind(TypeKind.LONG);
+        Element fieldElement = this.variableElementBuilder.createElement();
+        enclosedElements.add(fieldElement);
+
+        this.executableElementBuilder.setSimpleName("getId2");
+        this.executableElementBuilder.addAnnotation(Id.class, new IdMock());
+        this.executableElementBuilder.setReturnTypeKind(TypeKind.LONG);
+        this.executableElementBuilder.setKind(ElementKind.METHOD);
+        Element propertyElement = this.executableElementBuilder.createElement();
+        enclosedElements.add(propertyElement);
+
+        this.unitUnderTest.process(testEntity, enclosedElements);
 
         Assert.assertEquals(testEntity.getAttributes().size(), 1, "Expected entity with one attribute.");
-        Assert.assertEquals(testEntity.getAttributes().get(0).getName(), "id",
-                "Expected entity with attribute named \"id\".");
+        Assert.assertEquals(testEntity.getAttributes().get(0).getName(), "id2",
+                "Expected entity with attribute named \"id2\".");
         Assert.assertTrue(testEntity.getAttributes().get(0).isId(), "Expected attribute is Id.");
     }
 
+    /**
+     * Test that an entity with two attributes (with the same name) both annotated with @Id emits an error.
+     */
     @Test
     public void testProcessFieldPropertyBothWithId() {
-        final Entity testEntity =  new Entity("Test");
-        Map<Class<?>, Annotation> annotations = new HashMap<>();
-        Name fieldName = new NameMock("id");
-        Name propertyName = new NameMock("getId");
-        Id id = new IdMock();
-        annotations.put(Id.class, id);
-        Element fieldElement = new VariableElementMock(fieldName, annotations, ElementKind.FIELD, null,
-                new LinkedList<Element>());
-        Element propertyElement = new ExecutableElementMock(propertyName, annotations, ElementKind.METHOD, null,
-                new LinkedList<Element>(), null);
+        Entity testEntity =  new Entity("Test", "org.sw4j.test.Test");
 
-        this.unitUnderTest.process(testEntity, "id", fieldElement, propertyElement);
+        List<Element> enclosedElements = new LinkedList<>();
 
-        Assert.assertEquals(testEntity.getAttributes().size(), 1, "Expected entity with one attribute.");
+        this.variableElementBuilder.setSimpleName("id");
+        this.variableElementBuilder.addAnnotation(Id.class, new IdMock());
+        this.variableElementBuilder.setKind(ElementKind.FIELD);
+        this.variableElementBuilder.setTypeKind(TypeKind.LONG);
+        Element fieldElement = this.variableElementBuilder.createElement();
+        enclosedElements.add(fieldElement);
+
+        this.executableElementBuilder.setSimpleName("getId");
+        this.executableElementBuilder.addAnnotation(Id.class, new IdMock());
+        this.executableElementBuilder.setReturnTypeKind(TypeKind.LONG);
+        this.executableElementBuilder.setKind(ElementKind.METHOD);
+        Element propertyElement = this.executableElementBuilder.createElement();
+        enclosedElements.add(propertyElement);
+
+        this.unitUnderTest.process(testEntity, enclosedElements);
+
+        Assert.assertEquals(this.messager.getMessages().size(), 1, "Expected one message to be created.");
+        Assert.assertEquals(this.messager.getMessages().get(0).getKind(), Diagnostic.Kind.ERROR,
+                "Expected a message with level ERROR to be created.");
+    }
+
+    /**
+     * Tests that a primitive boolean property is also recognised when the getter starts with "is".
+     */
+    @Test
+    public void testProcessPropertyWithPrimitiveBoolean() {
+        Entity testEntity =  new Entity("Test", "org.sw4j.test.Test");
+
+        List<Element> enclosedElements = new LinkedList<>();
+
+        this.executableElementBuilder.setSimpleName("isFlag");
+        this.executableElementBuilder.setReturnTypeKind(TypeKind.BOOLEAN);
+        this.executableElementBuilder.setKind(ElementKind.METHOD);
+        Element propertyElement = this.executableElementBuilder.createElement();
+        enclosedElements.add(propertyElement);
+
+        this.executableElementBuilder.setSimpleName("getId");
+        this.executableElementBuilder.addAnnotation(Id.class, new IdMock());
+        this.executableElementBuilder.setReturnTypeKind(TypeKind.LONG);
+        this.executableElementBuilder.setKind(ElementKind.METHOD);
+        Element idElement = this.executableElementBuilder.createElement();
+        enclosedElements.add(idElement);
+
+        this.unitUnderTest.process(testEntity, enclosedElements);
+
+        Assert.assertEquals(testEntity.getAttributes().size(), 2, "Expected entity with two attributes.");
+        Assert.assertEquals(testEntity.getAttributes().get(0).getName(), "flag",
+                "Expected entity with attribute named \"flag\".");
+        Assert.assertFalse(testEntity.getAttributes().get(0).isId(), "Expected attribute is noId.");
+        Assert.assertEquals(testEntity.getAttributes().get(1).getName(), "id",
+                "Expected entity with attribute named \"id\".");
+        Assert.assertTrue(testEntity.getAttributes().get(1).isId(), "Expected attribute is Id.");
+    }
+
+    /**
+     * Tests that a boolean object (java.lang.Boolean) property is also recognised when the getter starts with "is".
+     */
+    @Test
+    public void testProcessPropertyWithObjectBoolean() {
+        Entity testEntity =  new Entity("Test", "org.sw4j.test.Test");
+
+        List<Element> enclosedElements = new LinkedList<>();
+
+        this.executableElementBuilder.setSimpleName("isFlag");
+        this.executableElementBuilder.setReturnTypeKind(TypeKind.DECLARED);
+        this.executableElementBuilder.setKind(ElementKind.METHOD);
+        Element propertyElement = this.executableElementBuilder.createElement();
+        enclosedElements.add(propertyElement);
+
+        this.typeElementBuilder.setSimpleName("Boolean");
+        this.typeElementBuilder.setQualifiedName("java.lang.Boolean");
+        this.typeElementBuilder.setKind(ElementKind.CLASS);
+        Element returnElement = this.typeElementBuilder.createElement();
+        this.types.asElement(returnElement);
+
+        this.executableElementBuilder.setSimpleName("getId");
+        this.executableElementBuilder.addAnnotation(Id.class, new IdMock());
+        this.executableElementBuilder.setReturnTypeKind(TypeKind.LONG);
+        this.executableElementBuilder.setKind(ElementKind.METHOD);
+        Element idElement = this.executableElementBuilder.createElement();
+        enclosedElements.add(idElement);
+
+        this.unitUnderTest.process(testEntity, enclosedElements);
+
+        Assert.assertEquals(testEntity.getAttributes().size(), 2, "Expected entity with two attributes.");
+        Assert.assertEquals(testEntity.getAttributes().get(0).getName(), "flag",
+                "Expected entity with attribute named \"flag\".");
+        Assert.assertFalse(testEntity.getAttributes().get(0).isId(), "Expected attribute is no Id.");
+        Assert.assertEquals(testEntity.getAttributes().get(1).getName(), "id",
+                "Expected entity with attribute named \"id\".");
+        Assert.assertTrue(testEntity.getAttributes().get(1).isId(), "Expected attribute is Id.");
+    }
+
+    /**
+     * Tests that a method starting with "is" that has not return type boolean is not recognised as property.
+     */
+    @Test
+    public void testProcessPropertyWithoutBoolean() {
+        Entity testEntity =  new Entity("Test", "org.sw4j.test.Test");
+
+        List<Element> enclosedElements = new LinkedList<>();
+
+        this.executableElementBuilder.setSimpleName("isFlag");
+        this.executableElementBuilder.setReturnTypeKind(TypeKind.DECLARED);
+        this.executableElementBuilder.setKind(ElementKind.METHOD);
+        Element propertyElement = this.executableElementBuilder.createElement();
+        enclosedElements.add(propertyElement);
+
+        this.typeElementBuilder.setSimpleName("Integer");
+        this.typeElementBuilder.setQualifiedName("java.lang.Integer");
+        this.typeElementBuilder.setKind(ElementKind.CLASS);
+        Element returnElement = this.typeElementBuilder.createElement();
+        this.types.asElement(returnElement);
+
+        this.executableElementBuilder.setSimpleName("getId");
+        this.executableElementBuilder.addAnnotation(Id.class, new IdMock());
+        this.executableElementBuilder.setReturnTypeKind(TypeKind.LONG);
+        this.executableElementBuilder.setKind(ElementKind.METHOD);
+        Element idElement = this.executableElementBuilder.createElement();
+        enclosedElements.add(idElement);
+
+        this.unitUnderTest.process(testEntity, enclosedElements);
+
+        Assert.assertEquals(testEntity.getAttributes().size(), 1, "Expected entity with two attributes.");
         Assert.assertEquals(testEntity.getAttributes().get(0).getName(), "id",
                 "Expected entity with attribute named \"id\".");
         Assert.assertTrue(testEntity.getAttributes().get(0).isId(), "Expected attribute is Id.");
     }
 
+    /**
+     * Test that the primitive data type of a field is correctly added to the model.
+     */
     @Test
-    public void testProcessSingleAttribute() {
-        final Entity testEntity =  new Entity("Test");
-        Name testName = new NameMock("test");
-        Element testElement = new VariableElementMock(testName, new HashMap<Class<?>, Annotation>(),
-                ElementKind.FIELD, null, new LinkedList<Element>());
+    public void testProcessFieldPrimitiveDataType() {
+        Entity testEntity =  new Entity("Test", "org.sw4j.test.Test");
 
-        this.unitUnderTest.process(testEntity, "test", testElement, null);
+        List<Element> enclosedElements = new LinkedList<>();
 
-        Assert.assertNotNull(testEntity.getAttributes(), "Expected the entity to have attributes.");
-        Assert.assertEquals(testEntity.getAttributes().size(), 1, "Expected the entity to have one attribute.");
-        Assert.assertEquals(testEntity.getAttributes().get(0).getName(), "test",
-                "Expected the attribute to have the name \"test\".");
+        this.variableElementBuilder.setSimpleName("id");
+        this.variableElementBuilder.addAnnotation(Id.class, new IdMock());
+        this.variableElementBuilder.setTypeKind(TypeKind.LONG);
+        this.variableElementBuilder.setKind(ElementKind.FIELD);
+        Element idElement = this.variableElementBuilder.createElement();
+        enclosedElements.add(idElement);
+
+        this.unitUnderTest.process(testEntity, enclosedElements);
+
+        Assert.assertEquals(testEntity.getAttributes().size(), 1, "Expected entity with a single @Id attribute.");
+        Assert.assertEquals(testEntity.getAttributes().get(0).getName(), "id",
+                "Expected entity with attribute named \"id\".");
+        Assert.assertEquals(testEntity.getAttributes().get(0).getDataType(), "long",
+                "Expected attribute is data type long.");
     }
 
+    /**
+     * Test that the non primitive data type of a field is correctly added to the model.
+     */
     @Test
-    public void testProcessTwoAttributes() {
-        final Entity testEntity =  new Entity("Test");
-        Name testName = new NameMock("test");
-        Element testElement = new VariableElementMock(testName, new HashMap<Class<?>, Annotation>(),
-                ElementKind.FIELD, null, new LinkedList<Element>());
+    public void testProcessFieldObjectDataType() {
+        Entity testEntity =  new Entity("Test", "org.sw4j.test.Test");
 
-        this.unitUnderTest.process(testEntity, "test", testElement, null);
+        List<Element> enclosedElements = new LinkedList<>();
 
-        testName = new NameMock("test2");
-        testElement = new VariableElementMock(testName, new HashMap<Class<?>, Annotation>(),
-                ElementKind.FIELD, null, new LinkedList<Element>());
+        this.variableElementBuilder.setSimpleName("id");
+        this.variableElementBuilder.addAnnotation(Id.class, new IdMock());
+        this.variableElementBuilder.setTypeKind(TypeKind.DECLARED);
+        this.variableElementBuilder.setKind(ElementKind.FIELD);
+        Element idElement = this.variableElementBuilder.createElement();
+        enclosedElements.add(idElement);
 
-        this.unitUnderTest.process(testEntity, "test2", testElement, null);
+        this.typeElementBuilder.setSimpleName("String");
+        this.typeElementBuilder.setQualifiedName("java.lang.String");
+        this.typeElementBuilder.setKind(ElementKind.CLASS);
+        this.types.asElement(this.typeElementBuilder.createElement());
 
-        Assert.assertNotNull(testEntity.getAttributes(), "Expected the entity to have attributes.");
-        Assert.assertEquals(testEntity.getAttributes().size(), 2, "Expected the entity to have two attributes.");
-        Assert.assertEquals(testEntity.getAttributes().get(0).getName(), "test",
-                "Expected the attribute to have the name \"test\".");
-        Assert.assertEquals(testEntity.getAttributes().get(1).getName(), "test2",
-                "Expected the attribute to have the name \"test2\".");
+        this.unitUnderTest.process(testEntity, enclosedElements);
+
+        Assert.assertEquals(testEntity.getAttributes().size(), 1, "Expected entity with a single @Id attribute.");
+        Assert.assertEquals(testEntity.getAttributes().get(0).getName(), "id",
+                "Expected entity with attribute named \"id\".");
+        Assert.assertEquals(testEntity.getAttributes().get(0).getDataType(), "java.lang.String",
+                "Expected attribute is data type java.lang.String.");
     }
 
+    /**
+     * Test that the non primitive data type of a field is correctly added to the model.
+     */
     @Test
-    public void testIsFieldWithField() {
-        Name testName = new NameMock("test");
-        Element testElement = new VariableElementMock(testName, new HashMap<Class<?>, Annotation>(),
-                ElementKind.FIELD, null, new LinkedList<Element>());
+    public void testProcessFieldInterfaceDataType() {
+        Entity testEntity =  new Entity("Test", "org.sw4j.test.Test");
 
-        Assert.assertTrue(this.unitUnderTest.isField(testElement), "Expected the field to be a field.");
+        List<Element> enclosedElements = new LinkedList<>();
+
+        this.variableElementBuilder.setSimpleName("id");
+        this.variableElementBuilder.addAnnotation(Id.class, new IdMock());
+        this.variableElementBuilder.setTypeKind(TypeKind.DECLARED);
+        this.variableElementBuilder.setKind(ElementKind.FIELD);
+        Element idElement = this.variableElementBuilder.createElement();
+        enclosedElements.add(idElement);
+
+        this.typeElementBuilder.setSimpleName("Serializable");
+        this.typeElementBuilder.setQualifiedName("java.io.Serializable");
+        this.typeElementBuilder.setKind(ElementKind.INTERFACE);
+        this.types.asElement(this.typeElementBuilder.createElement());
+
+        this.unitUnderTest.process(testEntity, enclosedElements);
+
+        Assert.assertEquals(testEntity.getAttributes().size(), 1, "Expected entity with a single @Id attribute.");
+        Assert.assertEquals(testEntity.getAttributes().get(0).getName(), "id",
+                "Expected entity with attribute named \"id\".");
+        Assert.assertEquals(testEntity.getAttributes().get(0).getDataType(), "java.io.Serializable",
+                "Expected attribute is data type java.io.Serializable.");
     }
 
+    /**
+     * Test that an entity with two fields that are annotated with @Id emit an error.
+     */
     @Test
-    public void testIsFieldWithMethod() {
-        Name testName = new NameMock("test");
-        Element testElement = new ExecutableElementMock(testName, new HashMap<Class<?>, Annotation>(),
-                ElementKind.METHOD, null, new LinkedList<Element>(), null);
+    public void testProcessFieldDupplicateId() {
+        Entity testEntity =  new Entity("Test", "org.sw4j.test.Test");
 
-        Assert.assertFalse(this.unitUnderTest.isField(testElement), "Expected the method not to be a field.");
-    }
+        List<Element> enclosedElements = new LinkedList<>();
 
-    @Test
-    public void testIsPropertyWithField() {
-        Name testName = new NameMock("test");
-        Element testElement = new VariableElementMock(testName, new HashMap<Class<?>, Annotation>(),
-                ElementKind.FIELD, null, new LinkedList<Element>());
+        this.variableElementBuilder.setSimpleName("id");
+        this.variableElementBuilder.addAnnotation(Id.class, new IdMock());
+        this.variableElementBuilder.setKind(ElementKind.FIELD);
+        this.variableElementBuilder.setTypeKind(TypeKind.LONG);
+        Element testElement = this.variableElementBuilder.createElement();
+        enclosedElements.add(testElement);
 
-        Assert.assertFalse(this.unitUnderTest.isProperty(testElement),
-                "Expected the field not to be a property.");
-    }
+        this.variableElementBuilder.setSimpleName("id2");
+        this.variableElementBuilder.addAnnotation(Id.class, new IdMock());
+        this.variableElementBuilder.setKind(ElementKind.FIELD);
+        this.variableElementBuilder.setTypeKind(TypeKind.LONG);
+        testElement = this.variableElementBuilder.createElement();
+        enclosedElements.add(testElement);
 
-    @Test
-    public void testIsPropertyWithNonGetterMethod() {
-        Name testName = new NameMock("test");
-        Element testElement = new ExecutableElementMock(testName, new HashMap<Class<?>, Annotation>(),
-                ElementKind.METHOD, null, new LinkedList<Element>(), null);
+        this.unitUnderTest.process(testEntity, enclosedElements);
 
-        Assert.assertFalse(this.unitUnderTest.isProperty(testElement),
-                "Expected the method not to be a property.");
-    }
-
-    @Test
-    public void testIsPropertyWithGetterMethodPrimitiveResult() {
-        Name className = new NameMock("Test");
-        Element classElement = new TypeElementMock(className, new HashMap<Class<?>, Annotation>(), ElementKind.CLASS,
-                null, null);
-        Name methodName = new NameMock("getTest");
-        Element methodElement = new ExecutableElementMock(methodName, new HashMap<Class<?>, Annotation>(),
-                ElementKind.METHOD, classElement, new LinkedList<Element>(), new TypeMirrorMock(TypeKind.INT));
-
-        Assert.assertTrue(this.unitUnderTest.isProperty(methodElement),
-                "Expected the method to be a property with primitive return type.");
-    }
-
-    @Test
-    public void testIsPropertyWithGetterMethodObjectResult() {
-        Name className = new NameMock("Test");
-        Element classElement = new TypeElementMock(className, new HashMap<Class<?>, Annotation>(), ElementKind.CLASS,
-                null, null);
-        Name methodName = new NameMock("getTest");
-        Element methodElement = new ExecutableElementMock(methodName, new HashMap<Class<?>, Annotation>(),
-                ElementKind.METHOD, classElement, new LinkedList<Element>(), new TypeMirrorMock(TypeKind.INT));
-
-        Assert.assertTrue(this.unitUnderTest.isProperty(methodElement),
-                "Expected the method to be a property with primitive return type.");
-    }
-
-    @Test
-    public void testIsPropertyWithGetterMethodPrimitiveBooleanResult() {
-        Name className = new NameMock("Test");
-        Element classElement = new TypeElementMock(className, new HashMap<Class<?>, Annotation>(), ElementKind.CLASS,
-                null, null);
-        Name methodName = new NameMock("isTest");
-        Element methodElement = new ExecutableElementMock(methodName, new HashMap<Class<?>, Annotation>(),
-                ElementKind.METHOD, classElement, new LinkedList<Element>(), new TypeMirrorMock(TypeKind.BOOLEAN));
-
-        Assert.assertTrue(this.unitUnderTest.isProperty(methodElement),
-                "Expected the method to be a property with primitive return type.");
+        Assert.assertEquals(this.messager.getMessages().size(), 1, "Expected one message to be created.");
+        Assert.assertEquals(this.messager.getMessages().get(0).getKind(), Diagnostic.Kind.ERROR,
+                "Expected a message with level ERROR to be created.");
     }
 
 }

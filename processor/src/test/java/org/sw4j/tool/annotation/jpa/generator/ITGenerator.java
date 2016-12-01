@@ -17,9 +17,9 @@
 package org.sw4j.tool.annotation.jpa.generator;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Properties;
+import javax.annotation.Nullable;
 import javax.xml.bind.JAXB;
 import org.sw4j.tool.annotation.jpa.generator.model.Model;
 
@@ -51,20 +51,17 @@ public class ITGenerator implements GeneratorService {
     }
 
     /**
-     * Sets the name of the properties file of the generator.
+     * Sets the properties of the generator.
      *
-     * @param propertiesFileName the properties.
-     * @throws IOException if the loading of the properties file failes.
+     * @param properties the properties.
      */
     @Override
-    public void setPropertiesFileName(String propertiesFileName) throws IOException {
-        Properties properties = new Properties();
-        try {
-            properties.load(new FileInputStream(propertiesFileName));
+    public void setProperties(@Nullable final Properties properties) {
+        if (properties != null) {
             this.outputFile = new File(properties.getProperty("outFile"));
+        }
+        if (this.outputFile != null) {
             this.canProcess = true;
-        } catch (IOException ex) {
-            this.canProcess = false;
         }
     }
 

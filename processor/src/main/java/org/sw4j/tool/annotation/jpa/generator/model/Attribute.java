@@ -37,15 +37,21 @@ public class Attribute {
     @XmlAttribute(name = "isId")
     private final boolean isId;
 
+    /** The Java datatype of this attribute. */
+    @XmlAttribute(name = "dataType")
+    private final String dataType;
+
     /**
      * Constructor for an attribute.
      *
      * @param name the name of the attribute.
      * @param isId if this attribute should be marked as Id.
+     * @param dataType the Java datatype of the attribute
      */
-    public Attribute(@Nonnull final String name, final boolean isId) {
+    public Attribute(@Nonnull final String name, final boolean isId, @Nonnull final String dataType) {
         this.name = name;
         this.isId = isId;
+        this.dataType = dataType;
     }
 
     /**
@@ -55,15 +61,25 @@ public class Attribute {
      */
     @Nonnull
     public String getName() {
-        return name;
+        return this.name;
     }
 
     /**
      * Returns if this attribute is an Id.
+     *
      * @return {@code true} if this attribute is an Id.
      */
     public boolean isId() {
-        return isId;
+        return this.isId;
+    }
+
+    /**
+     * Returns the java data type of this attribute.
+     *
+     * @return the data type of this attribute.
+     */
+    public String getDataType() {
+        return this.dataType;
     }
 
 }

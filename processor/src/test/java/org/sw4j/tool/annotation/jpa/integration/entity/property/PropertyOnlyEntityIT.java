@@ -16,9 +16,8 @@
  */
 package org.sw4j.tool.annotation.jpa.integration.entity.property;
 
-import org.sw4j.tool.annotation.jpa.integration.entity.field.*;
 import javax.xml.xpath.XPathExpressionException;
-import org.sw4j.tool.annotation.jpa.integration.util.TestSuperclass;
+import org.sw4j.tool.annotation.jpa.integration.util.ITSuperclass;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 import org.w3c.dom.Node;
@@ -28,7 +27,7 @@ import org.w3c.dom.Node;
  *
  * @author Uwe Plonus
  */
-public class PropertyOnlyEntityIT extends TestSuperclass {
+public class PropertyOnlyEntityIT extends ITSuperclass {
 
     /** Default constructor. */
     public PropertyOnlyEntityIT() {
@@ -36,31 +35,30 @@ public class PropertyOnlyEntityIT extends TestSuperclass {
 
     @Test
     public void testSimpleEntity() throws XPathExpressionException {
-        Node entity = getNode("/model/entities/entity[@name=\"PropertyOnlyEntity\"]");
+        Node entity = getNode("/model/entity[@name=\"PropertyOnlyEntity\"]");
 
         Assert.assertNotNull(entity, "Expected an entity with name \"PropertyOnlyEntity\" to exist.");
         Assert.assertEquals(entity.getNodeType(), Node.ELEMENT_NODE, "Expected an element.");
-        Assert.assertEquals(entity.getAttributes().getNamedItem("name").getNodeValue(),
-                "PropertyOnlyEntity", "Expected the entity name to be \"PropertyOnlyEntity\"");
-    }
-
-    @Test
-    public void testSimpleEntityHasAttributes() throws XPathExpressionException {
-        Node attributes = getNode("/model/entities/entity[@name=\"PropertyOnlyEntity\"]/attributes");
-
-        Assert.assertNotNull(attributes, "Expected the entity with name \"PropertyOnlyEntity\" to have attributes.");
+        Assert.assertEquals(getAttribute("name", entity).getNodeValue(), "PropertyOnlyEntity",
+                "Expected the entity name to be \"PropertyOnlyEntity\"");
+        Assert.assertEquals(getAttribute("className", entity).getNodeValue(),
+                "org.sw4j.tool.annotation.jpa.entity.properties.PropertyOnlyEntity",
+                "Expected the class name to be \"org.sw4j.tool.annotation.jpa.entity.properties.PropertyOnlyEntity\"");
     }
 
     @Test
     public void testSimpleEntityId() throws XPathExpressionException {
-        Node attributeId = getNode("/model/entities/entity[@name=\"PropertyOnlyEntity\"]/attributes/" +
-                "attribute[@name=\"id\"]");
+        Node attributeId = getNode("/model/entity[@name=\"PropertyOnlyEntity\"]/attribute[@name=\"id\"]");
 
         Assert.assertNotNull(attributeId, "Expected the entity with name \"PropertyOnlyEntity\" to have an " +
                 "attribute with name \"id\" to exist.");
         Assert.assertEquals(attributeId.getNodeType(), Node.ELEMENT_NODE, "Expected an element.");
-        Assert.assertEquals(attributeId.getAttributes().getNamedItem("name").getNodeValue(), "id",
-                "Expected the entity with name \"PropertyOnlyEntity\" to have an attribute with the name \"id\"");
+        Assert.assertEquals(getAttribute("name", attributeId).getNodeValue(), "id",
+                "Expected the entity with name \"PropertyOnlyEntity\" to have an attribute with the name \"id\".");
+        Assert.assertEquals(getAttribute("isId", attributeId).getNodeValue(), "true",
+                "Expected the entity with name \"PropertyOnlyEntity\" to have an attribute \"isId\" set to true.");
+        Assert.assertEquals(getAttribute("dataType", attributeId).getNodeValue(), "int",
+                "Expected the entity with name \"PropertyOnlyEntity\" to have an attribute with the dataType \"int\".");
     }
 
 }

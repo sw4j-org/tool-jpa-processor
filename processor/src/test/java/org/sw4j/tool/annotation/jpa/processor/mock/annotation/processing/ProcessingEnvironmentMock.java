@@ -37,13 +37,24 @@ public class ProcessingEnvironmentMock implements ProcessingEnvironment {
 
     private final Messager messager;
 
+    private final Types types;
+
     public ProcessingEnvironmentMock() {
-        this(new HashMap<String, String>(), new MessagerMock());
+        this(new HashMap<String, String>(), new MessagerMock(), null);
+    }
+
+    public ProcessingEnvironmentMock(final Messager messager, final Types types) {
+        this(new HashMap<String, String>(), messager, types);
     }
 
     public ProcessingEnvironmentMock(final Map<String, String> options, final Messager messager) {
+        this(options, messager, null);
+    }
+
+    public ProcessingEnvironmentMock(final Map<String, String> options, final Messager messager, final Types types) {
         this.options = options;
         this.messager = messager;
+        this.types = types;
     }
 
     @Override
@@ -68,7 +79,7 @@ public class ProcessingEnvironmentMock implements ProcessingEnvironment {
 
     @Override
     public Types getTypeUtils() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return this.types;
     }
 
     @Override

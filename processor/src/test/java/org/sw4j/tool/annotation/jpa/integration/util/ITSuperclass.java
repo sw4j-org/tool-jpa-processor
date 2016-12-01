@@ -31,23 +31,22 @@ import org.w3c.dom.Node;
  *
  * @author Uwe Plonus
  */
-public abstract class TestSuperclass {
+public abstract class ITSuperclass {
 
     /** The folder that contains all JPA classes to process. */
     private static final String ENTITY_PACKAGE = "src/test/java/org/sw4j/tool/annotation/jpa/entity/";
 
     /** The file to write the result to. */
-    private static final String TEST_PROPERTIES = "src/test/resources/test.properties";
+    private static final String TEST_PROPERTIES = "src/test/resources/integrationtest.properties";
 
     /** The option prefix for the generator output. */
-    private static final String ANNOTATION_PROCESSOR_OPTION = "-Atool.jpa.properties=it=" + TEST_PROPERTIES
-            + ",test2";
+    private static final String ANNOTATION_PROCESSOR_OPTION = "-Atool.jpa.properties=" + TEST_PROPERTIES;
 
     /** The utility class of the testResultFile. */
-    private static TestUtil testUtil;
+    private static ITUtil testUtil;
 
     /** Default constructor. */
-    public TestSuperclass() {
+    public ITSuperclass() {
     }
 
     /**
@@ -57,10 +56,10 @@ public abstract class TestSuperclass {
      */
     @BeforeSuite
     public static void setUpSuite() throws Exception {
-        testUtil = new TestUtil();
+        testUtil = new ITUtil();
         Properties properties = new Properties();
         properties.load(new FileInputStream(TEST_PROPERTIES));
-        testUtil.compileClasses(ENTITY_PACKAGE, properties.getProperty("outFile"),
+        testUtil.compileClasses(ENTITY_PACKAGE, properties.getProperty("it.outFile"),
                 new String[]{
                     ANNOTATION_PROCESSOR_OPTION
                 });
@@ -94,6 +93,17 @@ public abstract class TestSuperclass {
      */
     public Node getNode(String path) throws XPathExpressionException {
         return testUtil.getNode(path);
+    }
+
+    /**
+     * Returns the given attribute of the given element.
+     *
+     * @param name the name of the attribute to get.
+     * @param node the element to get the attribute from.
+     * @return the named attribute.
+     */
+    public Node getAttribute(String name, Node node) {
+        return testUtil.getAttribute(name, node);
     }
 
 }

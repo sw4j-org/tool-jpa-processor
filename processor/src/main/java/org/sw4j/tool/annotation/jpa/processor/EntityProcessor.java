@@ -16,15 +16,12 @@
  */
 package org.sw4j.tool.annotation.jpa.processor;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
+import javax.lang.model.element.TypeElement;
 import javax.tools.Diagnostic;
 import org.sw4j.tool.annotation.jpa.generator.model.Entity;
 import org.sw4j.tool.annotation.jpa.generator.model.Model;
@@ -57,11 +54,18 @@ public class EntityProcessor {
      *
      * @param processingEnv environment to access facilities the tool framework provides to the processor.
      */
-    public void init(ProcessingEnvironment processingEnv) {
+    @SuppressWarnings("checkstyle:HiddenField")
+    public void init(@Nonnull final ProcessingEnvironment processingEnv) {
         this.processingEnv = processingEnv;
         this.attributeProcessor.init(this.processingEnv);
     }
 
+    /**
+     * Process all entities annotated with {@code @Entity}.
+     *
+     * @param elements the elements to process (all must be an {@code @Entity}).
+     * @param model the model where the final entity is added to.
+     */
     public void process(@Nonnull final Set<? extends Element> elements, @Nonnull final Model model) {
         for (Element element: elements) {
             this.process(element, model);
@@ -74,66 +78,32 @@ public class EntityProcessor {
      * @param element the element to process (must be an {@code @Entity}.
      * @param model the model where the final entity is added to.
      */
-    public void process(@Nonnull final Element element, @Nonnull final Model model) {
+    private void process(@Nonnull final Element element, @Nonnull final Model model) {
         javax.persistence.Entity entityAnnotation = element.getAnnotation(javax.persistence.Entity.class);
         if (entityAnnotation == null) {
             this.processingEnv.getMessager().printMessage(Diagnostic.Kind.WARNING,
                     new StringBuilder("The processed class \"").append(element.getSimpleName())
                             .append("\" is not an entity.").toString(), element);
         } else if (ElementKind.CLASS.equals(element.getKind()) &&
+                element.getEnclosingElement() != null &&
                 ElementKind.PACKAGE.equals(element.getEnclosingElement().getKind())) {
             // This is a top level class therefore we can continue.
+            TypeElement typeElement = (TypeElement)element;
+            String className = typeElement.getQualifiedName().toString();
             Entity entity;
             if ("".equals(entityAnnotation.name())) {
-                entity = new Entity(element.getSimpleName().toString());
+                entity = new Entity(element.getSimpleName().toString(), className);
             } else {
-                entity = new Entity(entityAnnotation.name());
+                entity = new Entity(entityAnnotation.name(), className);
             }
             model.addEntity(entity);
 
-            Map<String, Element> possibleFields = new HashMap<>();
-            Map<String, Element> possibleProperties = new HashMap<>();
-
-            List<? extends Element> enclosedElements = element.getEnclosedElements();
-            for (Element enclosedElement: enclosedElements) {
-                if (this.attributeProcessor.isField(enclosedElement)) {
-                    possibleFields.put(enclosedElement.getSimpleName().toString(), enclosedElement);
-                } else if (this.attributeProcessor.isProperty(enclosedElement)) {
-                    possibleProperties.put(
-                            this.attributeProcessor.getPropertyFromMethod(enclosedElement), enclosedElement);
-                }
-            }
-            Set<String> handledAttributes = new HashSet<>();
-            for (Map.Entry<String, Element> possibleField: possibleFields.entrySet()) {
-                handledAttributes.add(possibleField.getKey());
-                this.attributeProcessor.process(entity, possibleField.getKey(), possibleField.getValue(),
-                        possibleProperties.get(possibleField.getKey()));
-            }
-            for (Map.Entry<String, Element> possibleProperty: possibleProperties.entrySet()) {
-                if (!handledAttributes.contains(possibleProperty.getKey())) {
-                    handledAttributes.add(possibleProperty.getKey());
-                    this.attributeProcessor.process(entity, possibleProperty.getKey(), null,
-                            possibleProperty.getValue());
-                }
-            }
+            this.attributeProcessor.process(entity, element.getEnclosedElements());
         } else {
             this.processingEnv.getMessager().printMessage(Diagnostic.Kind.WARNING,
                     new StringBuilder("The processed entity \"").append(element.getSimpleName())
                             .append("\" is no top level class."), element);
         }
-    }
-
-    /**
-     * Checks if the given element is a field.
-     *
-     * @param element the element to check.
-     * @return {@code true} if the element is a field.
-     */
-    public boolean isEntity(@Nonnull final Element element) {
-        return ElementKind.CLASS.equals(element.getKind()) &&
-                element.getEnclosingElement() != null &&
-                ElementKind.PACKAGE.equals(element.getEnclosingElement().getKind()) &&
-                element.getAnnotation(javax.persistence.Entity.class) != null;
     }
 
 }
