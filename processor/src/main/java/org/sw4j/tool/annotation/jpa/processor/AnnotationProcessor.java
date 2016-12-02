@@ -59,6 +59,8 @@ public class AnnotationProcessor extends AbstractProcessor {
     /** The processor to handle entities. */
     private final EntityProcessor entityProcessor;
 
+    private boolean firstRound = true;
+
     /**
      * The default constructor.
      */
@@ -90,6 +92,10 @@ public class AnnotationProcessor extends AbstractProcessor {
     @Override
     public boolean process(@Nonnull final Set<? extends TypeElement> annotations,
             @Nonnull final RoundEnvironment roundEnv) {
+        if (firstRound) {
+            this.processingEnv.getMessager().printMessage(Diagnostic.Kind.NOTE, "Running JPA annotation processor");
+            firstRound = false;
+        }
         String propertiesOption = this.processingEnv.getOptions().get(PROPERTIES_OPTION);
         Map<String, Properties> properties = readProperties(propertiesOption);
         this.entityProcessor.process(roundEnv.getElementsAnnotatedWith(Entity.class), model);
@@ -101,7 +107,7 @@ public class AnnotationProcessor extends AbstractProcessor {
                 GeneratorService generator = generators.next();
                 if (generator.canProcess()) {
                     try {
-                        generator.process(model);
+                        generator.process(this.model, this.processingEnv);
                     } catch (IOException ioex) {
                         this.processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR,
                                 ioex.toString());

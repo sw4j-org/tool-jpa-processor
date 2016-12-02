@@ -81,7 +81,9 @@ public class AnnotationProcessorTest {
 
         this.unitUnderTest.process(this.handledAnnotations, roundEnv);
 
-        Assert.assertEquals(messager.getMessages().size(), 0, "Expected no message to be created.");
+        Assert.assertEquals(messager.getMessages().size(), 1, "Expected one message to be created.");
+        Assert.assertEquals(this.messager.getMessages().get(0).getKind(), Diagnostic.Kind.NOTE,
+                "Expected a message with level NOTE to be created.");
     }
 
     @Test
@@ -99,7 +101,9 @@ public class AnnotationProcessorTest {
 
         this.unitUnderTest.process(this.handledAnnotations, roundEnv);
 
-        Assert.assertEquals(this.messager.getMessages().size(), 0, "Expected no message to be created.");
+        Assert.assertEquals(this.messager.getMessages().size(), 1, "Expected one message to be created.");
+        Assert.assertEquals(this.messager.getMessages().get(0).getKind(), Diagnostic.Kind.NOTE,
+                "Expected a message with level NOTE to be created.");
     }
 
     @Test
@@ -123,8 +127,10 @@ public class AnnotationProcessorTest {
 
         this.unitUnderTest.process(this.handledAnnotations, roundEnv);
 
-        Assert.assertEquals(this.messager.getMessages().size(), 1, "Expected one message to be created.");
-        Assert.assertEquals(this.messager.getMessages().get(0).getKind(), Diagnostic.Kind.WARNING,
+        Assert.assertEquals(this.messager.getMessages().size(), 2, "Expected two message to be created.");
+        Assert.assertEquals(this.messager.getMessages().get(0).getKind(), Diagnostic.Kind.NOTE,
+                "Expected a message with level NOTE to be created.");
+        Assert.assertEquals(this.messager.getMessages().get(1).getKind(), Diagnostic.Kind.WARNING,
                 "Expected a message with level ERROR to be created.");
     }
 
@@ -135,7 +141,9 @@ public class AnnotationProcessorTest {
 
         this.unitUnderTest.process(this.handledAnnotations, roundEnv);
 
-        Assert.assertEquals(this.messager.getMessages().size(), 0, "Expected no message to be created.");
+        Assert.assertEquals(this.messager.getMessages().size(), 1, "Expected one message to be created.");
+        Assert.assertEquals(this.messager.getMessages().get(0).getKind(), Diagnostic.Kind.NOTE,
+                "Expected a message with level NOTE to be created.");
     }
 
     @Test
@@ -149,7 +157,10 @@ public class AnnotationProcessorTest {
 
         this.unitUnderTest.process(this.handledAnnotations, roundEnv);
 
-        Assert.assertEquals(this.messager.getMessages().size(), 0, "Expected no message to be created.");
+        Assert.assertEquals(this.messager.getMessages().size(), 1, "Expected one message to be created.");
+        Assert.assertEquals(this.messager.getMessages().get(0).getKind(), Diagnostic.Kind.NOTE,
+                "Expected a message with level NOTE to be created.");
+
     }
 
     @Test
@@ -163,8 +174,10 @@ public class AnnotationProcessorTest {
 
         this.unitUnderTest.process(this.handledAnnotations, roundEnv);
 
-        Assert.assertEquals(this.messager.getMessages().size(), 1, "Expected one message to be created.");
-        Assert.assertEquals(this.messager.getMessages().get(0).getKind(), Diagnostic.Kind.ERROR,
+        Assert.assertEquals(this.messager.getMessages().size(), 2, "Expected two message to be created.");
+        Assert.assertEquals(this.messager.getMessages().get(0).getKind(), Diagnostic.Kind.NOTE,
+                "Expected a message with level NOTE to be created.");
+        Assert.assertEquals(this.messager.getMessages().get(1).getKind(), Diagnostic.Kind.ERROR,
                 "Expected a message with level ERROR to be created.");
     }
 
@@ -179,7 +192,9 @@ public class AnnotationProcessorTest {
 
         this.unitUnderTest.process(this.handledAnnotations, roundEnv);
 
-        Assert.assertEquals(this.messager.getMessages().size(), 0, "Expected no message to be created.");
+        Assert.assertEquals(this.messager.getMessages().size(), 1, "Expected one message to be created.");
+        Assert.assertEquals(this.messager.getMessages().get(0).getKind(), Diagnostic.Kind.NOTE,
+                "Expected a message with level NOTE to be created.");
     }
 
     @Test
@@ -193,7 +208,9 @@ public class AnnotationProcessorTest {
 
         this.unitUnderTest.process(this.handledAnnotations, roundEnv);
 
-        Assert.assertEquals(this.messager.getMessages().size(), 0, "Expected no message to be created.");
+        Assert.assertEquals(this.messager.getMessages().size(), 1, "Expected one message to be created.");
+        Assert.assertEquals(this.messager.getMessages().get(0).getKind(), Diagnostic.Kind.NOTE,
+                "Expected a message with level NOTE to be created.");
     }
 
 }

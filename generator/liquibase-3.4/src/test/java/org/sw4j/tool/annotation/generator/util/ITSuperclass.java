@@ -14,14 +14,15 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.sw4j.tool.annotation.jpa.integration.util;
+package org.sw4j.tool.annotation.generator.util;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.util.Properties;
 import javax.xml.xpath.XPathExpressionException;
 import org.sw4j.tool.annotation.jpa.test.util.ITUtil;
-import org.testng.annotations.AfterSuite;
-import org.testng.annotations.BeforeSuite;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.BeforeClass;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
@@ -35,13 +36,13 @@ import org.w3c.dom.Node;
 public abstract class ITSuperclass {
 
     /** The folder that contains all JPA classes to process. */
-    private static final String ENTITY_PACKAGE = "src/test/java/org/sw4j/tool/annotation/jpa/entity/";
+    private static final String ENTITY_PACKAGE = "src/test/java/org/sw4j/tool/annotation/generator/entity/";
 
     /** The file to write the result to. */
     private static final String TEST_PROPERTIES = "src/test/resources/integrationtest.properties";
 
     /** The option prefix for the generator output. */
-    private static final String ANNOTATION_PROCESSOR_OPTION = "-Atool.jpa.properties=" + TEST_PROPERTIES;
+    private static final String ANNOTATION_PROCESSOR_OPTION = "-Atool.jpa.properties=";
 
     /** The utility class of the testResultFile. */
     private static ITUtil testUtil;
@@ -55,14 +56,17 @@ public abstract class ITSuperclass {
      *
      * @throws Exception when any exception occurs during set up.
      */
-    @BeforeSuite
-    public static void setUpSuite() throws Exception {
+    @BeforeClass
+    public void setUpClass() throws Exception {
         testUtil = new ITUtil();
         Properties properties = new Properties();
-        properties.load(new FileInputStream(TEST_PROPERTIES));
-        testUtil.compileClasses(ENTITY_PACKAGE, properties.getProperty("it.outFile"),
+        File propertiesFile = new File(getTestProperties());
+        if (propertiesFile.exists()) {
+            properties.load(new FileInputStream(getTestProperties()));
+        }
+        testUtil.compileClasses(ENTITY_PACKAGE, properties.getProperty("lb34.fullChangelogFile"),
                 new String[]{
-                    ANNOTATION_PROCESSOR_OPTION
+                    new StringBuilder(ANNOTATION_PROCESSOR_OPTION).append(getTestProperties()).toString(),
                 });
     }
 
@@ -71,9 +75,19 @@ public abstract class ITSuperclass {
      *
      * @throws Exception when any exception occurs during tear down.
      */
-    @AfterSuite
-    public static void tearDownSuite() throws Exception {
+    @AfterClass
+    public void tearDownSuite() throws Exception {
         testUtil.checkVisitedNodes();
+    }
+
+    /**
+     * Return the properties used for the test. May be overwritten by subclasses to supply other test properties than
+     * the default.
+     *
+     * @return the test properties to use.
+     */
+    public String getTestProperties() {
+        return TEST_PROPERTIES;
     }
 
     /**

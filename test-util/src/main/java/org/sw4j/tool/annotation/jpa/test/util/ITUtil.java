@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.sw4j.tool.annotation.jpa.integration.util;
+package org.sw4j.tool.annotation.jpa.test.util;
 
 import java.io.File;
 import java.io.IOException;
@@ -71,7 +71,7 @@ public class ITUtil {
      * folder {@code target/jpa-classes/}. After compilation the resulting XML file will be read.
      *
      * @param folder the folder that contains the JPA classes to process.
-     * @param resultFile the resulting file of the generator. Must match the option of the
+     * @param resultFileName the resulting file of the generator. Must match the option of the
      *  annotation processor.
      * @param options the options for the compiling (primary the options for the annotation
      *  processor).
@@ -79,7 +79,7 @@ public class ITUtil {
      * @throws SAXException when the parsing fails.
      * @throws IOException when the IO fails.
      */
-    public void compileClasses(String folder, String resultFile, String[] options)
+    public void compileClasses(String folder, String resultFileName, String[] options)
             throws ParserConfigurationException, SAXException, IOException {
         File entityFolder = new File(folder);
         List<File> files = new LinkedList<>();
@@ -92,8 +92,7 @@ public class ITUtil {
         File classesFolder = new File(TARGET_FOLDER);
         classesFolder.mkdirs();
 
-        Iterable<? extends JavaFileObject> entities =
-                fileManager.getJavaFileObjectsFromFiles(files);
+        Iterable<? extends JavaFileObject> entities = fileManager.getJavaFileObjectsFromFiles(files);
         List<String> opts = new LinkedList<>();
         opts.add("-d");
         opts.add(TARGET_FOLDER);
@@ -101,8 +100,13 @@ public class ITUtil {
         Writer writer = new StringWriter();
         compiler.getTask(writer, fileManager, null, opts, null, entities).call();
 
-        DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-        resultDocument = builder.parse(new File(resultFile));
+        if (resultFileName != null) {
+            File resultFile = new File(resultFileName);
+            if (resultFile.exists()) {
+                DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+                resultDocument = builder.parse(resultFile);
+            }
+        }
     }
 
     /**
@@ -129,9 +133,11 @@ public class ITUtil {
      */
     public void checkVisitedNodes() {
         StringBuilder sb = new StringBuilder();
-        checkVisitedNodes(resultDocument.getDocumentElement(), sb);
-        if (sb.length() > 0) {
-            Assert.fail(sb.toString());
+        if (this.resultDocument != null) {
+            checkVisitedNodes(resultDocument.getDocumentElement(), sb);
+            if (sb.length() > 0) {
+                Assert.fail(sb.toString());
+            }
         }
     }
 

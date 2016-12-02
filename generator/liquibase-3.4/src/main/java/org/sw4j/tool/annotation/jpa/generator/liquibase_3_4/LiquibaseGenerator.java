@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 Uwe Plonus
+ * Copyright (C) 2016 uwe
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,25 +14,34 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.sw4j.tool.annotation.jpa.generator;
+package org.sw4j.tool.annotation.jpa.generator.liquibase_3_4;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Properties;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.annotation.processing.ProcessingEnvironment;
+import javax.tools.Diagnostic;
+import javax.xml.bind.JAXB;
+import org.sw4j.tool.annotation.jpa.generator.GeneratorService;
+import org.sw4j.tool.annotation.jpa.generator.liquibase_3_4.jaxb.DatabaseChangeLog;
+import org.sw4j.tool.annotation.jpa.generator.liquibase_3_4.jaxb.ObjectFactory;
 import org.sw4j.tool.annotation.jpa.generator.model.Model;
 
 /**
- * An implementation of the {@link GeneratorService} used for testing. This generator does nothing and only throws
- * exceptions if configured so.
  *
- * @author Uwe Plonus
+ * @author uwe
  */
-public class TestGenerator implements GeneratorService {
+public class LiquibaseGenerator implements GeneratorService {
 
     /** The prefix of the generator. */
-    private static final String PREFIX = "test";
+    private static final String PREFIX = "lb34";
+
+    /** The file to write the model to. */
+    private File fullChangelogFile;
+
+    /** Flag to indicate that a model can be processed. */
+    private boolean canProcess;
 
     /**
      * Returns the prefix of this Generator.
@@ -50,17 +59,23 @@ public class TestGenerator implements GeneratorService {
      * @param properties the properties.
      */
     @Override
-    public void setProperties(@Nullable final Properties properties) {
+    public void setProperties(@Nonnull final Properties properties) {
+        String fullChangeLogFileName = properties.getProperty("fullChangelogFile");
+        if (fullChangeLogFileName != null) {
+            this.fullChangelogFile = new File(fullChangeLogFileName);
+            this.canProcess = true;
+        }
     }
 
     /**
-     * Returns always {@code true} because it only throws exceptions when configured so.
+     * Returns {@code true} if this generator can process a model. The prerequisite for processing a model is that the
+     * processor is configured with a properties file.
      *
-     * @return {@code true} if the generator can process models.
+     * @return {@code true} if this generator can process a model.
      */
     @Override
     public boolean canProcess() {
-        return true;
+        return this.canProcess;
     }
 
     /**
@@ -72,33 +87,13 @@ public class TestGenerator implements GeneratorService {
      */
     @Override
     public void process(Model model, @Nonnull final ProcessingEnvironment processingEnv) throws IOException {
-        if (TestGeneratorConfiguration.getInstance().processThrowsIOException()) {
-            throw new IOException();
+        if (canProcess()) {
+            processingEnv.getMessager().printMessage(Diagnostic.Kind.NOTE, "Started Liquibase 3.4 generator");
+            ObjectFactory of = new ObjectFactory();
+            DatabaseChangeLog changeLog = of.createDatabaseChangeLog();
+            fullChangelogFile.getParentFile().mkdirs();
+            JAXB.marshal(changeLog, fullChangelogFile);
         }
-    }
-
-
-    /**
-     * A singleton class to configure the {@link TestGenerator}.
-     */
-    public static class TestGeneratorConfiguration {
-
-        private static final TestGeneratorConfiguration INSTANCE = new TestGeneratorConfiguration();
-
-        private boolean processThrowsIOException;
-
-        public static TestGeneratorConfiguration getInstance() {
-            return INSTANCE;
-        }
-
-        public void processThrowsIOException(boolean processThrowsIOException) {
-            this.processThrowsIOException = processThrowsIOException;
-        }
-
-        public boolean processThrowsIOException() {
-            return this.processThrowsIOException;
-        }
-
     }
 
 }

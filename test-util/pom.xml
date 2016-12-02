@@ -10,26 +10,17 @@
     <version>0.1.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>generator</artifactId>
-  <packaging>pom</packaging>
+  <artifactId>test-util</artifactId>
+  <packaging>jar</packaging>
 
-  <name>JPA Annotation Processor (Generator Aggregator)</name>
-  <description>This is the generator aggregator for the JPA annotation processor.</description>
-
-  <modules>
-    <module>liquibase-3.4</module>
-  </modules>
+  <name>JPA Annotation Processor (Test Utilities)</name>
+  <description>This is the JPA annotation processor.</description>
 
   <properties>
-    <!-- Netbeans Hints -->
     <netbeans.hint.license>gpl30</netbeans.hint.license>
   </properties>
 
   <dependencies>
-    <dependency>
-      <groupId>org.sw4j.tool.annotation.jpa</groupId>
-      <artifactId>processor</artifactId>
-    </dependency>
     <dependency>
       <groupId>com.google.code.findbugs</groupId>
       <artifactId>findbugs-annotations</artifactId>
@@ -41,20 +32,18 @@
       <optional>true</optional>
     </dependency>
     <dependency>
-      <groupId>org.eclipse.persistence</groupId>
-      <artifactId>javax.persistence</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.sw4j.tool.annotation.jpa</groupId>
-      <artifactId>test-util</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
       <groupId>org.testng</groupId>
       <artifactId>testng</artifactId>
-      <scope>test</scope>
     </dependency>
   </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.jacoco</groupId>
+        <artifactId>jacoco-maven-plugin</artifactId>
+      </plugin>
+    </plugins>
+  </build>
 
 </project>

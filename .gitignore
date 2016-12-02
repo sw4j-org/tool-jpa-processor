@@ -7,3 +7,6 @@
 /nbactions.xml
 /generator/liquibase-3.4/target/
 /generator/target/
+/generator/liquibase-3.4/nb-configuration.xml
+/generator/nb-configuration.xml
+/test-util/target/

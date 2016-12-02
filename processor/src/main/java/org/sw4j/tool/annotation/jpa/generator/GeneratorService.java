@@ -19,7 +19,7 @@ package org.sw4j.tool.annotation.jpa.generator;
 import java.io.IOException;
 import java.util.Properties;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import javax.annotation.processing.ProcessingEnvironment;
 import org.sw4j.tool.annotation.jpa.generator.model.Model;
 
 /**
@@ -43,7 +43,7 @@ public interface GeneratorService {
      *
      * @param properties the properties used to configure the generator.
      */
-    void setProperties(@Nullable Properties properties);
+    void setProperties(@Nonnull Properties properties);
 
     /**
      * Flag to indicate that the generator can process a model. For this the generator should be able to read the
@@ -57,8 +57,9 @@ public interface GeneratorService {
      * The model to process and to output.
      *
      * @param model the model to process.
+     * @param processingEnv the processing environment used to emit messages.
      * @throws IOException if the output cannot be written.
      */
-    void process(@Nonnull Model model) throws IOException;
+    void process(@Nonnull Model model, @Nonnull final ProcessingEnvironment processingEnv) throws IOException;
 
 }

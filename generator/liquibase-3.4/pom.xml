@@ -21,26 +21,45 @@
     <netbeans.hint.license>gpl30</netbeans.hint.license>
   </properties>
 
-  <dependencies>
-    <dependency>
-      <groupId>com.google.code.findbugs</groupId>
-      <artifactId>findbugs-annotations</artifactId>
-      <optional>true</optional>
-    </dependency>
-    <dependency>
-      <groupId>com.google.code.findbugs</groupId>
-      <artifactId>jsr305</artifactId>
-      <optional>true</optional>
-    </dependency>
-    <dependency>
-      <groupId>org.testng</groupId>
-      <artifactId>testng</artifactId>
-      <scope>test</scope>
-    </dependency>
-  </dependencies>
-
   <build>
     <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>default-testCompile</id>
+            <phase>test-compile</phase>
+            <goals>
+              <goal>testCompile</goal>
+            </goals>
+            <configuration>
+              <!--<fork>true</fork>-->
+              <annotationProcessorPaths>
+                <path>
+                  <groupId>org.sw4j.tool.annotation.jpa</groupId>
+                  <artifactId>processor</artifactId>
+                  <version>${project.version}</version>
+                </path>
+                <path>
+                  <groupId>org.eclipse.persistence</groupId>
+                  <artifactId>javax.persistence</artifactId>
+                  <version>${javax.persistence.version}</version>
+                </path>
+              </annotationProcessorPaths>
+              <compilerArgs>
+                <arg>-Atool.jpa.properties=src/test/resources/test.properties</arg>
+                <arg>-XprintProcessorInfo</arg>
+                <arg>-XprintRounds</arg>
+                <!--<arg>-J-Xdebug</arg>
+                <arg>-J-Xrunjdwp:transport=dt_socket,server=n,suspend=y,address=9001</arg>-->
+              </compilerArgs>
+              <verbose>true</verbose>
+              <showWarnings>true</showWarnings>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>jaxb2-maven-plugin</artifactId>
@@ -53,7 +72,7 @@
           </execution>
         </executions>
         <configuration>
-          <packageName>org.sw4j.tool.annotation.jpa.liquibase_3_4</packageName>
+          <packageName>org.sw4j.tool.annotation.jpa.generator.liquibase_3_4.jaxb</packageName>
         </configuration>
       </plugin>
     </plugins>
