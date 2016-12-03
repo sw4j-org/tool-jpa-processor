@@ -14,27 +14,24 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.sw4j.tool.annotation.generator;
+package org.sw4j.tool.annotation.jpa.generator.liquibase.v34.integration;
 
-import org.sw4j.tool.annotation.generator.util.ITSuperclass;
-import org.testng.Assert;
+import org.sw4j.tool.annotation.jpa.generator.util.ITSuperclass;
 import org.testng.annotations.Test;
 
 /**
  *
  * @author uwe
  */
-public class LiquibaseGeneratorIT extends ITSuperclass {
+public class LiquibaseGeneratorEmptyPropertiesIT extends ITSuperclass {
+
+    @Override
+    public String getTestProperties() {
+        return "src/test/resources/empty.properties";
+    }
 
     @Test
     public void testRootElement() {
-        Assert.assertNotNull(getRootElement(), "Expected a document to be read.");
-
-        Assert.assertEquals(getRootElement().getNodeName(), "databaseChangeLog",
-                "Expected the root element to be named \"databaseChangeLog\".");
-        Assert.assertEquals(getAttribute("xmlns", getRootElement()).getNodeValue(),
-                "http://www.liquibase.org/xml/ns/dbchangelog",
-                "Expected the root element to have the namespace \"http://www.liquibase.org/xml/ns/dbchangelog\"");
     }
 
 }

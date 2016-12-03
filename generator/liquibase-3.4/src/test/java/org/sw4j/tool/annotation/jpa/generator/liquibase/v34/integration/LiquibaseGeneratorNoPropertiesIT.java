@@ -14,20 +14,20 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.sw4j.tool.annotation.generator;
+package org.sw4j.tool.annotation.jpa.generator.liquibase.v34.integration;
 
-import org.sw4j.tool.annotation.generator.util.ITSuperclass;
+import org.sw4j.tool.annotation.jpa.generator.util.ITSuperclass;
 import org.testng.annotations.Test;
 
 /**
  *
  * @author uwe
  */
-public class LiquibaseGeneratorEmptyPropertiesIT extends ITSuperclass {
+public class LiquibaseGeneratorNoPropertiesIT extends ITSuperclass {
 
     @Override
     public String getTestProperties() {
-        return "src/test/resources/empty.properties";
+        return "missing.properties";
     }
 
     @Test

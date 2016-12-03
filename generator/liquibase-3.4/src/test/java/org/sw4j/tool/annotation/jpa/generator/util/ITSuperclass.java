@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.sw4j.tool.annotation.generator.util;
+package org.sw4j.tool.annotation.jpa.generator.util;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -36,7 +36,7 @@ import org.w3c.dom.Node;
 public abstract class ITSuperclass {
 
     /** The folder that contains all JPA classes to process. */
-    private static final String ENTITY_PACKAGE = "src/test/java/org/sw4j/tool/annotation/generator/entity/";
+    private static final String ENTITY_PACKAGE = "src/test/java/org/sw4j/tool/annotation/jpa/generator/entity/";
 
     /** The file to write the result to. */
     private static final String TEST_PROPERTIES = "src/test/resources/integrationtest.properties";
