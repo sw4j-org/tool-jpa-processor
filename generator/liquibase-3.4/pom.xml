@@ -72,7 +72,7 @@
           </execution>
         </executions>
         <configuration>
-          <packageName>org.sw4j.tool.annotation.jpa.generator.liquibase_3_4.jaxb</packageName>
+          <packageName>org.sw4j.tool.annotation.jpa.generator.liquibase.v34.jaxb</packageName>
         </configuration>
       </plugin>
     </plugins>

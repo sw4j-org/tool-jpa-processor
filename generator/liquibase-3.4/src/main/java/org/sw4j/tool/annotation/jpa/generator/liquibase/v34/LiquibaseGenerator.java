@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.sw4j.tool.annotation.jpa.generator.liquibase_3_4;
+package org.sw4j.tool.annotation.jpa.generator.liquibase.v34;
 
 import java.io.File;
 import java.io.IOException;
@@ -24,8 +24,8 @@ import javax.annotation.processing.ProcessingEnvironment;
 import javax.tools.Diagnostic;
 import javax.xml.bind.JAXB;
 import org.sw4j.tool.annotation.jpa.generator.GeneratorService;
-import org.sw4j.tool.annotation.jpa.generator.liquibase_3_4.jaxb.DatabaseChangeLog;
-import org.sw4j.tool.annotation.jpa.generator.liquibase_3_4.jaxb.ObjectFactory;
+import org.sw4j.tool.annotation.jpa.generator.liquibase.v34.jaxb.DatabaseChangeLog;
+import org.sw4j.tool.annotation.jpa.generator.liquibase.v34.jaxb.ObjectFactory;
 import org.sw4j.tool.annotation.jpa.generator.model.Model;
 
 /**
