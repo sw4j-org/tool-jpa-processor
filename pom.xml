@@ -253,44 +253,24 @@
             <goals>
               <goal>prepare-agent</goal>
             </goals>
-            <configuration>
-              <excludes>
-                <exclude>**/jaxb/**</exclude>
-              </excludes>
-            </configuration>
           </execution>
           <execution>
             <id>default-prepare-agent-integration</id>
             <goals>
               <goal>prepare-agent-integration</goal>
             </goals>
-            <configuration>
-              <excludes>
-                <exclude>**/jaxb/**</exclude>
-              </excludes>
-            </configuration>
           </execution>
           <execution>
             <id>default-report</id>
             <goals>
               <goal>report</goal>
             </goals>
-            <configuration>
-              <excludes>
-                <exclude>**/jaxb/**</exclude>
-              </excludes>
-            </configuration>
           </execution>
           <execution>
             <id>default-report-integration</id>
             <goals>
               <goal>report-integration</goal>
             </goals>
-            <configuration>
-              <excludes>
-                <exclude>**/jaxb/**</exclude>
-              </excludes>
-            </configuration>
           </execution>
           <execution>
             <id>default-check</id>

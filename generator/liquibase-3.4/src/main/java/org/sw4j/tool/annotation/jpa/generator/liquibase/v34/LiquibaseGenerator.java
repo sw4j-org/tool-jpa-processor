@@ -26,9 +26,11 @@ import javax.xml.bind.JAXB;
 import org.sw4j.tool.annotation.jpa.generator.GeneratorService;
 import org.sw4j.tool.annotation.jpa.generator.liquibase.v34.jaxb.DatabaseChangeLog;
 import org.sw4j.tool.annotation.jpa.generator.liquibase.v34.jaxb.ObjectFactory;
+import org.sw4j.tool.annotation.jpa.generator.model.Entity;
 import org.sw4j.tool.annotation.jpa.generator.model.Model;
 
 /**
+ * A generator to create changelogs for Liquibase 3.4.
  *
  * @author uwe
  */
@@ -37,11 +39,20 @@ public class LiquibaseGenerator implements GeneratorService {
     /** The prefix of the generator. */
     private static final String PREFIX = "lb34";
 
+    /** The changeset generator used by this generator. */
+    private final ChangesetGenerator changesetGenerator = new ChangesetGenerator();
+
     /** The file to write the model to. */
     private File fullChangelogFile;
 
     /** Flag to indicate that a model can be processed. */
     private boolean canProcess;
+
+    /**
+     * Default constructor which is needed to use the service infrastructure of Java.
+     */
+    public LiquibaseGenerator() {
+    }
 
     /**
      * Returns the prefix of this Generator.
@@ -86,11 +97,17 @@ public class LiquibaseGenerator implements GeneratorService {
      * @throws IOException when an error occurs during the output.
      */
     @Override
-    public void process(Model model, @Nonnull final ProcessingEnvironment processingEnv) throws IOException {
+    public void process(@Nonnull final Model model, @Nonnull final ProcessingEnvironment processingEnv)
+            throws IOException {
         if (canProcess()) {
             processingEnv.getMessager().printMessage(Diagnostic.Kind.NOTE, "Started Liquibase 3.4 generator");
             ObjectFactory of = new ObjectFactory();
             DatabaseChangeLog changeLog = of.createDatabaseChangeLog();
+
+            for (Entity entity: model.getEntities()) {
+                this.changesetGenerator.handleEntity(changeLog, entity);
+            }
+
             fullChangelogFile.getParentFile().mkdirs();
             JAXB.marshal(changeLog, fullChangelogFile);
         }

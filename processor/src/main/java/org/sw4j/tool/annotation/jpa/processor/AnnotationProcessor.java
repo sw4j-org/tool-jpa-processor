@@ -125,6 +125,7 @@ public class AnnotationProcessor extends AbstractProcessor {
      * @param fileName the name of the file of the properties file.
      * @return a map containing properties splitted according to the prefix.
      */
+    @Nonnull
     private Map<String, Properties> readProperties(@Nullable final String fileName) {
         Map<String, Properties> result = new HashMap<>();
         if (fileName != null) {

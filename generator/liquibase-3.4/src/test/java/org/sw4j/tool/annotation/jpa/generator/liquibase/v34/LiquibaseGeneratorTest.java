@@ -16,24 +16,34 @@
  */
 package org.sw4j.tool.annotation.jpa.generator.liquibase.v34;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.tools.Diagnostic;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import org.sw4j.tool.annotation.jpa.generator.model.Entity;
 import org.sw4j.tool.annotation.jpa.generator.model.Model;
 import org.sw4j.tool.annotation.jpa.test.mock.annotation.processing.MessagerMock;
 import org.sw4j.tool.annotation.jpa.test.mock.annotation.processing.ProcessingEnvironmentMock;
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+import org.w3c.dom.Document;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 /**
  *
  * @author Uwe Plonus
  */
-public class LiquibaseGeneratorTest {
+public class LiquibaseGeneratorTest extends AbstractUnitTest {
+
+    private static final String FULL_CHANGELOG_FILE_NAME = "target/generated-test-resources/fullChangelog.xml";
 
     private LiquibaseGenerator unitUnderTest;
 
@@ -60,6 +70,7 @@ public class LiquibaseGeneratorTest {
         Assert.assertEquals(this.unitUnderTest.getPrefix(), "lb34", "Expected the prefix \"lb34\".");
     }
 
+
     @Test
     public void testSetPropertiesNoFile() {
         this.properties.setProperty("dummy", "dummy");
@@ -71,7 +82,7 @@ public class LiquibaseGeneratorTest {
 
     @Test
     public void testSetProperties() {
-        this.properties.setProperty("fullChangelogFile", "target/generated-resources/fullChangelog.xml");
+        this.properties.setProperty("fullChangelogFile", FULL_CHANGELOG_FILE_NAME);
 
         this.unitUnderTest.setProperties(this.properties);
 
@@ -88,8 +99,8 @@ public class LiquibaseGeneratorTest {
     }
 
     @Test
-    public void testProcessEmptyModel() throws IOException {
-        this.properties.setProperty("fullChangelogFile", "target/generated-resources/fullChangelog.xml");
+    public void testProcessEmptyModel() throws Exception {
+        this.properties.setProperty("fullChangelogFile", FULL_CHANGELOG_FILE_NAME);
         Model model = new Model();
 
         this.unitUnderTest.setProperties(this.properties);
@@ -99,6 +110,40 @@ public class LiquibaseGeneratorTest {
         Assert.assertEquals(this.messager.getMessages().size(), 1, "Expected one message to be created.");
         Assert.assertEquals(this.messager.getMessages().get(0).getKind(), Diagnostic.Kind.NOTE,
                 "Expected a message of kind NOTE.");
+
+        File changelogFile = new File(FULL_CHANGELOG_FILE_NAME);
+        Assert.assertTrue(changelogFile.exists(), "Expected the changelog file to be created.");
+        Document result = parseResult(FULL_CHANGELOG_FILE_NAME);
+        Assert.assertNotNull(result.getDocumentElement(), "Expected an XML document.");
+        Assert.assertEquals(result.getDocumentElement().getNodeName(), "databaseChangeLog",
+                "Expected the root element to be \"databaseChangeLog\".");
+    }
+
+    @Test
+    public void testProcessOnlyEntityModel() throws Exception {
+        this.properties.setProperty("fullChangelogFile", FULL_CHANGELOG_FILE_NAME);
+        Model model = new Model();
+        Entity entity = new Entity("SimpleEntity", "org.sw4j.tool.annotation.jpa.entity.SimpleEntity");
+        model.addEntity(entity);
+
+        this.unitUnderTest.setProperties(this.properties);
+
+        this.unitUnderTest.process(model, processingEnv);
+
+        Assert.assertEquals(this.messager.getMessages().size(), 1, "Expected one message to be created.");
+        Assert.assertEquals(this.messager.getMessages().get(0).getKind(), Diagnostic.Kind.NOTE,
+                "Expected a message of kind NOTE.");
+
+        File changelogFile = new File(FULL_CHANGELOG_FILE_NAME);
+        Assert.assertTrue(changelogFile.exists(), "Expected the changelog file to be created.");
+
+        Document result = parseResult(FULL_CHANGELOG_FILE_NAME);
+        Assert.assertNotNull(result.getDocumentElement(), "Expected an XML document.");
+        Assert.assertEquals(result.getDocumentElement().getNodeName(), "databaseChangeLog",
+                "Expected the root element to be \"databaseChangeLog\".");
+
+        NodeList children = result.getDocumentElement().getElementsByTagName("changeSet");
+        Assert.assertTrue(children.getLength() > 0, "Expected at least one changeSet child element.");
     }
 
 }

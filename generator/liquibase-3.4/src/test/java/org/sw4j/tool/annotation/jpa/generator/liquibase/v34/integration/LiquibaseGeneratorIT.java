@@ -16,9 +16,11 @@
  */
 package org.sw4j.tool.annotation.jpa.generator.liquibase.v34.integration;
 
+import javax.xml.xpath.XPathExpressionException;
 import org.sw4j.tool.annotation.jpa.generator.util.ITSuperclass;
 import org.testng.Assert;
 import org.testng.annotations.Test;
+import org.w3c.dom.Node;
 
 /**
  *
@@ -35,6 +37,19 @@ public class LiquibaseGeneratorIT extends ITSuperclass {
         Assert.assertEquals(getAttribute("xmlns", getRootElement()).getNodeValue(),
                 "http://www.liquibase.org/xml/ns/dbchangelog",
                 "Expected the root element to have the namespace \"http://www.liquibase.org/xml/ns/dbchangelog\"");
+    }
+
+    @Test
+    public void testChangeSetElementForPrimitiveFieldOnlyIdEntity() throws XPathExpressionException {
+        Node changeSet = getNode("/databaseChangeLog/changeSet[@id='createTable_PrimitiveFieldOnlyIdEntity']");
+
+        Assert.assertNotNull(changeSet, "Expected a changeSet to be created.");
+        Assert.assertNotNull(getAttribute("id", changeSet), "Expected the changeSet to have an id attribute");
+        Assert.assertEquals(getAttribute("id", changeSet).getNodeValue(), "createTable_PrimitiveFieldOnlyIdEntity",
+                "Expected the id attribute to be \"createTable_PrimitiveFieldOnlyIdEntity\"");
+        Assert.assertNotNull(getAttribute("author", changeSet), "Expected the changeSet to have an id attribute");
+        Assert.assertEquals(getAttribute("author", changeSet).getNodeValue(), "generated",
+                "Expected the author attribute to be \"generated\"");
     }
 
 }
