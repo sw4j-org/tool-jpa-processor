@@ -21,8 +21,8 @@ import java.io.FileInputStream;
 import java.util.Properties;
 import javax.xml.xpath.XPathExpressionException;
 import org.sw4j.tool.annotation.jpa.test.util.ITUtil;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
+import org.testng.annotations.AfterSuite;
+import org.testng.annotations.BeforeSuite;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
@@ -56,17 +56,17 @@ public abstract class ITSuperclass {
      *
      * @throws Exception when any exception occurs during set up.
      */
-    @BeforeClass
-    public void setUpClass() throws Exception {
+    @BeforeSuite
+    public static void setUpSuite() throws Exception {
         testUtil = new ITUtil();
         Properties properties = new Properties();
-        File propertiesFile = new File(getTestProperties());
+        File propertiesFile = new File(TEST_PROPERTIES);
         if (propertiesFile.exists()) {
-            properties.load(new FileInputStream(getTestProperties()));
+            properties.load(new FileInputStream(TEST_PROPERTIES));
         }
         testUtil.compileClasses(ENTITY_PACKAGE, properties.getProperty("lb34.fullChangelogFile"),
                 new String[]{
-                    new StringBuilder(ANNOTATION_PROCESSOR_OPTION).append(getTestProperties()).toString(),
+                    new StringBuilder(ANNOTATION_PROCESSOR_OPTION).append(TEST_PROPERTIES).toString(),
                 });
     }
 
@@ -75,19 +75,9 @@ public abstract class ITSuperclass {
      *
      * @throws Exception when any exception occurs during tear down.
      */
-    @AfterClass
-    public void tearDownSuite() throws Exception {
+    @AfterSuite
+    public static void tearDownSuite() throws Exception {
         testUtil.checkVisitedNodes();
-    }
-
-    /**
-     * Return the properties used for the test. May be overwritten by subclasses to supply other test properties than
-     * the default.
-     *
-     * @return the test properties to use.
-     */
-    public String getTestProperties() {
-        return TEST_PROPERTIES;
     }
 
     /**

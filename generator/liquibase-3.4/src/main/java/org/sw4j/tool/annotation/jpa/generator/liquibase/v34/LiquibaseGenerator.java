@@ -40,7 +40,7 @@ public class LiquibaseGenerator implements GeneratorService {
     private static final String PREFIX = "lb34";
 
     /** The changeset generator used by this generator. */
-    private final ChangesetGenerator changesetGenerator = new ChangesetGenerator();
+    private final ChangeSetGenerator changesetGenerator = new ChangeSetGenerator();
 
     /** The file to write the model to. */
     private File fullChangelogFile;

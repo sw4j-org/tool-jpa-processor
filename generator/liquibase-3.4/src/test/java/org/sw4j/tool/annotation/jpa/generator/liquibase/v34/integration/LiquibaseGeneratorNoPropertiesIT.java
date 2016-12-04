@@ -16,18 +16,58 @@
  */
 package org.sw4j.tool.annotation.jpa.generator.liquibase.v34.integration;
 
-import org.sw4j.tool.annotation.jpa.generator.util.ITSuperclass;
+import java.io.FileInputStream;
+import java.util.Properties;
+import org.sw4j.tool.annotation.jpa.test.util.ITUtil;
+import org.testng.annotations.AfterSuite;
+import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.Test;
 
 /**
  *
- * @author uwe
+ * @author Uwe Plonus
  */
-public class LiquibaseGeneratorNoPropertiesIT extends ITSuperclass {
+public class LiquibaseGeneratorNoPropertiesIT {
 
-    @Override
-    public String getTestProperties() {
-        return "missing.properties";
+    /** The folder that contains all JPA classes to process. */
+    private static final String ENTITY_PACKAGE = "src/test/java/org/sw4j/tool/annotation/jpa/generator/entity/";
+
+    /** The file to write the result to. */
+    private static final String TEST_PROPERTIES = "missing.properties";
+
+    /** The option prefix for the generator output. */
+    private static final String ANNOTATION_PROCESSOR_OPTION = "-Atool.jpa.properties=" + TEST_PROPERTIES;
+
+    /** The utility class of the testResultFile. */
+    private static ITUtil testUtil;
+
+    /** Default constructor. */
+    public LiquibaseGeneratorNoPropertiesIT() {
+    }
+
+    /**
+     * Set up the test suite.
+     *
+     * @throws Exception when any exception occurs during set up.
+     */
+    @BeforeSuite
+    public static void setUpSuite() throws Exception {
+        testUtil = new ITUtil();
+        Properties properties = new Properties();
+        testUtil.compileClasses(ENTITY_PACKAGE, properties.getProperty("lb34.fullChangelogFile"),
+                new String[]{
+                    ANNOTATION_PROCESSOR_OPTION
+                });
+    }
+
+    /**
+     * Tear down the test suite.
+     *
+     * @throws Exception when any exception occurs during tear down.
+     */
+    @AfterSuite
+    public static void tearDownSuite() throws Exception {
+        testUtil.checkVisitedNodes();
     }
 
     @Test

@@ -17,17 +17,18 @@
 package org.sw4j.tool.annotation.jpa.generator.liquibase.v34;
 
 import javax.annotation.Nonnull;
+import org.sw4j.tool.annotation.jpa.generator.liquibase.v34.jaxb.CreateTable;
 import org.sw4j.tool.annotation.jpa.generator.liquibase.v34.jaxb.DatabaseChangeLog;
 import org.sw4j.tool.annotation.jpa.generator.liquibase.v34.jaxb.DatabaseChangeLog.ChangeSet;
 import org.sw4j.tool.annotation.jpa.generator.liquibase.v34.jaxb.ObjectFactory;
 import org.sw4j.tool.annotation.jpa.generator.model.Entity;
 
 /**
- * This is the changeSet generator. It created a changeSet inside a databaseChangeLog for a given entity.
+ * This is a generator that handles entities and creates the tables needed for it.
  *
  * @author Uwe Plonus
  */
-public class ChangesetGenerator {
+public class TableGenerator {
 
     /** The object factory used to create the elements. */
     private static final ObjectFactory OBJECT_FACTORY = new ObjectFactory();
@@ -35,21 +36,20 @@ public class ChangesetGenerator {
     /**
      * The default constructor.
      */
-    public ChangesetGenerator() {
+    public TableGenerator() {
     }
 
     /**
      * Handle a single entity and append a changeSet to the databaseChangeLog to create the table for the entity.
      *
-     * @param changelog the changelog the changeset should be appended to.
+     * @param changeSet the changelog the changeset should be appended to.
      * @param entity the entity to process.
      */
-    public void handleEntity(@Nonnull final DatabaseChangeLog changelog, @Nonnull final Entity entity) {
+    public void handleEntity(@Nonnull final ChangeSet changeSet, @Nonnull final Entity entity) {
         String entityName = entity.getName();
-        ChangeSet changeSet = OBJECT_FACTORY.createDatabaseChangeLogChangeSet();
-        changeSet.setAuthor("generated");
-        changeSet.setId(new StringBuilder("createTable_").append(entityName).toString());
-        changelog.getChangeSetOrIncludeOrIncludeAll().add(changeSet);
+        CreateTable createTable = OBJECT_FACTORY.createCreateTable();
+        createTable.setTableName(entityName);
+        changeSet.getChangeSetChildren().add(createTable);
     }
 
 }

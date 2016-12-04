@@ -81,31 +81,35 @@ public class ITUtil {
      */
     public void compileClasses(String folder, String resultFileName, String[] options)
             throws ParserConfigurationException, SAXException, IOException {
-        File entityFolder = new File(folder);
-        List<File> files = new LinkedList<>();
-        getFiles(entityFolder, files);
+        try {
+            File entityFolder = new File(folder);
+            List<File> files = new LinkedList<>();
+            getFiles(entityFolder, files);
 
-        JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
-        Assert.assertNotNull(compiler, "Need a java compiler for executing the tests.");
-        StandardJavaFileManager fileManager = compiler.getStandardFileManager(null, null, Charset.forName("UTF-8"));
+            JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
+            Assert.assertNotNull(compiler, "Need a java compiler for executing the tests.");
+            StandardJavaFileManager fileManager = compiler.getStandardFileManager(null, null, Charset.forName("UTF-8"));
 
-        File classesFolder = new File(TARGET_FOLDER);
-        classesFolder.mkdirs();
+            File classesFolder = new File(TARGET_FOLDER);
+            classesFolder.mkdirs();
 
-        Iterable<? extends JavaFileObject> entities = fileManager.getJavaFileObjectsFromFiles(files);
-        List<String> opts = new LinkedList<>();
-        opts.add("-d");
-        opts.add(TARGET_FOLDER);
-        opts.addAll(Arrays.asList(options));
-        Writer writer = new StringWriter();
-        compiler.getTask(writer, fileManager, null, opts, null, entities).call();
+            Iterable<? extends JavaFileObject> entities = fileManager.getJavaFileObjectsFromFiles(files);
+            List<String> opts = new LinkedList<>();
+            opts.add("-d");
+            opts.add(TARGET_FOLDER);
+            opts.addAll(Arrays.asList(options));
+            Writer writer = new StringWriter();
+            compiler.getTask(writer, fileManager, null, opts, null, entities).call();
 
-        if (resultFileName != null) {
-            File resultFile = new File(resultFileName);
-            if (resultFile.exists()) {
-                DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-                resultDocument = builder.parse(resultFile);
+            if (resultFileName != null) {
+                File resultFile = new File(resultFileName);
+                if (resultFile.exists()) {
+                    DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+                    resultDocument = builder.parse(resultFile);
+                }
             }
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
     }
 
