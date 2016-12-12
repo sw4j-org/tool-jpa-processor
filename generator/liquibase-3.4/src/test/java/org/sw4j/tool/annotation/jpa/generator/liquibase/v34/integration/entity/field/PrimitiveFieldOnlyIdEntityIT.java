@@ -31,12 +31,14 @@ public class PrimitiveFieldOnlyIdEntityIT extends ITSuperclass {
 
     @Test
     public void testChangeSetElement() throws XPathExpressionException {
-        Node changeSet = getNode("/databaseChangeLog/changeSet[@id='createTable_PrimitiveFieldOnlyIdEntity']");
+        Node changeSet = getNode("/databaseChangeLog" +
+                "/changeSet[starts-with(@id, 'createTable_PrimitiveFieldOnlyIdEntity')]");
 
         Assert.assertNotNull(changeSet, "Expected a changeSet to be created.");
         Assert.assertNotNull(getAttribute("id", changeSet), "Expected the changeSet to have an id attribute");
-        Assert.assertEquals(getAttribute("id", changeSet).getNodeValue(), "createTable_PrimitiveFieldOnlyIdEntity",
-                "Expected the id attribute to be \"createTable_PrimitiveFieldOnlyIdEntity\"");
+        Assert.assertTrue(getAttribute("id", changeSet).getNodeValue()
+                .startsWith("createTable_PrimitiveFieldOnlyIdEntity"),
+                "Expected the id attribute to start with \"createTable_PrimitiveFieldOnlyIdEntity\"");
         Assert.assertNotNull(getAttribute("author", changeSet), "Expected the changeSet to have an id attribute");
         Assert.assertEquals(getAttribute("author", changeSet).getNodeValue(), "generated",
                 "Expected the author attribute to be \"generated\"");
@@ -44,7 +46,8 @@ public class PrimitiveFieldOnlyIdEntityIT extends ITSuperclass {
 
     @Test
     public void testCreateTableElement() throws XPathExpressionException {
-        Node createTable = getNode("/databaseChangeLog/changeSet[@id='createTable_PrimitiveFieldOnlyIdEntity']" +
+        Node createTable = getNode("/databaseChangeLog" +
+                "/changeSet[starts-with(@id, 'createTable_PrimitiveFieldOnlyIdEntity')]" +
                 "/createTable[@tableName='PrimitiveFieldOnlyIdEntity']");
 
         Assert.assertNotNull(createTable, "Expected a createTable to be created.");

@@ -18,7 +18,6 @@ package org.sw4j.tool.annotation.jpa.generator.liquibase.v34;
 
 import javax.annotation.Nonnull;
 import org.sw4j.tool.annotation.jpa.generator.liquibase.v34.jaxb.CreateTable;
-import org.sw4j.tool.annotation.jpa.generator.liquibase.v34.jaxb.DatabaseChangeLog;
 import org.sw4j.tool.annotation.jpa.generator.liquibase.v34.jaxb.DatabaseChangeLog.ChangeSet;
 import org.sw4j.tool.annotation.jpa.generator.liquibase.v34.jaxb.ObjectFactory;
 import org.sw4j.tool.annotation.jpa.generator.model.Entity;

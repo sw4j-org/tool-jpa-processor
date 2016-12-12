@@ -16,6 +16,9 @@
  */
 package org.sw4j.tool.annotation.jpa.generator.liquibase.v34;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import javax.annotation.Nonnull;
 import org.sw4j.tool.annotation.jpa.generator.liquibase.v34.jaxb.DatabaseChangeLog;
 import org.sw4j.tool.annotation.jpa.generator.liquibase.v34.jaxb.DatabaseChangeLog.ChangeSet;
@@ -32,7 +35,10 @@ public class ChangeSetGenerator {
     /** The object factory used to create the elements. */
     private static final ObjectFactory OBJECT_FACTORY = new ObjectFactory();
 
+    /** The table generator used to create the create table (and subsequent) object. */
     private static final TableGenerator TABLE_GENERATOR = new TableGenerator();
+
+    private static final DateFormat TIMESTAMP_FORMAT = new SimpleDateFormat("yyyyMMdd'T'HHmmss");
 
     /**
      * The default constructor.
@@ -50,7 +56,8 @@ public class ChangeSetGenerator {
         String entityName = entity.getName();
         ChangeSet changeSet = OBJECT_FACTORY.createDatabaseChangeLogChangeSet();
         changeSet.setAuthor("generated");
-        changeSet.setId(new StringBuilder("createTable_").append(entityName).toString());
+        changeSet.setId(new StringBuilder("createTable_").append(entityName).append("_")
+                .append(TIMESTAMP_FORMAT.format(new Date())).toString());
 
         TABLE_GENERATOR.handleEntity(changeSet, entity);
 

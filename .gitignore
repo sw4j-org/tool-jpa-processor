@@ -10,3 +10,4 @@
 /generator/liquibase-3.4/nb-configuration.xml
 /generator/nb-configuration.xml
 /test-util/target/
+/test-util/nb-configuration.xml

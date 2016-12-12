@@ -54,8 +54,8 @@ public class ChangeSetGeneratorTest extends AbstractUnitTest {
         ChangeSet changeSet = (ChangeSet)databaseChangeLog.getChangeSetOrIncludeOrIncludeAll().get(0);
         Assert.assertEquals(changeSet.getAuthor(), "generated",
                 "Expected the author of the changeSet to be \"generated\".");
-        Assert.assertEquals(changeSet.getId(), "createTable_SimpleEntity",
-                "Expected the id of the changeSet to be \"createTable_SimpleEntity\"");
+        Assert.assertTrue(changeSet.getId().startsWith("createTable_SimpleEntity_"),
+                "Expected the id of the changeSet to start with \"createTable_SimpleEntity_\"");
     }
 
 }
