@@ -18,7 +18,9 @@ package org.sw4j.tool.annotation.jpa.generator;
 
 import java.io.IOException;
 import java.util.Properties;
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.processing.ProcessingEnvironment;
 import org.sw4j.tool.annotation.jpa.generator.model.Model;
 
 /**
@@ -65,10 +67,11 @@ public class TestGenerator implements GeneratorService {
      * Processes the model and writes it to the output.
      *
      * @param model the model to process.
+     * @param processingEnv the processing environment used to emit messages.
      * @throws IOException when an error occurs during the output.
      */
     @Override
-    public void process(Model model) throws IOException {
+    public void process(Model model, @Nonnull final ProcessingEnvironment processingEnv) throws IOException {
         if (TestGeneratorConfiguration.getInstance().processThrowsIOException()) {
             throw new IOException();
         }

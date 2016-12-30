@@ -41,7 +41,7 @@ public class AnnotationProcessorMissingPropertyIT {
     private static final String ENTITY_PACKAGE = "src/test/java/org/sw4j/tool/annotation/jpa/entity/";
 
     /** The target folder for the compiled classes. */
-    private static final String TARGET_FOLDER = "target/jpa2-classes/";
+    private static final String TARGET_FOLDER = "target/jpa-classes/";
 
     /** The option prefix for the generator output. */
     private static final String ANNOTATION_PROCESSOR_OPTION = "-Atool.jpa.properties=missing.properties";

@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.sw4j.tool.annotation.jpa.processor.mock.annotation.processing;
+package org.sw4j.tool.annotation.jpa.test.mock.annotation.processing;
 
 import java.util.HashMap;
 import java.util.Locale;

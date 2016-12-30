@@ -17,6 +17,7 @@
   <description>This is the generator aggregator for the JPA annotation processor.</description>
 
   <modules>
+    <module>liquibase-common</module>
     <module>liquibase-3.4</module>
   </modules>
 
@@ -24,5 +25,47 @@
     <!-- Netbeans Hints -->
     <netbeans.hint.license>gpl30</netbeans.hint.license>
   </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.sw4j.tool.annotation.jpa</groupId>
+      <artifactId>processor</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.google.code.findbugs</groupId>
+      <artifactId>findbugs-annotations</artifactId>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>com.google.code.findbugs</groupId>
+      <artifactId>jsr305</artifactId>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.persistence</groupId>
+      <artifactId>javax.persistence</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.sw4j.tool.annotation.jpa</groupId>
+      <artifactId>test-util</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.testng</groupId>
+      <artifactId>testng</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.sw4j.tool.annotation.jpa.generator</groupId>
+        <artifactId>liquibase-common</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
 
 </project>

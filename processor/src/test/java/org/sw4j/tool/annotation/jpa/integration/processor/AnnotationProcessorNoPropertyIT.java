@@ -40,7 +40,7 @@ public class AnnotationProcessorNoPropertyIT {
     private static final String ENTITY_PACKAGE = "src/test/java/org/sw4j/tool/annotation/jpa/entity/";
 
     /** The target folder for the compiled classes. */
-    private static final String TARGET_FOLDER = "target/jpa2-classes/";
+    private static final String TARGET_FOLDER = "target/jpa-classes/";
 
     @Test
     public void test() {

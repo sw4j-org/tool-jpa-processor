@@ -19,6 +19,7 @@ package org.sw4j.tool.annotation.jpa.integration.util;
 import java.io.FileInputStream;
 import java.util.Properties;
 import javax.xml.xpath.XPathExpressionException;
+import org.sw4j.tool.annotation.jpa.test.util.ITUtil;
 import org.testng.annotations.AfterSuite;
 import org.testng.annotations.BeforeSuite;
 import org.w3c.dom.Element;
