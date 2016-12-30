@@ -11,3 +11,5 @@
 /generator/nb-configuration.xml
 /test-util/target/
 /test-util/nb-configuration.xml
+/generator/liquibase-common/nb-configuration.xml
+/generator/liquibase-common/target/

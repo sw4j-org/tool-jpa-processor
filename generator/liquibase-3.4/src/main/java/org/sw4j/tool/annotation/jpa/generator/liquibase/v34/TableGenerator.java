@@ -20,6 +20,7 @@ import javax.annotation.Nonnull;
 import org.sw4j.tool.annotation.jpa.generator.liquibase.v34.jaxb.CreateTable;
 import org.sw4j.tool.annotation.jpa.generator.liquibase.v34.jaxb.DatabaseChangeLog.ChangeSet;
 import org.sw4j.tool.annotation.jpa.generator.liquibase.v34.jaxb.ObjectFactory;
+import org.sw4j.tool.annotation.jpa.generator.model.Attribute;
 import org.sw4j.tool.annotation.jpa.generator.model.Entity;
 
 /**
@@ -31,6 +32,9 @@ public class TableGenerator {
 
     /** The object factory used to create the elements. */
     private static final ObjectFactory OBJECT_FACTORY = new ObjectFactory();
+
+    /** The column generator used to create the column (and subsequent) object. */
+    private static final ColumnGenerator COLUMN_GENERATOR = new ColumnGenerator();
 
     /**
      * The default constructor.
@@ -49,6 +53,9 @@ public class TableGenerator {
         CreateTable createTable = OBJECT_FACTORY.createCreateTable();
         createTable.setTableName(entityName);
         changeSet.getChangeSetChildren().add(createTable);
+        for (Attribute attribute: entity.getAttributes()) {
+            COLUMN_GENERATOR.handleAttribute(createTable, attribute);
+        }
     }
 
 }

@@ -38,6 +38,7 @@ public class ChangeSetGenerator {
     /** The table generator used to create the create table (and subsequent) object. */
     private static final TableGenerator TABLE_GENERATOR = new TableGenerator();
 
+    /** The timestamp format to use for the ID of the changeSet. */
     private static final DateFormat TIMESTAMP_FORMAT = new SimpleDateFormat("yyyyMMdd'T'HHmmss");
 
     /**

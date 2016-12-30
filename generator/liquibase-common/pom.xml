@@ -11,22 +11,15 @@
   </parent>
 
   <groupId>org.sw4j.tool.annotation.jpa.generator</groupId>
-  <artifactId>liquibase-3.4</artifactId>
+  <artifactId>liquibase-common</artifactId>
   <packaging>jar</packaging>
 
-  <name>JPA Annotation Processor (Liquibase 3.4 Generator)</name>
-  <description>This is the liquibase 3.4.x generator for the JPA annotation processor.</description>
+  <name>JPA Annotation Processor (Liquibase Common)</name>
+  <description>This is the liquibase common module for the JPA annotation processor.</description>
 
   <properties>
     <netbeans.hint.license>gpl30</netbeans.hint.license>
   </properties>
-
-  <dependencies>
-    <dependency>
-      <groupId>org.sw4j.tool.annotation.jpa.generator</groupId>
-      <artifactId>liquibase-common</artifactId>
-    </dependency>
-  </dependencies>
 
   <build>
     <plugins>
@@ -66,21 +59,6 @@
             </configuration>
           </execution>
         </executions>
-      </plugin>
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>jaxb2-maven-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>xjc</id>
-            <goals>
-              <goal>xjc</goal>
-            </goals>
-          </execution>
-        </executions>
-        <configuration>
-          <packageName>org.sw4j.tool.annotation.jpa.generator.liquibase.v34.jaxb</packageName>
-        </configuration>
       </plugin>
     </plugins>
   </build>

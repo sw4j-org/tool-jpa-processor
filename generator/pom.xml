@@ -17,6 +17,7 @@
   <description>This is the generator aggregator for the JPA annotation processor.</description>
 
   <modules>
+    <module>liquibase-common</module>
     <module>liquibase-3.4</module>
   </modules>
 
@@ -56,5 +57,15 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.sw4j.tool.annotation.jpa.generator</groupId>
+        <artifactId>liquibase-common</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
 
 </project>

@@ -16,9 +16,11 @@
  */
 package org.sw4j.tool.annotation.jpa.generator.liquibase.v34;
 
+import org.sw4j.tool.annotation.jpa.generator.liquibase.v34.jaxb.Column;
 import org.sw4j.tool.annotation.jpa.generator.liquibase.v34.jaxb.CreateTable;
 import org.sw4j.tool.annotation.jpa.generator.liquibase.v34.jaxb.DatabaseChangeLog.ChangeSet;
 import org.sw4j.tool.annotation.jpa.generator.liquibase.v34.jaxb.ObjectFactory;
+import org.sw4j.tool.annotation.jpa.generator.model.Attribute;
 import org.sw4j.tool.annotation.jpa.generator.model.Entity;
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
@@ -41,7 +43,7 @@ public class TableGeneratorTest extends AbstractUnitTest {
     }
 
     @Test
-    public void testProcessOnlyEntityModel() throws Exception {
+    public void testProcessEmptyEntity() throws Exception {
         Entity entity = new Entity("SimpleEntity", "org.sw4j.tool.annotation.jpa.entity.SimpleEntity");
         ChangeSet changeSet = objectFactory.createDatabaseChangeLogChangeSet();
 
@@ -53,6 +55,25 @@ public class TableGeneratorTest extends AbstractUnitTest {
         CreateTable createTable = (CreateTable)changeSet.getChangeSetChildren().get(0);
         Assert.assertEquals(createTable.getTableName(), "SimpleEntity",
                 "Expected the tableName of the createTable to be \"SimpleEntity\".");
+    }
+
+    @Test
+    public void testProcessEntityWithAttribute() throws Exception {
+        Entity entity = new Entity("SimpleEntity", "org.sw4j.tool.annotation.jpa.entity.SimpleEntity");
+        Attribute attribute = new Attribute("attr", false, "int");
+        entity.addAttribute(attribute);
+        ChangeSet changeSet = objectFactory.createDatabaseChangeLogChangeSet();
+
+        this.unitUnderTest.handleEntity(changeSet, entity);
+
+        Assert.assertEquals(changeSet.getChangeSetChildren().size(), 1, "Expected the changeSet to have one element.");
+        Assert.assertEquals(changeSet.getChangeSetChildren().get(0).getClass(), CreateTable.class,
+                "Expected the element of the changeSet to be a createTable.");
+        CreateTable createTable = (CreateTable)changeSet.getChangeSetChildren().get(0);
+        Assert.assertEquals(createTable.getColumnOrAny().size(), 1,
+                "Expected the createTable element to contain a single column.");
+        Assert.assertEquals(createTable.getColumnOrAny().get(0).getClass(), Column.class,
+                "Expected the column to be of class Column.");
     }
 
 }
