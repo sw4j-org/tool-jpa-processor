@@ -27,7 +27,7 @@ under the License.
     <item>
       <title>File: 10,
              Errors: 0,
-             Warnings: 4,
+             Warnings: 5,
              Infos: 6
       </title>
             <link>https://sw4j-org.github.io/tool-jpa-processor/0.1.0-SNAPSHOT/processor//checkstyle.html</link>
@@ -164,7 +164,7 @@ under the License.
                   3
                 </td>
                 <td>
-                  2
+                  3
                 </td>
                 <td>
                   0

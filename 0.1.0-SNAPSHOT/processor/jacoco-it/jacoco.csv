@@ -2,6 +2,6 @@ GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_
 JPA Annotation Processor (Annotation Processor),org.sw4j.tool.annotation.jpa.generator.model,Model,4,14,0,0,1,5,1,2,1,2
 JPA Annotation Processor (Annotation Processor),org.sw4j.tool.annotation.jpa.generator.model,Entity,9,29,2,2,1,10,2,5,1,4
 JPA Annotation Processor (Annotation Processor),org.sw4j.tool.annotation.jpa.generator.model,Attribute,9,12,0,0,3,5,3,1,3,1
-JPA Annotation Processor (Annotation Processor),org.sw4j.tool.annotation.jpa.processor,AnnotationProcessor,55,190,7,23,3,50,5,15,0,5
+JPA Annotation Processor (Annotation Processor),org.sw4j.tool.annotation.jpa.processor,AnnotationProcessor,55,207,7,25,3,54,5,16,0,5
 JPA Annotation Processor (Annotation Processor),org.sw4j.tool.annotation.jpa.processor,AttributeProcessor,41,348,9,43,2,73,8,29,0,11
 JPA Annotation Processor (Annotation Processor),org.sw4j.tool.annotation.jpa.processor,EntityProcessor,17,108,2,10,1,23,2,8,0,4
