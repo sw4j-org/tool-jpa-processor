@@ -30,15 +30,12 @@ import javax.xml.bind.annotation.XmlAttribute;
 public class Attribute {
 
     /** The name of the attribute. */
-    @XmlAttribute(name = "name")
     private final String name;
 
     /** Flag to indicate this attribute as Id. */
-    @XmlAttribute(name = "isId")
     private final boolean isId;
 
     /** The Java datatype of this attribute. */
-    @XmlAttribute(name = "dataType")
     private final String dataType;
 
     /**
@@ -60,6 +57,7 @@ public class Attribute {
      * @return the name.
      */
     @Nonnull
+    @XmlAttribute(name = "name")
     public String getName() {
         return this.name;
     }
@@ -69,6 +67,7 @@ public class Attribute {
      *
      * @return {@code true} if this attribute is an Id.
      */
+    @XmlAttribute(name = "isId")
     public boolean isId() {
         return this.isId;
     }
@@ -78,6 +77,8 @@ public class Attribute {
      *
      * @return the data type of this attribute.
      */
+    @Nonnull
+    @XmlAttribute(name = "dataType")
     public String getDataType() {
         return this.dataType;
     }

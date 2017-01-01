@@ -34,7 +34,7 @@ public class NoIdEntityIT extends ITSuperclass {
     }
 
     @Test
-    public void testNamedEntityName() throws XPathExpressionException {
+    public void testEntityName() throws XPathExpressionException {
         Node entity = getNode("/model/entity[@name=\"NoIdEntity\"]");
 
         Assert.assertNotNull(entity, "Expected an entity with name \"NoIdEntity\" to exist.");
@@ -44,6 +44,20 @@ public class NoIdEntityIT extends ITSuperclass {
         Assert.assertEquals(getAttribute("className", entity).getNodeValue(),
                 "org.sw4j.tool.annotation.jpa.entity.NoIdEntity",
                 "Expected the class name to be \"org.sw4j.tool.annotation.jpa.entity.NoIdEntity\"");
+    }
+
+    @Test
+    public void testEntityTable() throws XPathExpressionException {
+        Node table = getNode("/model/entity[@name='NoIdEntity']/table[@name='NoIdEntity']");
+
+        Assert.assertNotNull(table, "Expected a table with name \"NoIdEntity\" to exist.");
+        Assert.assertEquals(table.getNodeType(), Node.ELEMENT_NODE, "Expected an element.");
+        Assert.assertEquals(getAttribute("name", table).getNodeValue(),
+                "NoIdEntity", "Expected the table name to be \"NoIdEntity\"");
+        Assert.assertEquals(getAttribute("catalog", table).getNodeValue(), "",
+                "Expected the catalog name to be \"\" (empty).");
+        Assert.assertEquals(getAttribute("schema", table).getNodeValue(), "",
+                "Expected the schema name to be \"\" (empty).");
     }
 
 }

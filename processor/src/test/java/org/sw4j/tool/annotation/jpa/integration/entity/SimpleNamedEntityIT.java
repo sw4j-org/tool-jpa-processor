@@ -34,7 +34,7 @@ public class SimpleNamedEntityIT extends ITSuperclass {
     }
 
     @Test
-    public void testNamedEntityName() throws XPathExpressionException {
+    public void testEntityName() throws XPathExpressionException {
         Node entity = getNode("/model/entity[@name=\"NamedEntity\"]");
 
         Assert.assertNotNull(entity, "Expected an entity with name \"NamedEntity\" to exist.");
@@ -47,7 +47,21 @@ public class SimpleNamedEntityIT extends ITSuperclass {
     }
 
     @Test
-    public void testNamedEntityId() throws XPathExpressionException {
+    public void testEntityTable() throws XPathExpressionException {
+        Node table = getNode("/model/entity[@name='NamedEntity']/table[@name='NamedEntity']");
+
+        Assert.assertNotNull(table, "Expected a table with name \"NamedEntity\" to exist.");
+        Assert.assertEquals(table.getNodeType(), Node.ELEMENT_NODE, "Expected an element.");
+        Assert.assertEquals(getAttribute("name", table).getNodeValue(),
+                "NamedEntity", "Expected the entity name to be \"NamedEntity\"");
+        Assert.assertEquals(getAttribute("catalog", table).getNodeValue(), "",
+                "Expected the catalog name to be \"\" (empty).");
+        Assert.assertEquals(getAttribute("schema", table).getNodeValue(), "",
+                "Expected the schema name to be \"\" (empty).");
+    }
+
+    @Test
+    public void testEntityId() throws XPathExpressionException {
         Node attributeId = getNode("/model/entity[@name=\"NamedEntity\"]/attribute[@name=\"id\"]");
 
         Assert.assertNotNull(attributeId, "Expected the entity with name \"NamedEntity\" to have an attribute " +

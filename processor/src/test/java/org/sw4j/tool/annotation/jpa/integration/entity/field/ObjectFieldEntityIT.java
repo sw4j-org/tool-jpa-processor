@@ -34,8 +34,8 @@ public class ObjectFieldEntityIT extends ITSuperclass {
     }
 
     @Test
-    public void testSimpleEntity() throws XPathExpressionException {
-        Node entity = getNode("/model/entity[@name=\"ObjectFieldEntity\"]");
+    public void testEntityName() throws XPathExpressionException {
+        Node entity = getNode("/model/entity[@name='ObjectFieldEntity']");
 
         Assert.assertNotNull(entity, "Expected an entity with name \"ObjectFieldEntity\" to exist.");
         Assert.assertEquals(entity.getNodeType(), Node.ELEMENT_NODE, "Expected an element.");
@@ -47,8 +47,22 @@ public class ObjectFieldEntityIT extends ITSuperclass {
     }
 
     @Test
-    public void testSimpleEntityId() throws XPathExpressionException {
-        Node attributeId = getNode("/model/entity[@name=\"ObjectFieldEntity\"]/attribute[@name=\"id\"]");
+    public void testEntityTable() throws XPathExpressionException {
+        Node entity = getNode("/model/entity[@name='ObjectFieldEntity']/table[@name='ObjectFieldEntity']");
+
+        Assert.assertNotNull(entity, "Expected a table with name \"ObjectFieldEntity\" to exist.");
+        Assert.assertEquals(entity.getNodeType(), Node.ELEMENT_NODE, "Expected an element.");
+        Assert.assertEquals(getAttribute("name", entity).getNodeValue(), "ObjectFieldEntity",
+                "Expected the table name to be \"ObjectFieldEntity\"");
+        Assert.assertEquals(getAttribute("catalog", entity).getNodeValue(), "",
+                "Expected the catalog name to be \"\" (empty).");
+        Assert.assertEquals(getAttribute("schema", entity).getNodeValue(), "",
+                "Expected the schema name to be \"\" (empty).");
+    }
+
+    @Test
+    public void testEntityId() throws XPathExpressionException {
+        Node attributeId = getNode("/model/entity[@name='ObjectFieldEntity']/attribute[@name='id']");
 
         Assert.assertNotNull(attributeId, "Expected the entity with name \"ObjectFieldEntity\" to have an attribute " +
                 "with name \"id\" to exist.");
@@ -62,8 +76,8 @@ public class ObjectFieldEntityIT extends ITSuperclass {
     }
 
     @Test
-    public void testSimpleEntityValue() throws XPathExpressionException {
-        Node attributeId = getNode("/model/entity[@name=\"ObjectFieldEntity\"]/attribute[@name=\"value\"]");
+    public void testEntityValue() throws XPathExpressionException {
+        Node attributeId = getNode("/model/entity[@name='ObjectFieldEntity']/attribute[@name='value']");
 
         Assert.assertNotNull(attributeId, "Expected the entity with name \"ObjectFieldEntity\" to have an attribute " +
                 "with name \"value\" to exist.");

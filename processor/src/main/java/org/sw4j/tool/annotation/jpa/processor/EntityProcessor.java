@@ -25,6 +25,7 @@ import javax.lang.model.element.TypeElement;
 import javax.tools.Diagnostic;
 import org.sw4j.tool.annotation.jpa.generator.model.Entity;
 import org.sw4j.tool.annotation.jpa.generator.model.Model;
+import org.sw4j.tool.annotation.jpa.generator.model.Table;
 
 /**
  * This is a processor to handle classes with an @Entity annotation.
@@ -90,12 +91,33 @@ public class EntityProcessor {
             // This is a top level class therefore we can continue.
             TypeElement typeElement = (TypeElement)element;
             String className = typeElement.getQualifiedName().toString();
-            Entity entity;
+            String entityName;
             if ("".equals(entityAnnotation.name())) {
-                entity = new Entity(element.getSimpleName().toString(), className);
+                entityName = element.getSimpleName().toString();
             } else {
-                entity = new Entity(entityAnnotation.name(), className);
+                entityName = entityAnnotation.name();
             }
+            Entity entity = new Entity(entityName, className);
+
+            javax.persistence.Table tableAnnotation = element.getAnnotation(javax.persistence.Table.class);
+            String tableName;
+            String catalogName;
+            String schemaName;
+            if (tableAnnotation != null) {
+                tableName = tableAnnotation.name();
+                catalogName = tableAnnotation.catalog();
+                schemaName = tableAnnotation.schema();
+                if ("".equals(tableName)) {
+                    tableName = entityName;
+                }
+            } else {
+                tableName = entityName;
+                catalogName = "";
+                schemaName = "";
+            }
+            Table table = new Table(tableName, catalogName, schemaName, entity);
+            entity.addTable(table);
+
             model.addEntity(entity);
 
             this.attributeProcessor.process(entity, element.getEnclosedElements());

@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.sw4j.tool.annotation.jpa.integration.entity.property;
+package org.sw4j.tool.annotation.jpa.integration.entity.table;
 
 import javax.xml.xpath.XPathExpressionException;
 import org.sw4j.tool.annotation.jpa.integration.util.ITSuperclass;
@@ -27,33 +27,33 @@ import org.w3c.dom.Node;
  *
  * @author Uwe Plonus
  */
-public class PropertyOnlyEntityIT extends ITSuperclass {
+public class EntityWithEmptyTableIT extends ITSuperclass {
 
     /** Default constructor. */
-    public PropertyOnlyEntityIT() {
+    public EntityWithEmptyTableIT() {
     }
 
     @Test
     public void testEntityName() throws XPathExpressionException {
-        Node entity = getNode("/model/entity[@name='PropertyOnlyEntity']");
+        Node entity = getNode("/model/entity[@name='EntityWithEmptyTable']");
 
-        Assert.assertNotNull(entity, "Expected an entity with name \"PropertyOnlyEntity\" to exist.");
+        Assert.assertNotNull(entity, "Expected an entity with name \"EntityWithEmptyTable\" to exist.");
         Assert.assertEquals(entity.getNodeType(), Node.ELEMENT_NODE, "Expected an element.");
-        Assert.assertEquals(getAttribute("name", entity).getNodeValue(), "PropertyOnlyEntity",
-                "Expected the entity name to be \"PropertyOnlyEntity\"");
+        Assert.assertEquals(getAttribute("name", entity).getNodeValue(), "EntityWithEmptyTable",
+                "Expected the entity name to be \"EntityWithEmptyTable\"");
         Assert.assertEquals(getAttribute("className", entity).getNodeValue(),
-                "org.sw4j.tool.annotation.jpa.entity.properties.PropertyOnlyEntity",
-                "Expected the class name to be \"org.sw4j.tool.annotation.jpa.entity.properties.PropertyOnlyEntity\"");
+                "org.sw4j.tool.annotation.jpa.entity.table.EntityWithEmptyTable",
+                "Expected the class name to be \"org.sw4j.tool.annotation.jpa.entity.table.EntityWithEmptyTable\"");
     }
 
     @Test
     public void testEntityTable() throws XPathExpressionException {
-        Node table = getNode("/model/entity[@name='PropertyOnlyEntity']/table[@name='PropertyOnlyEntity']");
+        Node table = getNode("/model/entity[@name='EntityWithEmptyTable']/table[@name='EntityWithEmptyTable']");
 
-        Assert.assertNotNull(table, "Expected a table with name \"PropertyOnlyEntity\" to exist.");
+        Assert.assertNotNull(table, "Expected a table with name \"EntityWithEmptyTable\" to exist.");
         Assert.assertEquals(table.getNodeType(), Node.ELEMENT_NODE, "Expected an element.");
-        Assert.assertEquals(getAttribute("name", table).getNodeValue(), "PropertyOnlyEntity",
-                "Expected the table name to be \"PropertyOnlyEntity\"");
+        Assert.assertEquals(getAttribute("name", table).getNodeValue(), "EntityWithEmptyTable",
+                "Expected the table name to be \"EntityWithEmptyTable\"");
         Assert.assertEquals(getAttribute("catalog", table).getNodeValue(), "",
                 "Expected the catalog name to be \"\" (empty).");
         Assert.assertEquals(getAttribute("schema", table).getNodeValue(), "",
@@ -62,17 +62,17 @@ public class PropertyOnlyEntityIT extends ITSuperclass {
 
     @Test
     public void testEntityId() throws XPathExpressionException {
-        Node attributeId = getNode("/model/entity[@name='PropertyOnlyEntity']/attribute[@name='id']");
+        Node attributeId = getNode("/model/entity[@name='EntityWithEmptyTable']/attribute[@name='id']");
 
-        Assert.assertNotNull(attributeId, "Expected the entity with name \"PropertyOnlyEntity\" to have an " +
+        Assert.assertNotNull(attributeId, "Expected the entity with name \"EntityWithEmptyTable\" to have an " +
                 "attribute with name \"id\" to exist.");
         Assert.assertEquals(attributeId.getNodeType(), Node.ELEMENT_NODE, "Expected an element.");
         Assert.assertEquals(getAttribute("name", attributeId).getNodeValue(), "id",
-                "Expected the entity with name \"PropertyOnlyEntity\" to have an attribute with the name \"id\".");
+                "Expected the entity with name \"EntityWithEmptyTable\" to have an attribute with the name \"id\".");
         Assert.assertEquals(getAttribute("isId", attributeId).getNodeValue(), "true",
-                "Expected the entity with name \"PropertyOnlyEntity\" to have an attribute \"isId\" set to true.");
+                "Expected the entity with name \"EntityWithEmptyTable\" to have an attribute \"isId\" set to true.");
         Assert.assertEquals(getAttribute("dataType", attributeId).getNodeValue(), "int",
-                "Expected the entity with name \"PropertyOnlyEntity\" to have an attribute with the dataType \"int\".");
+                "Expected the entity with name \"EntityWithEmptyTable\" to have an attribute with the dataType \"int\".");
     }
 
 }

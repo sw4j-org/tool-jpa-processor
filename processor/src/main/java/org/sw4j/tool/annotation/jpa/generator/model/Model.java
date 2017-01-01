@@ -40,7 +40,6 @@ import javax.xml.bind.annotation.XmlType;
 public class Model {
 
     /** The entities of the model. */
-    @XmlElement(name = "entity")
     private final List<Entity> entities;
 
     /**
@@ -64,6 +63,7 @@ public class Model {
      *
      * @return a list containing all elements of the model.
      */
+    @XmlElement(name = "entity")
     public List<Entity> getEntities() {
         return Collections.unmodifiableList(entities);
     }
