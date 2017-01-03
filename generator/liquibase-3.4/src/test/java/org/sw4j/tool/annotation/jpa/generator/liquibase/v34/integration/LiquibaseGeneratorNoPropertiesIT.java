@@ -16,7 +16,6 @@
  */
 package org.sw4j.tool.annotation.jpa.generator.liquibase.v34.integration;
 
-import java.io.FileInputStream;
 import java.util.Properties;
 import org.sw4j.tool.annotation.jpa.test.util.ITUtil;
 import org.testng.annotations.AfterSuite;

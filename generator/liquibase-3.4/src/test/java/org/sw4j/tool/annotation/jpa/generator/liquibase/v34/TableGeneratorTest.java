@@ -22,6 +22,7 @@ import org.sw4j.tool.annotation.jpa.generator.liquibase.v34.jaxb.DatabaseChangeL
 import org.sw4j.tool.annotation.jpa.generator.liquibase.v34.jaxb.ObjectFactory;
 import org.sw4j.tool.annotation.jpa.generator.model.Attribute;
 import org.sw4j.tool.annotation.jpa.generator.model.Entity;
+import org.sw4j.tool.annotation.jpa.generator.model.Table;
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -45,6 +46,8 @@ public class TableGeneratorTest extends AbstractUnitTest {
     @Test
     public void testProcessEmptyEntity() throws Exception {
         Entity entity = new Entity("SimpleEntity", "org.sw4j.tool.annotation.jpa.entity.SimpleEntity");
+        Table table = new Table("SimpleEntity", "", "", entity);
+        entity.addTable(table);
         ChangeSet changeSet = objectFactory.createDatabaseChangeLogChangeSet();
 
         this.unitUnderTest.handleEntity(changeSet, entity);
@@ -60,6 +63,8 @@ public class TableGeneratorTest extends AbstractUnitTest {
     @Test
     public void testProcessEntityWithAttribute() throws Exception {
         Entity entity = new Entity("SimpleEntity", "org.sw4j.tool.annotation.jpa.entity.SimpleEntity");
+        Table table = new Table("SimpleEntity", "", "", entity);
+        entity.addTable(table);
         Attribute attribute = new Attribute("attr", false, "int");
         entity.addAttribute(attribute);
         ChangeSet changeSet = objectFactory.createDatabaseChangeLogChangeSet();

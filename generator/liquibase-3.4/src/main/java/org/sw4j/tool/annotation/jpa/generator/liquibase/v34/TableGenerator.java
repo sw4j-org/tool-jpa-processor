@@ -22,6 +22,7 @@ import org.sw4j.tool.annotation.jpa.generator.liquibase.v34.jaxb.DatabaseChangeL
 import org.sw4j.tool.annotation.jpa.generator.liquibase.v34.jaxb.ObjectFactory;
 import org.sw4j.tool.annotation.jpa.generator.model.Attribute;
 import org.sw4j.tool.annotation.jpa.generator.model.Entity;
+import org.sw4j.tool.annotation.jpa.generator.model.Table;
 
 /**
  * This is a generator that handles entities and creates the tables needed for it.
@@ -45,16 +46,26 @@ public class TableGenerator {
     /**
      * Handle a single entity and append a changeSet to the databaseChangeLog to create the table for the entity.
      *
+     * <p>At the moment this generator can only handle entities with a single table.</p>
+     *
      * @param changeSet the changelog the changeset should be appended to.
      * @param entity the entity to process.
      */
     public void handleEntity(@Nonnull final ChangeSet changeSet, @Nonnull final Entity entity) {
         String entityName = entity.getName();
         CreateTable createTable = OBJECT_FACTORY.createCreateTable();
-        createTable.setTableName(entityName);
-        changeSet.getChangeSetChildren().add(createTable);
-        for (Attribute attribute: entity.getAttributes()) {
-            COLUMN_GENERATOR.handleAttribute(createTable, attribute);
+        for (Table table: entity.getTables()) {
+            createTable.setTableName(table.getName());
+            if (!"".equals(table.getCatalog())) {
+                createTable.setCatalogName(table.getCatalog());
+            }
+            if (!"".equals(table.getSchema())) {
+                createTable.setSchemaName(table.getSchema());
+            }
+            changeSet.getChangeSetChildren().add(createTable);
+            for (Attribute attribute: entity.getAttributes()) {
+                COLUMN_GENERATOR.handleAttribute(createTable, attribute);
+            }
         }
     }
 
