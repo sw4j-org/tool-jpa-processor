@@ -61,6 +61,57 @@ public class TableGeneratorTest extends AbstractUnitTest {
     }
 
     @Test
+    public void testProcessEmptyEntityWithTableName() throws Exception {
+        Entity entity = new Entity("SimpleEntity", "org.sw4j.tool.annotation.jpa.entity.SimpleEntity");
+        Table table = new Table("TAB_SIMPLE", "", "", entity);
+        entity.addTable(table);
+        ChangeSet changeSet = objectFactory.createDatabaseChangeLogChangeSet();
+
+        this.unitUnderTest.handleEntity(changeSet, entity);
+
+        Assert.assertEquals(changeSet.getChangeSetChildren().size(), 1, "Expected the changeSet to have one element.");
+        Assert.assertEquals(changeSet.getChangeSetChildren().get(0).getClass(), CreateTable.class,
+                "Expected the element of the changeSet to be a createTable.");
+        CreateTable createTable = (CreateTable)changeSet.getChangeSetChildren().get(0);
+        Assert.assertEquals(createTable.getTableName(), "TAB_SIMPLE",
+                "Expected the tableName of the createTable to be \"TAB_SIMPLE\".");
+    }
+
+    @Test
+    public void testProcessEmptyEntityWithCatalogName() throws Exception {
+        Entity entity = new Entity("SimpleEntity", "org.sw4j.tool.annotation.jpa.entity.SimpleEntity");
+        Table table = new Table("SimpleEntity", "CATALOG", "", entity);
+        entity.addTable(table);
+        ChangeSet changeSet = objectFactory.createDatabaseChangeLogChangeSet();
+
+        this.unitUnderTest.handleEntity(changeSet, entity);
+
+        Assert.assertEquals(changeSet.getChangeSetChildren().size(), 1, "Expected the changeSet to have one element.");
+        Assert.assertEquals(changeSet.getChangeSetChildren().get(0).getClass(), CreateTable.class,
+                "Expected the element of the changeSet to be a createTable.");
+        CreateTable createTable = (CreateTable)changeSet.getChangeSetChildren().get(0);
+        Assert.assertEquals(createTable.getCatalogName(), "CATALOG",
+                "Expected the catalogName of the createTable to be \"CATALOG\".");
+    }
+
+    @Test
+    public void testProcessEmptyEntityWithSchemaName() throws Exception {
+        Entity entity = new Entity("SimpleEntity", "org.sw4j.tool.annotation.jpa.entity.SimpleEntity");
+        Table table = new Table("SimpleEntity", "", "SCHEMA", entity);
+        entity.addTable(table);
+        ChangeSet changeSet = objectFactory.createDatabaseChangeLogChangeSet();
+
+        this.unitUnderTest.handleEntity(changeSet, entity);
+
+        Assert.assertEquals(changeSet.getChangeSetChildren().size(), 1, "Expected the changeSet to have one element.");
+        Assert.assertEquals(changeSet.getChangeSetChildren().get(0).getClass(), CreateTable.class,
+                "Expected the element of the changeSet to be a createTable.");
+        CreateTable createTable = (CreateTable)changeSet.getChangeSetChildren().get(0);
+        Assert.assertEquals(createTable.getSchemaName(), "SCHEMA",
+                "Expected the schemaName of the createTable to be \"SCHEMA\".");
+    }
+
+    @Test
     public void testProcessEntityWithAttribute() throws Exception {
         Entity entity = new Entity("SimpleEntity", "org.sw4j.tool.annotation.jpa.entity.SimpleEntity");
         Table table = new Table("SimpleEntity", "", "", entity);
