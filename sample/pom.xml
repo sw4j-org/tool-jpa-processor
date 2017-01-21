@@ -4,20 +4,40 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <parent>
+  <!--<parent>
     <groupId>org.sw4j.tool.annotation.jpa</groupId>
     <artifactId>aggregator</artifactId>
     <version>0.1.0-SNAPSHOT</version>
-  </parent>
+  </parent>-->
 
+  <groupId>org.sw4j.tool.annotation.jpa</groupId>
   <artifactId>sample</artifactId>
-  <packaging>jar</packaging>
+  <version>0.1.0-SNAPSHOT</version>
+  <packaging>pom</packaging>
 
-  <name>JPA Annotation Processor (Sample)</name>
-  <description>This is a sample application for the JPA annotation processor.</description>
+  <name>JPA Annotation Processor (Samples)</name>
+  <description>This are sample applications for the JPA annotation processor.</description>
+
+  <modules>
+    <module>liquibase-3.4</module>
+  </modules>
 
   <properties>
+    <!-- General properties -->
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    <maven.compiler.source>1.7</maven.compiler.source>
+    <maven.compiler.target>1.7</maven.compiler.target>
+
+    <!-- Netbeans Hints -->
     <netbeans.hint.license>gpl30</netbeans.hint.license>
+
+    <!-- Dependency versions -->
+    <derby.version>10.12.1.1</derby.version>
+    <eclipselink.version>2.6.4</eclipselink.version>
+    <javax.persistence.version>2.1.1</javax.persistence.version>
+    <!--<spring.version>4.3.5.RELEASE</spring.version>-->
+    <testng.version>6.9.13.6</testng.version>
   </properties>
 
   <dependencies>
@@ -27,13 +47,52 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
+      <groupId>org.eclipse.persistence</groupId>
+      <artifactId>eclipselink</artifactId>
+    </dependency>
+    <!--<dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-test</artifactId>
+      <scope>test</scope>
+    </dependency>-->
+    <dependency>
       <groupId>org.testng</groupId>
       <artifactId>testng</artifactId>
       <scope>test</scope>
     </dependency>
   </dependencies>
 
-  <build>
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.eclipse.persistence</groupId>
+        <artifactId>eclipselink</artifactId>
+        <version>${eclipselink.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.eclipse.persistence</groupId>
+        <artifactId>javax.persistence</artifactId>
+        <version>${javax.persistence.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.derby</groupId>
+        <artifactId>derby</artifactId>
+        <version>${derby.version}</version>
+      </dependency>
+      <!--<dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-test</artifactId>
+        <version>${spring.version}</version>
+      </dependency>-->
+      <dependency>
+        <groupId>org.testng</groupId>
+        <artifactId>testng</artifactId>
+        <version>${testng.version}</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+  <!--<build>
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -49,6 +108,6 @@
         </configuration>
       </plugin>
     </plugins>
-  </build>
+  </build>-->
 
 </project>

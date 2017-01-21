@@ -127,11 +127,13 @@ public class AnnotationProcessorTest {
 
         this.unitUnderTest.process(this.handledAnnotations, roundEnv);
 
-        Assert.assertEquals(this.messager.getMessages().size(), 2, "Expected two message to be created.");
+        Assert.assertEquals(this.messager.getMessages().size(), 3, "Expected two message to be created.");
         Assert.assertEquals(this.messager.getMessages().get(0).getKind(), Diagnostic.Kind.NOTE,
                 "Expected a message with level NOTE to be created.");
-        Assert.assertEquals(this.messager.getMessages().get(1).getKind(), Diagnostic.Kind.WARNING,
-                "Expected a message with level ERROR to be created.");
+        Assert.assertEquals(this.messager.getMessages().get(1).getKind(), Diagnostic.Kind.NOTE,
+                "Expected a message with level NOTE to be created.");
+        Assert.assertEquals(this.messager.getMessages().get(2).getKind(), Diagnostic.Kind.WARNING,
+                "Expected a message with level WARNING to be created.");
     }
 
     @Test

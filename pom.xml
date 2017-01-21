@@ -30,10 +30,10 @@
     <netbeans.hint.license>gpl30</netbeans.hint.license>
 
     <!-- Dependency versions -->
-    <eclipse.persistence.version>2.6.2</eclipse.persistence.version>
+    <!--<eclipselink.version>2.6.4</eclipselink.version>-->
     <findbugs.annotations.version>3.0.1</findbugs.annotations.version>
     <findbugs.jsr305.version>3.0.1</findbugs.jsr305.version>
-    <hibernate.jpa.version>1.0.0.Final</hibernate.jpa.version>
+    <!--<hibernate.jpa.version>1.0.0.Final</hibernate.jpa.version>-->
     <javax.persistence.version>2.1.1</javax.persistence.version>
     <testng.version>6.9.13.6</testng.version>
 

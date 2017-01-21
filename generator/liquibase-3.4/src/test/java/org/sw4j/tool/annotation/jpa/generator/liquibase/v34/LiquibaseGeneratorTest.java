@@ -23,8 +23,6 @@ import java.util.Map;
 import java.util.Properties;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.tools.Diagnostic;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import org.sw4j.tool.annotation.jpa.generator.model.Entity;
 import org.sw4j.tool.annotation.jpa.generator.model.Model;
 import org.sw4j.tool.annotation.jpa.test.mock.annotation.processing.MessagerMock;
@@ -33,8 +31,6 @@ import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.w3c.dom.Document;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 /**
@@ -95,7 +91,10 @@ public class LiquibaseGeneratorTest extends AbstractUnitTest {
 
         this.unitUnderTest.process(model, processingEnv);
 
-        Assert.assertTrue(this.messager.getMessages().isEmpty(), "Expected no message to be created.");
+        Assert.assertEquals(this.messager.getMessages().size(), 1, "Expected one message to be created.");
+        Assert.assertEquals(this.messager.getMessages().get(0).getKind(), Diagnostic.Kind.NOTE,
+                "Expected a message of kind NOTE.");
+
     }
 
     @Test

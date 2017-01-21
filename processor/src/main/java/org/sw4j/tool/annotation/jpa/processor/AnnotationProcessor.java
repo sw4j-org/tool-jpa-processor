@@ -167,7 +167,8 @@ public class AnnotationProcessor extends AbstractProcessor {
      */
     @Nonnull
     private ServiceLoader<GeneratorService> setupGenerators(@Nonnull final Map<String, Properties> properties) {
-        ServiceLoader<GeneratorService> generatorServiceLoader = ServiceLoader.load(GeneratorService.class);
+        ServiceLoader<GeneratorService> generatorServiceLoader = ServiceLoader.load(GeneratorService.class,
+                this.getClass().getClassLoader());
         Iterator<GeneratorService> generators = generatorServiceLoader.iterator();
         while (generators.hasNext()) {
             GeneratorService generator = generators.next();

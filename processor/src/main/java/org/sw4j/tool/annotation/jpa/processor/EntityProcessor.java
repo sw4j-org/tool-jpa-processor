@@ -81,6 +81,9 @@ public class EntityProcessor {
      */
     private void process(@Nonnull final Element element, @Nonnull final Model model) {
         javax.persistence.Entity entityAnnotation = element.getAnnotation(javax.persistence.Entity.class);
+        this.processingEnv.getMessager().printMessage(Diagnostic.Kind.NOTE,
+                new StringBuilder("Processing class \"").append(element.getSimpleName())
+                        .append("\".").toString(), element);
         if (entityAnnotation == null) {
             this.processingEnv.getMessager().printMessage(Diagnostic.Kind.WARNING,
                     new StringBuilder("The processed class \"").append(element.getSimpleName())

@@ -80,8 +80,10 @@ public class EntityProcessorTest {
 
         this.unitUnderTest.process(testElements, testModel);
 
-        Assert.assertEquals(this.messager.getMessages().size(), 1, "Expected one message to be created.");
-        Assert.assertEquals(this.messager.getMessages().get(0).getKind(), Diagnostic.Kind.WARNING,
+        Assert.assertEquals(this.messager.getMessages().size(), 2, "Expected one message to be created.");
+        Assert.assertEquals(this.messager.getMessages().get(0).getKind(), Diagnostic.Kind.NOTE,
+                "Expected a message with level NOTE to be created.");
+        Assert.assertEquals(this.messager.getMessages().get(1).getKind(), Diagnostic.Kind.WARNING,
                 "Expected a message with level WARNING to be created.");
     }
 
@@ -99,8 +101,10 @@ public class EntityProcessorTest {
 
         this.unitUnderTest.process(testElements, testModel);
 
-        Assert.assertEquals(this.messager.getMessages().size(), 1, "Expected one message to be created.");
-        Assert.assertEquals(this.messager.getMessages().get(0).getKind(), Diagnostic.Kind.WARNING,
+        Assert.assertEquals(this.messager.getMessages().size(), 2, "Expected one message to be created.");
+        Assert.assertEquals(this.messager.getMessages().get(0).getKind(), Diagnostic.Kind.NOTE,
+                "Expected a message with level NOTE to be created.");
+        Assert.assertEquals(this.messager.getMessages().get(1).getKind(), Diagnostic.Kind.WARNING,
                 "Expected a message with level WARNING to be created.");
     }
 
@@ -124,8 +128,10 @@ public class EntityProcessorTest {
 
         this.unitUnderTest.process(testElements, testModel);
 
-        Assert.assertEquals(this.messager.getMessages().size(), 1, "Expected one message to be created.");
-        Assert.assertEquals(this.messager.getMessages().get(0).getKind(), Diagnostic.Kind.WARNING,
+        Assert.assertEquals(this.messager.getMessages().size(), 2, "Expected one message to be created.");
+        Assert.assertEquals(this.messager.getMessages().get(0).getKind(), Diagnostic.Kind.NOTE,
+                "Expected a message with level NOTE to be created.");
+        Assert.assertEquals(this.messager.getMessages().get(1).getKind(), Diagnostic.Kind.WARNING,
                 "Expected a message with level WARNING to be created.");
     }
 

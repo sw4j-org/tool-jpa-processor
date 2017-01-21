@@ -231,6 +231,8 @@ public class ITUtil {
     public Element getRootElement() {
         Element root = resultDocument.getDocumentElement();
         visitedNodes.add(root);
+        getAttribute("xmlns:xsi", root);
+        getAttribute("xsi:schemaLocation", root);
         return root;
     }
 
@@ -257,7 +259,9 @@ public class ITUtil {
      */
     public Node getAttribute(String name, Node node) {
         Node attribute = node.getAttributes().getNamedItem(name);
-        visitedNodes.add(attribute);
+        if (attribute != null) {
+            visitedNodes.add(attribute);
+        }
         return attribute;
     }
 

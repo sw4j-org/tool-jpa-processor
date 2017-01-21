@@ -23,6 +23,9 @@ import javax.annotation.Nonnull;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.tools.Diagnostic;
 import javax.xml.bind.JAXB;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
 import org.sw4j.tool.annotation.jpa.generator.GeneratorService;
 import org.sw4j.tool.annotation.jpa.generator.liquibase.v34.jaxb.DatabaseChangeLog;
 import org.sw4j.tool.annotation.jpa.generator.liquibase.v34.jaxb.ObjectFactory;
@@ -99,8 +102,8 @@ public class LiquibaseGenerator implements GeneratorService {
     @Override
     public void process(@Nonnull final Model model, @Nonnull final ProcessingEnvironment processingEnv)
             throws IOException {
+        processingEnv.getMessager().printMessage(Diagnostic.Kind.NOTE, "Started Liquibase 3.4 generator");
         if (canProcess()) {
-            processingEnv.getMessager().printMessage(Diagnostic.Kind.NOTE, "Started Liquibase 3.4 generator");
             ObjectFactory of = new ObjectFactory();
             DatabaseChangeLog changeLog = of.createDatabaseChangeLog();
 
@@ -108,8 +111,19 @@ public class LiquibaseGenerator implements GeneratorService {
                 this.changesetGenerator.handleEntity(changeLog, entity);
             }
 
+            System.err.println("Writing " + fullChangelogFile.getAbsolutePath());
             fullChangelogFile.getParentFile().mkdirs();
-            JAXB.marshal(changeLog, fullChangelogFile);
+
+            try {
+                JAXBContext jaxbContext = JAXBContext.newInstance(
+                        "org.sw4j.tool.annotation.jpa.generator.liquibase.v34.jaxb", this.getClass().getClassLoader());
+                Marshaller marshaller = jaxbContext.createMarshaller();
+                marshaller.setProperty(Marshaller.JAXB_SCHEMA_LOCATION, "http://www.liquibase.org/xml/ns/dbchangelog " +
+                        "http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd");
+                marshaller.marshal(changeLog, fullChangelogFile);
+            } catch (JAXBException jex) {
+                throw new IOException(jex);
+            }
         }
     }
 

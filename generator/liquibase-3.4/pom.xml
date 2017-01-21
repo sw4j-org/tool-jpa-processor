@@ -41,7 +41,6 @@
               <goal>testCompile</goal>
             </goals>
             <configuration>
-              <!--<fork>true</fork>-->
               <annotationProcessorPaths>
                 <path>
                   <groupId>org.sw4j.tool.annotation.jpa</groupId>
@@ -55,18 +54,32 @@
                 </path>
               </annotationProcessorPaths>
               <compilerArgs>
-                <arg>-Atool.jpa.properties=src/test/resources/test.properties</arg>
-                <arg>-XprintProcessorInfo</arg>
-                <arg>-XprintRounds</arg>
-                <!--<arg>-J-Xdebug</arg>
-                <arg>-J-Xrunjdwp:transport=dt_socket,server=n,suspend=y,address=9001</arg>-->
+                <arg>-Atool.jpa.properties=${basedir}/src/test/resources/test.properties</arg>
               </compilerArgs>
-              <verbose>true</verbose>
-              <showWarnings>true</showWarnings>
             </configuration>
           </execution>
         </executions>
       </plugin>
+      <!--<plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-shade-plugin</artifactId>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>shade</goal>
+            </goals>
+            <configuration>
+              <artifactSet>
+                <includes>
+                  <include>org.sw4j.tool.annotation.jpa:processor</include>
+                  <include>org.sw4j.tool.annotation.jpa.generator:liquibase-common</include>
+                </includes>
+              </artifactSet>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>-->
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>jaxb2-maven-plugin</artifactId>
