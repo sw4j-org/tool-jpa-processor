@@ -29,26 +29,29 @@ import javax.xml.bind.annotation.XmlType;
 /**
  * This class represents an entity. Via the entity you can access the attributes and tables assigned to the entity.
  *
+ * <p>Each entity must have at least one table and one attribute.</p>
+ *
  * @author Uwe Plonus
  */
 @XmlAccessorType(XmlAccessType.NONE)
 @XmlType(name = "",
         propOrder = {
+            "tables",
             "attributes",
         })
 public class Entity {
 
     /** The name of the entity. */
-    @XmlAttribute(name = "name", required = true)
     private final String name;
 
     /** The class name of the entity. */
-    @XmlAttribute(name = "className", required = true)
     private final String className;
 
-    /** The entities of the model. */
-    @XmlElement(name = "attribute")
+    /** The attributes of this entity. */
     private List<Attribute> attributes;
+
+    /** The tables of this entity. */
+    private List<Table> tables;
 
     /**
      * Constructor for an entity.
@@ -67,6 +70,7 @@ public class Entity {
      * @return the name.
      */
     @Nonnull
+    @XmlAttribute(name = "name", required = true)
     public String getName() {
         return this.name;
     }
@@ -77,6 +81,7 @@ public class Entity {
      * @return the class name.
      */
     @Nonnull
+    @XmlAttribute(name = "className", required = true)
     public String getClassName() {
         return this.className;
     }
@@ -99,8 +104,32 @@ public class Entity {
      * @return a list containing all attributes of the entity.
      */
     @Nonnull
+    @XmlElement(name = "attribute")
     public synchronized List<Attribute> getAttributes() {
         return this.attributes == null ? Collections.EMPTY_LIST : Collections.unmodifiableList(this.attributes);
+    }
+
+    /**
+     * Adds a table to the entity.
+     *
+     * @param table the table to add.
+     */
+    public synchronized void addTable(@Nonnull final Table table) {
+        if (this.tables == null) {
+            this.tables = new LinkedList<>();
+        }
+        this.tables.add(table);
+    }
+
+    /**
+     * Returns all tables of the entity. The primary table of the entity is always the first table in the returned list.
+     *
+     * @return a list containing all tables of the entity.
+     */
+    @Nonnull
+    @XmlElement(name = "table")
+    public synchronized List<Table> getTables() {
+        return this.tables == null ? Collections.EMPTY_LIST : Collections.unmodifiableList(this.tables);
     }
 
 }

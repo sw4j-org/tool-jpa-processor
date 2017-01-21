@@ -58,37 +58,37 @@ public class PrimitiveFieldEntityIT extends ITSuperclass {
     }
 
     @Test
-    public void testIdColumnElementName() throws XPathExpressionException {
-        Node idColumn = getNode("/databaseChangeLog" +
+    public void testPrimitiveLongColumnElementName() throws XPathExpressionException {
+        Node primitiveLongColumn = getNode("/databaseChangeLog" +
                 "/changeSet[starts-with(@id, 'createTable_PrimitiveFieldEntity')]" +
                 "/createTable[@tableName='PrimitiveFieldEntity']" +
-                "/column[@name='id']");
+                "/column[@name='primitiveLong']");
 
-        Assert.assertNotNull(idColumn, "Expected a column to be created.");
-        Assert.assertNotNull(getAttribute("name", idColumn), "Expected the column to have a name attribute.");
-        Assert.assertEquals(getAttribute("name", idColumn).getNodeValue(), "id",
-                "Expected the name attribute to be \"id\"");
+        Assert.assertNotNull(primitiveLongColumn, "Expected a column to be created.");
+        Assert.assertNotNull(getAttribute("name", primitiveLongColumn), "Expected the column to have a name attribute.");
+        Assert.assertEquals(getAttribute("name", primitiveLongColumn).getNodeValue(), "primitiveLong",
+                "Expected the name attribute to be \"primitiveLong\"");
     }
 
     @Test
-    public void testIdColumnElementType() throws XPathExpressionException {
-        Node idColumn = getNode("/databaseChangeLog" +
+    public void testPrimitiveLongColumnElementType() throws XPathExpressionException {
+        Node primitiveLongColumn = getNode("/databaseChangeLog" +
                 "/changeSet[starts-with(@id, 'createTable_PrimitiveFieldEntity')]" +
                 "/createTable[@tableName='PrimitiveFieldEntity']" +
-                "/column[@name='id']");
+                "/column[@name='primitiveLong']");
 
-        Assert.assertNotNull(idColumn, "Expected a column to be created.");
-        Assert.assertNotNull(getAttribute("type", idColumn), "Expected the column to have a type attribute.");
-        Assert.assertEquals(getAttribute("type", idColumn).getNodeValue(), "java.sql.Types.BIGINT",
+        Assert.assertNotNull(primitiveLongColumn, "Expected a column to be created.");
+        Assert.assertNotNull(getAttribute("type", primitiveLongColumn), "Expected the column to have a type attribute.");
+        Assert.assertEquals(getAttribute("type", primitiveLongColumn).getNodeValue(), "java.sql.Types.BIGINT",
                 "Expected the type attribute to be \"java.sql.Types.BIGINT\"");
     }
 
     @Test
-    public void testIdColumnConstraints() throws XPathExpressionException {
+    public void testPrimitiveLongColumnConstraints() throws XPathExpressionException {
         Node constraints = getNode("/databaseChangeLog" +
                 "/changeSet[starts-with(@id, 'createTable_PrimitiveFieldEntity')]" +
                 "/createTable[@tableName='PrimitiveFieldEntity']" +
-                "/column[@name='id']/constraints");
+                "/column[@name='primitiveLong']/constraints");
 
         Assert.assertNotNull(constraints, "Expected constraints to be created.");
         Assert.assertNotNull(getAttribute("primaryKey", constraints),
@@ -129,6 +129,305 @@ public class PrimitiveFieldEntityIT extends ITSuperclass {
                 "/changeSet[starts-with(@id, 'createTable_PrimitiveFieldEntity')]" +
                 "/createTable[@tableName='PrimitiveFieldEntity']" +
                 "/column[@name='objectLong']/constraints");
+
+        Assert.assertNull(constraints, "Expected no constraints to be created.");
+    }
+
+    @Test
+    public void testPrimitiveIntColumnElementName() throws XPathExpressionException {
+        Node primitiveIntColumn = getNode("/databaseChangeLog" +
+                "/changeSet[starts-with(@id, 'createTable_PrimitiveFieldEntity')]" +
+                "/createTable[@tableName='PrimitiveFieldEntity']" +
+                "/column[@name='primitiveInt']");
+
+        Assert.assertNotNull(primitiveIntColumn, "Expected a column to be created.");
+        Assert.assertNotNull(getAttribute("name", primitiveIntColumn), "Expected the column to have a name attribute.");
+        Assert.assertEquals(getAttribute("name", primitiveIntColumn).getNodeValue(), "primitiveInt",
+                "Expected the name attribute to be \"primitiveInt\"");
+    }
+
+    @Test
+    public void testPrimitiveIntColumnElementType() throws XPathExpressionException {
+        Node primitiveIntColumn = getNode("/databaseChangeLog" +
+                "/changeSet[starts-with(@id, 'createTable_PrimitiveFieldEntity')]" +
+                "/createTable[@tableName='PrimitiveFieldEntity']" +
+                "/column[@name='primitiveInt']");
+
+        Assert.assertNotNull(primitiveIntColumn, "Expected a column to be created.");
+        Assert.assertNotNull(getAttribute("type", primitiveIntColumn), "Expected the column to have a type attribute.");
+        Assert.assertEquals(getAttribute("type", primitiveIntColumn).getNodeValue(), "java.sql.Types.INTEGER",
+                "Expected the type attribute to be \"java.sql.Types.INTEGER\"");
+    }
+
+    @Test
+    public void testPrimitiveIntColumnConstraints() throws XPathExpressionException {
+        Node constraints = getNode("/databaseChangeLog" +
+                "/changeSet[starts-with(@id, 'createTable_PrimitiveFieldEntity')]" +
+                "/createTable[@tableName='PrimitiveFieldEntity']" +
+                "/column[@name='primitiveInt']/constraints");
+
+        Assert.assertNull(constraints, "Expected no constraints to be created.");
+    }
+
+    @Test
+    public void testObjectIntegerColumnElementName() throws XPathExpressionException {
+        Node objectIntegerColumn = getNode("/databaseChangeLog" +
+                "/changeSet[starts-with(@id, 'createTable_PrimitiveFieldEntity')]" +
+                "/createTable[@tableName='PrimitiveFieldEntity']" +
+                "/column[@name='objectInteger']");
+
+        Assert.assertNotNull(objectIntegerColumn, "Expected a column to be created.");
+        Assert.assertNotNull(getAttribute("name", objectIntegerColumn),
+                "Expected the column to have a name attribute.");
+        Assert.assertEquals(getAttribute("name", objectIntegerColumn).getNodeValue(), "objectInteger",
+                "Expected the name attribute to be \"objectInteger\"");
+    }
+
+    @Test
+    public void testObjectIntegerColumnElementType() throws XPathExpressionException {
+        Node objectIntegerColumn = getNode("/databaseChangeLog" +
+                "/changeSet[starts-with(@id, 'createTable_PrimitiveFieldEntity')]" +
+                "/createTable[@tableName='PrimitiveFieldEntity']" +
+                "/column[@name='objectInteger']");
+
+        Assert.assertNotNull(objectIntegerColumn, "Expected a column to be created.");
+        Assert.assertNotNull(getAttribute("type", objectIntegerColumn), "Expected the column to have a type attribute.");
+        Assert.assertEquals(getAttribute("type", objectIntegerColumn).getNodeValue(), "java.sql.Types.INTEGER",
+                "Expected the type attribute to be \"java.sql.Types.INTEGER\"");
+    }
+
+    @Test
+    public void testObjectIntegerColumnConstraints() throws XPathExpressionException {
+        Node constraints = getNode("/databaseChangeLog" +
+                "/changeSet[starts-with(@id, 'createTable_PrimitiveFieldEntity')]" +
+                "/createTable[@tableName='PrimitiveFieldEntity']" +
+                "/column[@name='objectInteger']/constraints");
+
+        Assert.assertNull(constraints, "Expected no constraints to be created.");
+    }
+
+    @Test
+    public void testPrimitiveShortColumnElementName() throws XPathExpressionException {
+        Node primitiveShortColumn = getNode("/databaseChangeLog" +
+                "/changeSet[starts-with(@id, 'createTable_PrimitiveFieldEntity')]" +
+                "/createTable[@tableName='PrimitiveFieldEntity']" +
+                "/column[@name='primitiveShort']");
+
+        Assert.assertNotNull(primitiveShortColumn, "Expected a column to be created.");
+        Assert.assertNotNull(getAttribute("name", primitiveShortColumn),
+                "Expected the column to have a name attribute.");
+        Assert.assertEquals(getAttribute("name", primitiveShortColumn).getNodeValue(), "primitiveShort",
+                "Expected the name attribute to be \"primitiveShort\"");
+    }
+
+    @Test
+    public void testPrimitiveShortColumnElementType() throws XPathExpressionException {
+        Node primitiveShortColumn = getNode("/databaseChangeLog" +
+                "/changeSet[starts-with(@id, 'createTable_PrimitiveFieldEntity')]" +
+                "/createTable[@tableName='PrimitiveFieldEntity']" +
+                "/column[@name='primitiveShort']");
+
+        Assert.assertNotNull(primitiveShortColumn, "Expected a column to be created.");
+        Assert.assertNotNull(getAttribute("type", primitiveShortColumn),
+                "Expected the column to have a type attribute.");
+        Assert.assertEquals(getAttribute("type", primitiveShortColumn).getNodeValue(), "java.sql.Types.SMALLINT",
+                "Expected the type attribute to be \"java.sql.Types.SMALLINT\"");
+    }
+
+    @Test
+    public void testPrimitiveShortColumnConstraints() throws XPathExpressionException {
+        Node constraints = getNode("/databaseChangeLog" +
+                "/changeSet[starts-with(@id, 'createTable_PrimitiveFieldEntity')]" +
+                "/createTable[@tableName='PrimitiveFieldEntity']" +
+                "/column[@name='primitiveShort']/constraints");
+
+        Assert.assertNull(constraints, "Expected no constraints to be created.");
+    }
+
+    @Test
+    public void testObjectShortColumnElementName() throws XPathExpressionException {
+        Node objectShortColumn = getNode("/databaseChangeLog" +
+                "/changeSet[starts-with(@id, 'createTable_PrimitiveFieldEntity')]" +
+                "/createTable[@tableName='PrimitiveFieldEntity']" +
+                "/column[@name='objectShort']");
+
+        Assert.assertNotNull(objectShortColumn, "Expected a column to be created.");
+        Assert.assertNotNull(getAttribute("name", objectShortColumn),
+                "Expected the column to have a name attribute.");
+        Assert.assertEquals(getAttribute("name", objectShortColumn).getNodeValue(), "objectShort",
+                "Expected the name attribute to be \"objectShort\"");
+    }
+
+    @Test
+    public void testObjectShortColumnElementType() throws XPathExpressionException {
+        Node objectShortColumn = getNode("/databaseChangeLog" +
+                "/changeSet[starts-with(@id, 'createTable_PrimitiveFieldEntity')]" +
+                "/createTable[@tableName='PrimitiveFieldEntity']" +
+                "/column[@name='objectShort']");
+
+        Assert.assertNotNull(objectShortColumn, "Expected a column to be created.");
+        Assert.assertNotNull(getAttribute("type", objectShortColumn), "Expected the column to have a type attribute.");
+        Assert.assertEquals(getAttribute("type", objectShortColumn).getNodeValue(), "java.sql.Types.SMALLINT",
+                "Expected the type attribute to be \"java.sql.Types.SMALLINT\"");
+    }
+
+    @Test
+    public void testObjectShortColumnConstraints() throws XPathExpressionException {
+        Node constraints = getNode("/databaseChangeLog" +
+                "/changeSet[starts-with(@id, 'createTable_PrimitiveFieldEntity')]" +
+                "/createTable[@tableName='PrimitiveFieldEntity']" +
+                "/column[@name='objectShort']/constraints");
+
+        Assert.assertNull(constraints, "Expected no constraints to be created.");
+    }
+
+    @Test
+    public void testPrimitiveByteColumnElementName() throws XPathExpressionException {
+        Node primitiveByteColumn = getNode("/databaseChangeLog" +
+                "/changeSet[starts-with(@id, 'createTable_PrimitiveFieldEntity')]" +
+                "/createTable[@tableName='PrimitiveFieldEntity']" +
+                "/column[@name='primitiveByte']");
+
+        Assert.assertNotNull(primitiveByteColumn, "Expected a column to be created.");
+        Assert.assertNotNull(getAttribute("name", primitiveByteColumn),
+                "Expected the column to have a name attribute.");
+        Assert.assertEquals(getAttribute("name", primitiveByteColumn).getNodeValue(), "primitiveByte",
+                "Expected the name attribute to be \"primitiveByte\"");
+    }
+
+    @Test
+    public void testPrimitiveByteColumnElementType() throws XPathExpressionException {
+        Node primitiveByteColumn = getNode("/databaseChangeLog" +
+                "/changeSet[starts-with(@id, 'createTable_PrimitiveFieldEntity')]" +
+                "/createTable[@tableName='PrimitiveFieldEntity']" +
+                "/column[@name='primitiveByte']");
+
+        Assert.assertNotNull(primitiveByteColumn, "Expected a column to be created.");
+        Assert.assertNotNull(getAttribute("type", primitiveByteColumn),
+                "Expected the column to have a type attribute.");
+        Assert.assertEquals(getAttribute("type", primitiveByteColumn).getNodeValue(), "java.sql.Types.TINYINT",
+                "Expected the type attribute to be \"java.sql.Types.TINYINT\"");
+    }
+
+    @Test
+    public void testPrimitiveByteColumnConstraints() throws XPathExpressionException {
+        Node constraints = getNode("/databaseChangeLog" +
+                "/changeSet[starts-with(@id, 'createTable_PrimitiveFieldEntity')]" +
+                "/createTable[@tableName='PrimitiveFieldEntity']" +
+                "/column[@name='primitiveByte']/constraints");
+
+        Assert.assertNull(constraints, "Expected no constraints to be created.");
+    }
+
+    @Test
+    public void testObjectByteColumnElementName() throws XPathExpressionException {
+        Node objectByteColumn = getNode("/databaseChangeLog" +
+                "/changeSet[starts-with(@id, 'createTable_PrimitiveFieldEntity')]" +
+                "/createTable[@tableName='PrimitiveFieldEntity']" +
+                "/column[@name='objectByte']");
+
+        Assert.assertNotNull(objectByteColumn, "Expected a column to be created.");
+        Assert.assertNotNull(getAttribute("name", objectByteColumn),
+                "Expected the column to have a name attribute.");
+        Assert.assertEquals(getAttribute("name", objectByteColumn).getNodeValue(), "objectByte",
+                "Expected the name attribute to be \"objectByte\"");
+    }
+
+    @Test
+    public void testObjectByteColumnElementType() throws XPathExpressionException {
+        Node objectByteColumn = getNode("/databaseChangeLog" +
+                "/changeSet[starts-with(@id, 'createTable_PrimitiveFieldEntity')]" +
+                "/createTable[@tableName='PrimitiveFieldEntity']" +
+                "/column[@name='objectByte']");
+
+        Assert.assertNotNull(objectByteColumn, "Expected a column to be created.");
+        Assert.assertNotNull(getAttribute("type", objectByteColumn), "Expected the column to have a type attribute.");
+        Assert.assertEquals(getAttribute("type", objectByteColumn).getNodeValue(), "java.sql.Types.TINYINT",
+                "Expected the type attribute to be \"java.sql.Types.TINYINT\"");
+    }
+
+    @Test
+    public void testObjectByteColumnConstraints() throws XPathExpressionException {
+        Node constraints = getNode("/databaseChangeLog" +
+                "/changeSet[starts-with(@id, 'createTable_PrimitiveFieldEntity')]" +
+                "/createTable[@tableName='PrimitiveFieldEntity']" +
+                "/column[@name='objectByte']/constraints");
+
+        Assert.assertNull(constraints, "Expected no constraints to be created.");
+    }
+
+    @Test
+    public void testPrimitiveBooleanColumnElementName() throws XPathExpressionException {
+        Node primitiveBooleanColumn = getNode("/databaseChangeLog" +
+                "/changeSet[starts-with(@id, 'createTable_PrimitiveFieldEntity')]" +
+                "/createTable[@tableName='PrimitiveFieldEntity']" +
+                "/column[@name='primitiveBoolean']");
+
+        Assert.assertNotNull(primitiveBooleanColumn, "Expected a column to be created.");
+        Assert.assertNotNull(getAttribute("name", primitiveBooleanColumn),
+                "Expected the column to have a name attribute.");
+        Assert.assertEquals(getAttribute("name", primitiveBooleanColumn).getNodeValue(), "primitiveBoolean",
+                "Expected the name attribute to be \"primitiveBoolean\"");
+    }
+
+    @Test
+    public void testPrimitiveBooleanColumnElementType() throws XPathExpressionException {
+        Node primitiveBooleanColumn = getNode("/databaseChangeLog" +
+                "/changeSet[starts-with(@id, 'createTable_PrimitiveFieldEntity')]" +
+                "/createTable[@tableName='PrimitiveFieldEntity']" +
+                "/column[@name='primitiveBoolean']");
+
+        Assert.assertNotNull(primitiveBooleanColumn, "Expected a column to be created.");
+        Assert.assertNotNull(getAttribute("type", primitiveBooleanColumn),
+                "Expected the column to have a type attribute.");
+        Assert.assertEquals(getAttribute("type", primitiveBooleanColumn).getNodeValue(), "java.sql.Types.BOOLEAN",
+                "Expected the type attribute to be \"java.sql.Types.BOOLEAN\"");
+    }
+
+    @Test
+    public void testPrimitiveBooleanColumnConstraints() throws XPathExpressionException {
+        Node constraints = getNode("/databaseChangeLog" +
+                "/changeSet[starts-with(@id, 'createTable_PrimitiveFieldEntity')]" +
+                "/createTable[@tableName='PrimitiveFieldEntity']" +
+                "/column[@name='primitiveBoolean']/constraints");
+
+        Assert.assertNull(constraints, "Expected no constraints to be created.");
+    }
+
+    @Test
+    public void testObjectBooleanColumnElementName() throws XPathExpressionException {
+        Node objectBooleanColumn = getNode("/databaseChangeLog" +
+                "/changeSet[starts-with(@id, 'createTable_PrimitiveFieldEntity')]" +
+                "/createTable[@tableName='PrimitiveFieldEntity']" +
+                "/column[@name='objectBoolean']");
+
+        Assert.assertNotNull(objectBooleanColumn, "Expected a column to be created.");
+        Assert.assertNotNull(getAttribute("name", objectBooleanColumn),
+                "Expected the column to have a name attribute.");
+        Assert.assertEquals(getAttribute("name", objectBooleanColumn).getNodeValue(), "objectBoolean",
+                "Expected the name attribute to be \"objectBoolean\"");
+    }
+
+    @Test
+    public void testObjectBooleanColumnElementType() throws XPathExpressionException {
+        Node objectBooleanColumn = getNode("/databaseChangeLog" +
+                "/changeSet[starts-with(@id, 'createTable_PrimitiveFieldEntity')]" +
+                "/createTable[@tableName='PrimitiveFieldEntity']" +
+                "/column[@name='objectBoolean']");
+
+        Assert.assertNotNull(objectBooleanColumn, "Expected a column to be created.");
+        Assert.assertNotNull(getAttribute("type", objectBooleanColumn),
+                "Expected the column to have a type attribute.");
+        Assert.assertEquals(getAttribute("type", objectBooleanColumn).getNodeValue(), "java.sql.Types.BOOLEAN",
+                "Expected the type attribute to be \"java.sql.Types.BOOLEAN\"");
+    }
+
+    @Test
+    public void testObjectBooleanColumnConstraints() throws XPathExpressionException {
+        Node constraints = getNode("/databaseChangeLog" +
+                "/changeSet[starts-with(@id, 'createTable_PrimitiveFieldEntity')]" +
+                "/createTable[@tableName='PrimitiveFieldEntity']" +
+                "/column[@name='objectBoolean']/constraints");
 
         Assert.assertNull(constraints, "Expected no constraints to be created.");
     }

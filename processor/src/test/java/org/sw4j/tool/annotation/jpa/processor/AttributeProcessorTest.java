@@ -528,4 +528,33 @@ public class AttributeProcessorTest {
                 "Expected a message with level ERROR to be created.");
     }
 
+    /**
+     * Test that an entity with an enclosed type (an embedded interface).
+     */
+    @Test
+    public void testProcessEnclosedType() {
+        Entity testEntity =  new Entity("Test", "org.sw4j.test.Test");
+
+        List<Element> enclosedElements = new LinkedList<>();
+
+        this.variableElementBuilder.setSimpleName("id");
+        this.variableElementBuilder.addAnnotation(Id.class, new IdMock());
+        this.variableElementBuilder.setKind(ElementKind.FIELD);
+        this.variableElementBuilder.setTypeKind(TypeKind.LONG);
+        Element testElement = this.variableElementBuilder.createElement();
+        enclosedElements.add(testElement);
+
+        this.typeElementBuilder.setSimpleName("IdInterface");
+        this.typeElementBuilder.setQualifiedName("org.sw4j.test.Test.IdInterface");
+        this.typeElementBuilder.setKind(ElementKind.INTERFACE);
+        Element embeddedInterface = this.typeElementBuilder.createElement();
+        enclosedElements.add(embeddedInterface);
+
+        this.unitUnderTest.process(testEntity, enclosedElements);
+
+        Assert.assertEquals(testEntity.getAttributes().size(), 1, "Expected entity with a single @Id attribute.");
+        Assert.assertEquals(testEntity.getAttributes().get(0).getName(), "id",
+                "Expected entity with attribute named \"id\".");
+    }
+
 }

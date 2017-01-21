@@ -25,12 +25,14 @@ import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.persistence.Entity;
+import javax.persistence.Table;
 import javax.tools.Diagnostic;
 import org.sw4j.tool.annotation.jpa.generator.model.Model;
 import org.sw4j.tool.annotation.jpa.test.mock.annotation.processing.MessagerMock;
 import org.sw4j.tool.annotation.jpa.test.mock.annotation.processing.ProcessingEnvironmentMock;
 import org.sw4j.tool.annotation.jpa.processor.mock.lang.model.element.PackageElementBuilder;
 import org.sw4j.tool.annotation.jpa.processor.mock.lang.model.element.TypeElementBuilder;
+import org.sw4j.tool.annotation.jpa.processor.mock.persistence.TableMock;
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -171,6 +173,58 @@ public class EntityProcessorTest {
 
         Assert.assertEquals(testModel.getEntities().size(), 1, "Expected a model with a single entity.");
         Assert.assertEquals(testModel.getEntities().get(0).getName(), "EntityName");
+    }
+
+    @Test
+    public void testProcessEntityWithEmptyTableAnnotation() {
+        Set<Element> testElements = new HashSet<>();
+        Model testModel = new Model();
+
+        this.packageElementBuilder.setSimpleName("org.sw4j.test");
+        this.packageElementBuilder.setQualifiedName("org.sw4j.test");
+        Element enclosingElement = this.packageElementBuilder.createElement();
+
+        this.typeElementBuilder.setSimpleName("Test");
+        this.typeElementBuilder.setQualifiedName("org.sw4j.test.Test");
+        this.typeElementBuilder.addAnnotation(Entity.class, new EntityMock(""));
+        this.typeElementBuilder.addAnnotation(Table.class, new TableMock("", "", ""));
+        this.typeElementBuilder.setKind(ElementKind.CLASS);
+        this.typeElementBuilder.setEnclosingElement(enclosingElement);
+        Element testElement = this.typeElementBuilder.createElement();
+        testElements.add(testElement);
+
+        this.unitUnderTest.process(testElements, testModel);
+
+        Assert.assertEquals(testModel.getEntities().size(), 1, "Expected a model with a single entity.");
+        Assert.assertEquals(testModel.getEntities().get(0).getTables().size(), 1,
+                "Expected the entity to have a single table.");
+        Assert.assertEquals(testModel.getEntities().get(0).getTables().get(0).getName(), "Test");
+    }
+
+    @Test
+    public void testProcessEntityWithTableName() {
+        Set<Element> testElements = new HashSet<>();
+        Model testModel = new Model();
+
+        this.packageElementBuilder.setSimpleName("org.sw4j.test");
+        this.packageElementBuilder.setQualifiedName("org.sw4j.test");
+        Element enclosingElement = this.packageElementBuilder.createElement();
+
+        this.typeElementBuilder.setSimpleName("Test");
+        this.typeElementBuilder.setQualifiedName("org.sw4j.test.Test");
+        this.typeElementBuilder.addAnnotation(Entity.class, new EntityMock(""));
+        this.typeElementBuilder.addAnnotation(Table.class, new TableMock("TAB_TEST", "", ""));
+        this.typeElementBuilder.setKind(ElementKind.CLASS);
+        this.typeElementBuilder.setEnclosingElement(enclosingElement);
+        Element testElement = this.typeElementBuilder.createElement();
+        testElements.add(testElement);
+
+        this.unitUnderTest.process(testElements, testModel);
+
+        Assert.assertEquals(testModel.getEntities().size(), 1, "Expected a model with a single entity.");
+        Assert.assertEquals(testModel.getEntities().get(0).getTables().size(), 1,
+                "Expected the entity to have a single table.");
+        Assert.assertEquals(testModel.getEntities().get(0).getTables().get(0).getName(), "TAB_TEST");
     }
 
 }

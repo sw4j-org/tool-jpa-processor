@@ -36,7 +36,7 @@ import javax.lang.model.type.TypeMirror;
  * @author Uwe Plonus
  */
 @NotThreadSafe
-public class TypeElementBuilder extends ElementBuilder<TypeElement>{
+public class TypeElementBuilder extends ElementBuilder<TypeElement> {
 
     private Name qualifiedName;
 

@@ -109,7 +109,7 @@ public class AttributeProcessor {
             Map.Entry<String, Element> id = possibleIds.entrySet().iterator().next();
             if (isField(id.getValue())) {
                 accessType = AccessType.FIELD;
-            } else if (isProperty(id.getValue())) {
+            } else {
                 accessType = AccessType.PROPERTY;
             }
             if (accessType == AccessType.FIELD) {
@@ -164,7 +164,7 @@ public class AttributeProcessor {
     }
 
     /**
-     * Return the datatype as String deom the given TypeMirror.
+     * Return the datatype as String from the given TypeMirror.
      *
      * @param type the type to convert.
      * @return the datatype of the type.

@@ -27,14 +27,14 @@ import javax.persistence.Id;
 public class PrimitiveFieldEntity {
 
     @Id
-    private long id;
+    private long primitiveLong;
 
-    public long getId() {
-        return id;
+    public long getPrimitiveLong() {
+        return primitiveLong;
     }
 
-    public void setId(long id) {
-        this.id = id;
+    public void setPrimitiveLong(long primitiveLong) {
+        this.primitiveLong = primitiveLong;
     }
 
     private Long objectLong;
@@ -45,6 +45,86 @@ public class PrimitiveFieldEntity {
 
     public void setObjectLong(Long objectLong) {
         this.objectLong = objectLong;
+    }
+
+    private int primitiveInt;
+
+    public int getPrimitiveInt() {
+        return primitiveInt;
+    }
+
+    public void setPrimitiveInt(int primitiveInt) {
+        this.primitiveInt = primitiveInt;
+    }
+
+    private Integer objectInteger;
+
+    public Integer getObjectInteger() {
+        return objectInteger;
+    }
+
+    public void setObjectInteger(Integer objectInteger) {
+        this.objectInteger = objectInteger;
+    }
+
+    private short primitiveShort;
+
+    public short getPrimitiveShort() {
+        return primitiveShort;
+    }
+
+    public void setPrimitiveShort(short primitiveShort) {
+        this.primitiveShort = primitiveShort;
+    }
+
+    private Short objectShort;
+
+    public Short getObjectShort() {
+        return objectShort;
+    }
+
+    public void setObjectShort(Short objectShort) {
+        this.objectShort = objectShort;
+    }
+
+    private byte primitiveByte;
+
+    public byte getPrimitiveByte() {
+        return primitiveByte;
+    }
+
+    public void setPrimitiveByte(byte primitiveByte) {
+        this.primitiveByte = primitiveByte;
+    }
+
+    private Byte objectByte;
+
+    public Byte getObjectByte() {
+        return objectByte;
+    }
+
+    public void setObjectByte(Byte objectByte) {
+        this.objectByte = objectByte;
+    }
+
+    private boolean primitiveBoolean;
+
+    public boolean isPrimitiveBoolean() {
+        return primitiveBoolean;
+    }
+
+    public void setPrimitiveBoolean(boolean primitiveBoolean) {
+        this.primitiveBoolean = primitiveBoolean;
+    }
+
+    private Boolean objectBoolean;
+
+    public Boolean getObjectBoolean() {
+        return objectBoolean;
+    }
+
+    public void setObjectBoolean(Boolean objectBoolean) {
+        this.objectBoolean = objectBoolean;
     }
 
 }
