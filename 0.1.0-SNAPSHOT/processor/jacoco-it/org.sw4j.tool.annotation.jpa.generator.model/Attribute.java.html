@@ -30,15 +30,12 @@ import javax.xml.bind.annotation.XmlAttribute;
 public class Attribute {
 
     /** The name of the attribute. */
-    @XmlAttribute(name = &quot;name&quot;)
     private final String name;
 
     /** Flag to indicate this attribute as Id. */
-    @XmlAttribute(name = &quot;isId&quot;)
     private final boolean isId;
 
     /** The Java datatype of this attribute. */
-    @XmlAttribute(name = &quot;dataType&quot;)
     private final String dataType;
 
     /**
@@ -48,11 +45,11 @@ public class Attribute {
      * @param isId if this attribute should be marked as Id.
      * @param dataType the Java datatype of the attribute
      */
-<span class="fc" id="L51">    public Attribute(@Nonnull final String name, final boolean isId, @Nonnull final String dataType) {</span>
-<span class="fc" id="L52">        this.name = name;</span>
-<span class="fc" id="L53">        this.isId = isId;</span>
-<span class="fc" id="L54">        this.dataType = dataType;</span>
-<span class="fc" id="L55">    }</span>
+<span class="fc" id="L48">    public Attribute(@Nonnull final String name, final boolean isId, @Nonnull final String dataType) {</span>
+<span class="fc" id="L49">        this.name = name;</span>
+<span class="fc" id="L50">        this.isId = isId;</span>
+<span class="fc" id="L51">        this.dataType = dataType;</span>
+<span class="fc" id="L52">    }</span>
 
     /**
      * Returns the name of the attribute.
@@ -60,8 +57,9 @@ public class Attribute {
      * @return the name.
      */
     @Nonnull
+    @XmlAttribute(name = &quot;name&quot;)
     public String getName() {
-<span class="nc" id="L64">        return this.name;</span>
+<span class="fc" id="L62">        return this.name;</span>
     }
 
     /**
@@ -69,8 +67,9 @@ public class Attribute {
      *
      * @return {@code true} if this attribute is an Id.
      */
+    @XmlAttribute(name = &quot;isId&quot;)
     public boolean isId() {
-<span class="nc" id="L73">        return this.isId;</span>
+<span class="fc" id="L72">        return this.isId;</span>
     }
 
     /**
@@ -78,8 +77,10 @@ public class Attribute {
      *
      * @return the data type of this attribute.
      */
+    @Nonnull
+    @XmlAttribute(name = &quot;dataType&quot;)
     public String getDataType() {
-<span class="nc" id="L82">        return this.dataType;</span>
+<span class="fc" id="L83">        return this.dataType;</span>
     }
 
 }

@@ -117,7 +117,7 @@
 <a class="jxr_linenumber" name="L109" href="#L109">109</a>             Map.Entry&lt;String, Element&gt; id = possibleIds.entrySet().iterator().next();
 <a class="jxr_linenumber" name="L110" href="#L110">110</a>             <strong class="jxr_keyword">if</strong> (isField(id.getValue())) {
 <a class="jxr_linenumber" name="L111" href="#L111">111</a>                 accessType = AccessType.FIELD;
-<a class="jxr_linenumber" name="L112" href="#L112">112</a>             } <strong class="jxr_keyword">else</strong> <strong class="jxr_keyword">if</strong> (isProperty(id.getValue())) {
+<a class="jxr_linenumber" name="L112" href="#L112">112</a>             } <strong class="jxr_keyword">else</strong> {
 <a class="jxr_linenumber" name="L113" href="#L113">113</a>                 accessType = AccessType.PROPERTY;
 <a class="jxr_linenumber" name="L114" href="#L114">114</a>             }
 <a class="jxr_linenumber" name="L115" href="#L115">115</a>             <strong class="jxr_keyword">if</strong> (accessType == AccessType.FIELD) {
@@ -172,7 +172,7 @@
 <a class="jxr_linenumber" name="L164" href="#L164">164</a>     }
 <a class="jxr_linenumber" name="L165" href="#L165">165</a> 
 <a class="jxr_linenumber" name="L166" href="#L166">166</a>     <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L167" href="#L167">167</a> <em class="jxr_javadoccomment">     * Return the datatype as String deom the given TypeMirror.</em>
+<a class="jxr_linenumber" name="L167" href="#L167">167</a> <em class="jxr_javadoccomment">     * Return the datatype as String from the given TypeMirror.</em>
 <a class="jxr_linenumber" name="L168" href="#L168">168</a> <em class="jxr_javadoccomment">     *</em>
 <a class="jxr_linenumber" name="L169" href="#L169">169</a> <em class="jxr_javadoccomment">     * @param type the type to convert.</em>
 <a class="jxr_linenumber" name="L170" href="#L170">170</a> <em class="jxr_javadoccomment">     * @return the datatype of the type.</em>
@@ -262,6 +262,6 @@
 <a class="jxr_linenumber" name="L254" href="#L254">254</a> }
 </pre>
 <hr/>
-<div id="footer">Copyright &#169; 2016. All rights reserved.</div>
+<div id="footer">Copyright &#169; 2017. All rights reserved.</div>
 </body>
 </html>

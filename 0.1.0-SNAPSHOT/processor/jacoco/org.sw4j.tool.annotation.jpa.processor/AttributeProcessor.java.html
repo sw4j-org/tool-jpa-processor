@@ -109,7 +109,7 @@ public class AttributeProcessor {
 <span class="fc" id="L109">            Map.Entry&lt;String, Element&gt; id = possibleIds.entrySet().iterator().next();</span>
 <span class="fc bfc" id="L110" title="All 2 branches covered.">            if (isField(id.getValue())) {</span>
 <span class="fc" id="L111">                accessType = AccessType.FIELD;</span>
-<span class="pc bpc" id="L112" title="1 of 2 branches missed.">            } else if (isProperty(id.getValue())) {</span>
+            } else {
 <span class="fc" id="L113">                accessType = AccessType.PROPERTY;</span>
             }
 <span class="fc bfc" id="L115" title="All 2 branches covered.">            if (accessType == AccessType.FIELD) {</span>
@@ -164,7 +164,7 @@ public class AttributeProcessor {
 <span class="fc" id="L164">    }</span>
 
     /**
-     * Return the datatype as String deom the given TypeMirror.
+     * Return the datatype as String from the given TypeMirror.
      *
      * @param type the type to convert.
      * @return the datatype of the type.
@@ -216,7 +216,7 @@ public class AttributeProcessor {
      */
     private boolean isProperty(@Nonnull final Element element) {
 <span class="fc" id="L218">        boolean isProperty = false;</span>
-<span class="pc bpc" id="L219" title="1 of 2 branches missed.">        if (ElementKind.METHOD.equals(element.getKind())) {</span>
+<span class="fc bfc" id="L219" title="All 2 branches covered.">        if (ElementKind.METHOD.equals(element.getKind())) {</span>
 <span class="fc bfc" id="L220" title="All 2 branches covered.">            isProperty = !&quot;&quot;.equals(getAttributeNameFromProperty(element));</span>
         }
 <span class="fc" id="L222">        return isProperty;</span>

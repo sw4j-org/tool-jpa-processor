@@ -29,26 +29,29 @@ import javax.xml.bind.annotation.XmlType;
 /**
  * This class represents an entity. Via the entity you can access the attributes and tables assigned to the entity.
  *
+ * &lt;p&gt;Each entity must have at least one table and one attribute.&lt;/p&gt;
+ *
  * @author Uwe Plonus
  */
 @XmlAccessorType(XmlAccessType.NONE)
 @XmlType(name = &quot;&quot;,
         propOrder = {
+            &quot;tables&quot;,
             &quot;attributes&quot;,
         })
 public class Entity {
 
     /** The name of the entity. */
-    @XmlAttribute(name = &quot;name&quot;, required = true)
     private final String name;
 
     /** The class name of the entity. */
-    @XmlAttribute(name = &quot;className&quot;, required = true)
     private final String className;
 
-    /** The entities of the model. */
-    @XmlElement(name = &quot;attribute&quot;)
+    /** The attributes of this entity. */
     private List&lt;Attribute&gt; attributes;
+
+    /** The tables of this entity. */
+    private List&lt;Table&gt; tables;
 
     /**
      * Constructor for an entity.
@@ -56,10 +59,10 @@ public class Entity {
      * @param name the name of the entity.
      * @param className the class name of the entity.
      */
-<span class="fc" id="L59">    public Entity(@Nonnull final String name, @Nonnull final String className) {</span>
-<span class="fc" id="L60">        this.name = name;</span>
-<span class="fc" id="L61">        this.className = className;</span>
-<span class="fc" id="L62">    }</span>
+<span class="fc" id="L62">    public Entity(@Nonnull final String name, @Nonnull final String className) {</span>
+<span class="fc" id="L63">        this.name = name;</span>
+<span class="fc" id="L64">        this.className = className;</span>
+<span class="fc" id="L65">    }</span>
 
     /**
      * Returns the name of the entity.
@@ -67,8 +70,9 @@ public class Entity {
      * @return the name.
      */
     @Nonnull
+    @XmlAttribute(name = &quot;name&quot;, required = true)
     public String getName() {
-<span class="fc" id="L71">        return this.name;</span>
+<span class="fc" id="L75">        return this.name;</span>
     }
 
     /**
@@ -77,8 +81,9 @@ public class Entity {
      * @return the class name.
      */
     @Nonnull
+    @XmlAttribute(name = &quot;className&quot;, required = true)
     public String getClassName() {
-<span class="fc" id="L81">        return this.className;</span>
+<span class="fc" id="L86">        return this.className;</span>
     }
 
     /**
@@ -87,11 +92,11 @@ public class Entity {
      * @param attribute the attribute to add.
      */
     public synchronized void addAttribute(@Nonnull final Attribute attribute) {
-<span class="fc bfc" id="L90" title="All 2 branches covered.">        if (this.attributes == null) {</span>
-<span class="fc" id="L91">            this.attributes = new LinkedList&lt;&gt;();</span>
+<span class="fc bfc" id="L95" title="All 2 branches covered.">        if (this.attributes == null) {</span>
+<span class="fc" id="L96">            this.attributes = new LinkedList&lt;&gt;();</span>
         }
-<span class="fc" id="L93">        this.attributes.add(attribute);</span>
-<span class="fc" id="L94">    }</span>
+<span class="fc" id="L98">        this.attributes.add(attribute);</span>
+<span class="fc" id="L99">    }</span>
 
     /**
      * Returns all attributes of the entity.
@@ -99,8 +104,32 @@ public class Entity {
      * @return a list containing all attributes of the entity.
      */
     @Nonnull
+    @XmlElement(name = &quot;attribute&quot;)
     public synchronized List&lt;Attribute&gt; getAttributes() {
-<span class="nc bnc" id="L103" title="All 2 branches missed.">        return this.attributes == null ? Collections.EMPTY_LIST : Collections.unmodifiableList(this.attributes);</span>
+<span class="fc bfc" id="L109" title="All 2 branches covered.">        return this.attributes == null ? Collections.EMPTY_LIST : Collections.unmodifiableList(this.attributes);</span>
+    }
+
+    /**
+     * Adds a table to the entity.
+     *
+     * @param table the table to add.
+     */
+    public synchronized void addTable(@Nonnull final Table table) {
+<span class="pc bpc" id="L118" title="1 of 2 branches missed.">        if (this.tables == null) {</span>
+<span class="fc" id="L119">            this.tables = new LinkedList&lt;&gt;();</span>
+        }
+<span class="fc" id="L121">        this.tables.add(table);</span>
+<span class="fc" id="L122">    }</span>
+
+    /**
+     * Returns all tables of the entity. The primary table of the entity is always the first table in the returned list.
+     *
+     * @return a list containing all tables of the entity.
+     */
+    @Nonnull
+    @XmlElement(name = &quot;table&quot;)
+    public synchronized List&lt;Table&gt; getTables() {
+<span class="pc bpc" id="L132" title="1 of 2 branches missed.">        return this.tables == null ? Collections.EMPTY_LIST : Collections.unmodifiableList(this.tables);</span>
     }
 
 }
