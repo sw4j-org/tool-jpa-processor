@@ -14,3 +14,15 @@
 /generator/liquibase-common/nb-configuration.xml
 /generator/liquibase-common/target/
 /sample/liquibase-3.4/nb-configuration.xml
+/aggregator/processor/target/
+/aggregator/generator/target/
+/aggregator/generator/liquibase-common/target/
+/aggregator/generator/liquibase-3.4/target/
+/aggregator/target/
+/aggregator/test-util/target/
+/aggregator/test-util/nb-configuration.xml
+/aggregator/generator/liquibase-common/nb-configuration.xml
+/aggregator/generator/liquibase-3.4/nb-configuration.xml
+/aggregator/generator/nb-configuration.xml
+/aggregator/processor/nb-configuration.xml
+/sample/liquibase-3.4/derby.log

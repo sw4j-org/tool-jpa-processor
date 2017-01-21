@@ -18,8 +18,10 @@
   <description>This is a sample application for Liquibase 3.4.</description>
 
   <properties>
+    <!-- Netbeans Hints -->
     <netbeans.hint.license>gpl30</netbeans.hint.license>
 
+    <!-- Dependency versions -->
     <liquibase.version>3.4.2</liquibase.version>
   </properties>
 
@@ -32,18 +34,11 @@
     <dependency>
       <groupId>org.eclipse.persistence</groupId>
       <artifactId>eclipselink</artifactId>
-      <version>2.5.2</version>
     </dependency>
     <dependency>
       <groupId>org.liquibase</groupId>
       <artifactId>liquibase-core</artifactId>
       <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.eclipse.persistence</groupId>
-      <artifactId>org.eclipse.persistence.jpa.modelgen.processor</artifactId>
-      <version>2.5.2</version>
-      <scope>provided</scope>
     </dependency>
   </dependencies>
 
@@ -76,7 +71,12 @@
             <path>
               <groupId>org.eclipse.persistence</groupId>
               <artifactId>javax.persistence</artifactId>
-              <version>2.1.1</version>
+              <version>${javax.persistence.version}</version>
+            </path>
+            <path>
+              <groupId>org.eclipse.persistence</groupId>
+              <artifactId>org.eclipse.persistence.jpa.modelgen.processor</artifactId>
+              <version>${eclipselink.version}</version>
             </path>
           </annotationProcessorPaths>
         </configuration>
@@ -89,7 +89,7 @@
       <dependency>
         <groupId>org.liquibase</groupId>
         <artifactId>liquibase-core</artifactId>
-        <version>3.4.2</version>
+        <version>${liquibase.version}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>

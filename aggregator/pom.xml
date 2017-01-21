@@ -10,53 +10,34 @@
     <version>0.1.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>sample</artifactId>
+  <artifactId>aggregator</artifactId>
   <packaging>pom</packaging>
 
-  <name>JPA Annotation Processor (Samples)</name>
-  <description>This are sample applications for the JPA annotation processor.</description>
+  <name>JPA Annotation Processor (Aggregator)</name>
+  <description>This is an aggregator for the JPA annotation processor and some test artifacts.</description>
 
   <modules>
-    <module>liquibase-3.4</module>
+    <module>test-util</module>
+    <module>processor</module>
+    <module>generator</module>
   </modules>
 
   <properties>
     <!-- Netbeans Hints -->
     <netbeans.hint.license>gpl30</netbeans.hint.license>
-
-    <!-- Dependency versions -->
-    <derby.version>10.12.1.1</derby.version>
-    <eclipselink.version>2.6.4</eclipselink.version>
   </properties>
-
-  <dependencies>
-    <dependency>
-      <groupId>org.eclipse.persistence</groupId>
-      <artifactId>javax.persistence</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.eclipse.persistence</groupId>
-      <artifactId>eclipselink</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.testng</groupId>
-      <artifactId>testng</artifactId>
-      <scope>test</scope>
-    </dependency>
-  </dependencies>
 
   <dependencyManagement>
     <dependencies>
       <dependency>
-        <groupId>org.eclipse.persistence</groupId>
-        <artifactId>eclipselink</artifactId>
-        <version>${eclipselink.version}</version>
+        <groupId>org.sw4j.tool.annotation.jpa</groupId>
+        <artifactId>processor</artifactId>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
-        <groupId>org.apache.derby</groupId>
-        <artifactId>derby</artifactId>
-        <version>${derby.version}</version>
+        <groupId>org.sw4j.tool.annotation.jpa</groupId>
+        <artifactId>test-util</artifactId>
+        <version>${project.version}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
@@ -68,9 +49,21 @@
         <artifactId>jacoco-maven-plugin</artifactId>
         <executions>
           <execution>
+            <id>default-prepare-agent</id>
+            <goals>
+              <goal>prepare-agent</goal>
+            </goals>
+          </execution>
+          <execution>
             <id>default-prepare-agent-integration</id>
             <goals>
               <goal>prepare-agent-integration</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>default-report</id>
+            <goals>
+              <goal>report</goal>
             </goals>
           </execution>
           <execution>
@@ -78,6 +71,39 @@
             <goals>
               <goal>report-integration</goal>
             </goals>
+          </execution>
+          <execution>
+            <id>default-check</id>
+            <goals>
+              <goal>check</goal>
+            </goals>
+            <configuration>
+              <excludes>
+                <exclude>**/jaxb/**</exclude>
+              </excludes>
+              <rules>
+                <rule>
+                  <element>BUNDLE</element>
+                  <limits>
+                    <limit>
+                      <counter>INSTRUCTION</counter>
+                      <value>COVEREDRATIO</value>
+                      <minimum>0.85</minimum>
+                    </limit>
+                    <limit>
+                      <counter>BRANCH</counter>
+                      <value>COVEREDRATIO</value>
+                      <minimum>0.85</minimum>
+                    </limit>
+                    <limit>
+                      <counter>COMPLEXITY</counter>
+                      <value>COVEREDRATIO</value>
+                      <minimum>0.80</minimum>
+                    </limit>
+                  </limits>
+                </rule>
+              </rules>
+            </configuration>
           </execution>
           <execution>
             <id>default-check-integration</id>
