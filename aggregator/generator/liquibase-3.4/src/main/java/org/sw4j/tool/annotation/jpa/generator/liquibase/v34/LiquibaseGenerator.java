@@ -120,6 +120,7 @@ public class LiquibaseGenerator implements GeneratorService {
                 Marshaller marshaller = jaxbContext.createMarshaller();
                 marshaller.setProperty(Marshaller.JAXB_SCHEMA_LOCATION, "http://www.liquibase.org/xml/ns/dbchangelog " +
                         "http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd");
+                marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
                 marshaller.marshal(changeLog, fullChangelogFile);
             } catch (JAXBException jex) {
                 throw new IOException(jex);
