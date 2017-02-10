@@ -1,0 +1,56 @@
+#set($h1 = '#')
+#set($h2 = '##')
+
+[TOC]
+
+$h1 Introduction
+
+This project shows how to use the JPA annotation processor together with the liquibase 3.4 change log generator.
+
+$h1 Setup
+
+The basic setup of a project using Liquibase 3.4 is:
+
+Adding the annotation processor to the compiler plugin:
+
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-compiler-plugin</artifactId>
+            <configuration>
+              <compilerArgs>
+                <arg>-Atool.jpa.properties=${basedir}/target/classes/jpa.properties</arg>
+              </compilerArgs>
+              <annotationProcessorPaths>
+                <path>
+                  <groupId>org.sw4j.tool.annotation.jpa</groupId>
+                  <artifactId>processor</artifactId>
+                  <version>${project.version}</version>
+                </path>
+                <path>
+                  <groupId>org.sw4j.tool.annotation.jpa.generator</groupId>
+                  <artifactId>liquibase-3.4</artifactId>
+                  <version>${project.version}</version>
+                </path>
+                <path>
+                  <groupId>org.eclipse.persistence</groupId>
+                  <artifactId>javax.persistence</artifactId>
+                  <version>2.1.1</version>
+                </path>
+              </annotationProcessorPaths>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+
+The configuration is located in `src/main/resources/jpa.properties`:
+
+    lb34.fullChangelogFile=${basedir}/target/test-classes/changelog.xml
+
+This configuration file is copied to the target directory (`target/classes/jpa.properties`) and then used to configure
+the annotation processor and the generator.
+
+The resulting `changelog.xml` is placed in `target/test-classes/` (configured in `jpa.properties`).
+
+That's all. The `changelog.xml` then can be used to execute liquibase.

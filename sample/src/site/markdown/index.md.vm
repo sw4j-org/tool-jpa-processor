@@ -1,0 +1,13 @@
+#set($h1 = '#')
+#set($h2 = '##')
+
+$h1 Introduction
+
+This are samples to show the usage of the annotation processor and generators.
+
+Additionally the samples act as additional integration tests. Especially the mapping of the JPA annotation to the
+structures and datatypes in a real database are tested.
+
+$h1 Samples
+
+* [Liquibase 3.4](./liquibase-3.4/index.html)

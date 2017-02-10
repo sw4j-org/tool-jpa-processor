@@ -14,7 +14,7 @@
   <packaging>jar</packaging>
 
   <name>JPA Annotation Processor (Test Utilities)</name>
-  <description>This is the JPA annotation processor.</description>
+  <description>This are test utilities for the JPA annotation processor and the generators.</description>
 
   <properties>
     <netbeans.hint.license>gpl30</netbeans.hint.license>
