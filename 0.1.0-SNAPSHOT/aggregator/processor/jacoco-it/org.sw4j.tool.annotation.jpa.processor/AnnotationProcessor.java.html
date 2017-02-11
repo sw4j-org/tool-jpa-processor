@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AnnotationProcessor.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">JPA Annotation Processor (Annotation Processor)</a> &gt; <a href="index.source.html" class="el_package">org.sw4j.tool.annotation.jpa.processor</a> &gt; <span class="el_source">AnnotationProcessor.java</span></div><h1>AnnotationProcessor.java</h1><pre class="source lang-java linenums">/*
+ * Copyright (C) 2016 Uwe Plonus
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see &lt;http://www.gnu.org/licenses/&gt;.
+ */
+package org.sw4j.tool.annotation.jpa.processor;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Properties;
+import java.util.ServiceLoader;
+import java.util.Set;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.annotation.processing.AbstractProcessor;
+import javax.annotation.processing.ProcessingEnvironment;
+import javax.annotation.processing.RoundEnvironment;
+import javax.annotation.processing.SupportedAnnotationTypes;
+import javax.annotation.processing.SupportedOptions;
+import javax.annotation.processing.SupportedSourceVersion;
+import javax.lang.model.SourceVersion;
+import javax.lang.model.element.TypeElement;
+import javax.persistence.Entity;
+import javax.tools.Diagnostic;
+import org.sw4j.tool.annotation.jpa.generator.GeneratorService;
+import org.sw4j.tool.annotation.jpa.generator.model.Model;
+
+/**
+ * An annotation processor to handle JPA annotations.
+ *
+ * @author Uwe Plonus
+ */
+@SupportedAnnotationTypes(&quot;javax.persistence.Entity&quot;)
+@SupportedSourceVersion(SourceVersion.RELEASE_7)
+@SupportedOptions(AnnotationProcessor.PROPERTIES_OPTION)
+public class AnnotationProcessor extends AbstractProcessor {
+
+    /** The option of the annotation processor to set output directory. */
+    public static final String PROPERTIES_OPTION = &quot;tool.jpa.properties&quot;;
+
+    /** The generated entity model. */
+    private final Model model;
+
+    /** The processor to handle entities. */
+    private final EntityProcessor entityProcessor;
+
+<span class="fc" id="L62">    private boolean firstRound = true;</span>
+
+    /**
+     * The default constructor.
+     */
+<span class="fc" id="L67">    public AnnotationProcessor() {</span>
+<span class="fc" id="L68">        this.model = new Model();</span>
+<span class="fc" id="L69">        this.entityProcessor = new EntityProcessor();</span>
+<span class="fc" id="L70">    }</span>
+
+    /**
+     * Initializes the processor with the processing environment. An {@code IllegalStateException} will be thrown if
+     * this method is called more than once on the same object.
+     *
+     * @param processingEnv environment to access facilities the tool framework provides to the processor.
+     * @throws IllegalStateException if this method is called more than once.
+     */
+    @Override
+    public void init(@Nonnull final ProcessingEnvironment processingEnv) {
+<span class="fc" id="L81">        super.init(processingEnv);</span>
+<span class="fc" id="L82">        this.entityProcessor.init(this.processingEnv);</span>
+<span class="fc" id="L83">    }</span>
+
+    /**
+     * Processes the annotations given in the {@code annotations} variable.
+     *
+     * @param annotations the annotations that are handled.
+     * @param roundEnv the round environment to handle annotations.
+     * @return always {@code false} because this processor never claims an annotation.
+     */
+    @Override
+    public boolean process(@Nonnull final Set&lt;? extends TypeElement&gt; annotations,
+            @Nonnull final RoundEnvironment roundEnv) {
+<span class="fc bfc" id="L95" title="All 2 branches covered.">        if (firstRound) {</span>
+<span class="fc" id="L96">            this.processingEnv.getMessager().printMessage(Diagnostic.Kind.NOTE, &quot;Running JPA annotation processor&quot;);</span>
+<span class="fc" id="L97">            firstRound = false;</span>
+        }
+<span class="fc" id="L99">        String propertiesOption = this.processingEnv.getOptions().get(PROPERTIES_OPTION);</span>
+<span class="fc" id="L100">        Map&lt;String, Properties&gt; properties = readProperties(propertiesOption);</span>
+<span class="fc" id="L101">        this.entityProcessor.process(roundEnv.getElementsAnnotatedWith(Entity.class), model);</span>
+
+<span class="fc bfc" id="L103" title="All 2 branches covered.">        if (roundEnv.processingOver()) {</span>
+<span class="fc" id="L104">            ServiceLoader&lt;GeneratorService&gt; generatorServiceLoader = setupGenerators(properties);</span>
+<span class="fc" id="L105">            Iterator&lt;GeneratorService&gt; generators = generatorServiceLoader.iterator();</span>
+<span class="fc bfc" id="L106" title="All 2 branches covered.">            while (generators.hasNext()) {</span>
+<span class="fc" id="L107">                GeneratorService generator = generators.next();</span>
+<span class="fc bfc" id="L108" title="All 2 branches covered.">                if (generator.canProcess()) {</span>
+                    try {
+<span class="fc" id="L110">                        generator.process(this.model, this.processingEnv);</span>
+<span class="nc" id="L111">                    } catch (IOException ioex) {</span>
+<span class="nc" id="L112">                        this.processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR,</span>
+                                ioex.toString());
+<span class="fc" id="L114">                    }</span>
+                }
+<span class="fc" id="L116">            }</span>
+        }
+
+<span class="fc" id="L119">        return false;</span>
+    }
+
+    /**
+     * Reads all properties from the given property file and splits them according to the used prefix.
+     *
+     * @param fileName the name of the file of the properties file.
+     * @return a map containing properties splitted according to the prefix.
+     */
+    @Nonnull
+    private Map&lt;String, Properties&gt; readProperties(@Nullable final String fileName) {
+<span class="fc" id="L130">        Map&lt;String, Properties&gt; result = new HashMap&lt;&gt;();</span>
+<span class="fc bfc" id="L131" title="All 2 branches covered.">        if (fileName != null) {</span>
+<span class="fc" id="L132">            File propertiesFile = new File(fileName);</span>
+<span class="fc bfc" id="L133" title="All 2 branches covered.">            if (propertiesFile.exists()) {</span>
+<span class="fc" id="L134">                Properties allProperties = new Properties();</span>
+<span class="pc" id="L135">                try (FileInputStream fis = new FileInputStream(propertiesFile)) {</span>
+<span class="fc" id="L136">                    allProperties.load(fis);</span>
+<span class="pc bpc" id="L137" title="6 of 8 branches missed.">                } catch (IOException ioex) {</span>
+<span class="nc" id="L138">                    this.processingEnv.getMessager().printMessage(Diagnostic.Kind.WARNING,</span>
+                            new StringBuilder(&quot;Cannot access the file \&quot;&quot;).append(fileName)
+                                    .append(&quot;\&quot;. Ignoring Properties.\nError: &quot;).append(ioex.getMessage()));
+<span class="fc" id="L141">                }</span>
+<span class="pc bpc" id="L142" title="1 of 2 branches missed.">                if (!allProperties.isEmpty()) {</span>
+<span class="fc bfc" id="L143" title="All 2 branches covered.">                    for (String propertyName: allProperties.stringPropertyNames()) {</span>
+<span class="fc" id="L144">                        int dotPos = propertyName.indexOf('.');</span>
+<span class="fc bfc" id="L145" title="All 2 branches covered.">                        if (dotPos &gt;= 0) {</span>
+<span class="fc" id="L146">                            String prefix = propertyName.substring(0, dotPos);</span>
+<span class="fc" id="L147">                            String suffix = propertyName.substring(dotPos + 1);</span>
+<span class="fc" id="L148">                            Properties prefixedProperties = result.get(prefix);</span>
+<span class="fc bfc" id="L149" title="All 2 branches covered.">                            if (prefixedProperties == null) {</span>
+<span class="fc" id="L150">                                prefixedProperties = new Properties();</span>
+<span class="fc" id="L151">                                result.put(prefix, prefixedProperties);</span>
+                            }
+<span class="fc" id="L153">                            prefixedProperties.setProperty(suffix, allProperties.getProperty(propertyName));</span>
+                        }
+<span class="fc" id="L155">                    }</span>
+                }
+            }
+        }
+<span class="fc" id="L159">        return result;</span>
+    }
+
+    /**
+     * Load all available generators and set them up with their properties.
+     *
+     * @param outputOption the configuration string provided to the annotation processor.
+     * @return the configured generators.
+     */
+    @Nonnull
+    private ServiceLoader&lt;GeneratorService&gt; setupGenerators(@Nonnull final Map&lt;String, Properties&gt; properties) {
+<span class="fc" id="L170">        ServiceLoader&lt;GeneratorService&gt; generatorServiceLoader = ServiceLoader.load(GeneratorService.class,</span>
+                this.getClass().getClassLoader());
+<span class="fc" id="L172">        Iterator&lt;GeneratorService&gt; generators = generatorServiceLoader.iterator();</span>
+<span class="fc bfc" id="L173" title="All 2 branches covered.">        while (generators.hasNext()) {</span>
+<span class="fc" id="L174">            GeneratorService generator = generators.next();</span>
+<span class="fc bfc" id="L175" title="All 2 branches covered.">            if (properties.containsKey(generator.getPrefix())) {</span>
+<span class="fc" id="L176">                generator.setProperties(properties.get(generator.getPrefix()));</span>
+            }
+<span class="fc" id="L178">        }</span>
+<span class="fc" id="L179">        return generatorServiceLoader;</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.7.201606060606</span></div></body></html>

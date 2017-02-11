@@ -1,0 +1,8 @@
+GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
+JPA Annotation Processor (Annotation Processor),org.sw4j.tool.annotation.jpa.generator.model,Model,0,18,0,0,0,6,0,3,0,3
+JPA Annotation Processor (Annotation Processor),org.sw4j.tool.annotation.jpa.generator.model,Entity,2,59,2,6,0,16,2,9,0,7
+JPA Annotation Processor (Annotation Processor),org.sw4j.tool.annotation.jpa.generator.model,Table,9,18,0,0,3,7,3,2,3,2
+JPA Annotation Processor (Annotation Processor),org.sw4j.tool.annotation.jpa.generator.model,Attribute,0,21,0,0,0,8,0,4,0,4
+JPA Annotation Processor (Annotation Processor),org.sw4j.tool.annotation.jpa.processor,AnnotationProcessor,47,218,7,25,1,56,5,16,0,5
+JPA Annotation Processor (Annotation Processor),org.sw4j.tool.annotation.jpa.processor,AttributeProcessor,0,383,5,45,0,74,5,31,0,11
+JPA Annotation Processor (Annotation Processor),org.sw4j.tool.annotation.jpa.processor,EntityProcessor,0,179,1,15,0,38,1,11,0,4
