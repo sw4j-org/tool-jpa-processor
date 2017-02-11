@@ -3,17 +3,10 @@
 
 $h1 Introduction
 
-This project contains a JPA annotation processor to handle JPA annotations and generate scripts (or
-similar) to create the schema needed.
+This project contains a JPA annotation processor to handle JPA annotations and generate scripts (or similar) to create
+the database schema needed.
 
-The project consists of different modules.
+This parent is to separate the annotation processor and the generators on one side from the samples on the other side.
 
-The major modules are
-
-* the [processor](./processor/index.html)
-* the [generators](./generator/index.html)
-
-$h2 Generation of schemas
-
-To generate a schema description out of the JPA annotations you need the annotation processor and a
-generator during compilation.
+The processor and some generators can be found in the [aggregator module](./aggregator/index.html) while the samples
+can be found in the [sample module](./sample/index.html).

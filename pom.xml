@@ -5,17 +5,15 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>org.sw4j.tool.annotation.jpa</groupId>
-  <artifactId>aggregator</artifactId>
+  <artifactId>parent</artifactId>
   <version>0.1.0-SNAPSHOT</version>
   <packaging>pom</packaging>
 
-  <name>JPA Annotation Processor (Aggregator)</name>
-  <description>This is an aggregator for the JPA annotation processor and some test artifacts.</description>
+  <name>JPA Annotation Processor (Parent)</name>
+  <description>This is the parent for the JPA annotation processor and samples for the processor.</description>
 
   <modules>
-    <module>test-util</module>
-    <module>processor</module>
-    <module>generator</module>
+    <module>aggregator</module>
     <module>sample</module>
   </modules>
 
@@ -30,10 +28,8 @@
     <netbeans.hint.license>gpl30</netbeans.hint.license>
 
     <!-- Dependency versions -->
-    <eclipse.persistence.version>2.6.2</eclipse.persistence.version>
     <findbugs.annotations.version>3.0.1</findbugs.annotations.version>
     <findbugs.jsr305.version>3.0.1</findbugs.jsr305.version>
-    <hibernate.jpa.version>1.0.0.Final</hibernate.jpa.version>
     <javax.persistence.version>2.1.1</javax.persistence.version>
     <testng.version>6.9.13.6</testng.version>
 
@@ -105,16 +101,6 @@
 
   <dependencyManagement>
     <dependencies>
-      <dependency>
-        <groupId>org.sw4j.tool.annotation.jpa</groupId>
-        <artifactId>processor</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.sw4j.tool.annotation.jpa</groupId>
-        <artifactId>test-util</artifactId>
-        <version>${project.version}</version>
-      </dependency>
       <dependency>
         <groupId>com.google.code.findbugs</groupId>
         <artifactId>findbugs-annotations</artifactId>
@@ -243,103 +229,6 @@
           <effort>Max</effort>
           <includeFilterFile>https://github.com/sw4j-org/configuration/raw/master/findbugs.xml</includeFilterFile>
         </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.jacoco</groupId>
-        <artifactId>jacoco-maven-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>default-prepare-agent</id>
-            <goals>
-              <goal>prepare-agent</goal>
-            </goals>
-          </execution>
-          <execution>
-            <id>default-prepare-agent-integration</id>
-            <goals>
-              <goal>prepare-agent-integration</goal>
-            </goals>
-          </execution>
-          <execution>
-            <id>default-report</id>
-            <goals>
-              <goal>report</goal>
-            </goals>
-          </execution>
-          <execution>
-            <id>default-report-integration</id>
-            <goals>
-              <goal>report-integration</goal>
-            </goals>
-          </execution>
-          <execution>
-            <id>default-check</id>
-            <goals>
-              <goal>check</goal>
-            </goals>
-            <configuration>
-              <excludes>
-                <exclude>**/jaxb/**</exclude>
-              </excludes>
-              <rules>
-                <rule>
-                  <element>BUNDLE</element>
-                  <limits>
-                    <limit>
-                      <counter>INSTRUCTION</counter>
-                      <value>COVEREDRATIO</value>
-                      <minimum>0.85</minimum>
-                    </limit>
-                    <limit>
-                      <counter>BRANCH</counter>
-                      <value>COVEREDRATIO</value>
-                      <minimum>0.85</minimum>
-                    </limit>
-                    <limit>
-                      <counter>COMPLEXITY</counter>
-                      <value>COVEREDRATIO</value>
-                      <minimum>0.80</minimum>
-                    </limit>
-                  </limits>
-                </rule>
-              </rules>
-            </configuration>
-          </execution>
-          <execution>
-            <id>default-check-integration</id>
-            <goals>
-              <goal>check</goal>
-            </goals>
-            <configuration>
-              <dataFile>${project.build.directory}/jacoco-it.exec</dataFile>
-              <excludes>
-                <exclude>**/jaxb/**</exclude>
-              </excludes>
-              <rules>
-                <rule>
-                  <element>BUNDLE</element>
-                  <limits>
-                    <limit>
-                      <counter>INSTRUCTION</counter>
-                      <value>COVEREDRATIO</value>
-                      <minimum>0.75</minimum>
-                    </limit>
-                    <limit>
-                      <counter>BRANCH</counter>
-                      <value>COVEREDRATIO</value>
-                      <minimum>0.75</minimum>
-                    </limit>
-                    <limit>
-                      <counter>COMPLEXITY</counter>
-                      <value>COVEREDRATIO</value>
-                      <minimum>0.70</minimum>
-                    </limit>
-                  </limits>
-                </rule>
-              </rules>
-            </configuration>
-          </execution>
-        </executions>
       </plugin>
     </plugins>
     <pluginManagement>
