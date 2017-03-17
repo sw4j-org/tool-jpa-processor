@@ -58,4 +58,14 @@ public class DataTypeEntity {
         this.primitiveLong = primitiveLong;
     }
 
+    private Integer intObject;
+
+    public Integer getIntObject() {
+        return intObject;
+    }
+
+    public void setIntObject(Integer intObject) {
+        this.intObject = intObject;
+    }
+
 }
