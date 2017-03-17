@@ -68,4 +68,14 @@ public class DataTypeEntity {
         this.intObject = intObject;
     }
 
+    private int primitiveInt;
+
+    public int getPrimitiveInt() {
+        return primitiveInt;
+    }
+
+    public void setPrimitiveInt(int primitiveInt) {
+        this.primitiveInt = primitiveInt;
+    }
+
 }

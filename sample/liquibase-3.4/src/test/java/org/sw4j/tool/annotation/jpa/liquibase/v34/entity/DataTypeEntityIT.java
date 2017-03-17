@@ -157,4 +157,40 @@ public class DataTypeEntityIT extends ITSuperclass {
         Assert.assertEquals(foundEntity.getIntObject(), (Integer)Integer.MIN_VALUE, "Expected the mapped value.");
     }
 
+    @Test
+    public void testMappingIntPrimitive() {
+        DataTypeEntity entity = new DataTypeEntity();
+        entity.setId(101L);
+        entity.setPrimitiveInt(102);
+        getEm().persist(entity);
+
+        DataTypeEntity foundEntity = getEm().find(DataTypeEntity.class, 101L);
+        Assert.assertNotNull(foundEntity, "Expected the entity to be found.");
+        Assert.assertEquals(foundEntity.getPrimitiveInt(), 102, "Expected the mapped value.");
+    }
+
+    @Test
+    public void testMappingIntPrimitiveMaxValue() {
+        DataTypeEntity entity = new DataTypeEntity();
+        entity.setId(101L);
+        entity.setPrimitiveInt(Integer.MAX_VALUE);
+        getEm().persist(entity);
+
+        DataTypeEntity foundEntity = getEm().find(DataTypeEntity.class, 101L);
+        Assert.assertNotNull(foundEntity, "Expected the entity to be found.");
+        Assert.assertEquals(foundEntity.getPrimitiveInt(), Integer.MAX_VALUE, "Expected the mapped value.");
+    }
+
+    @Test
+    public void testMappingIntPrimitiveMinValue() {
+        DataTypeEntity entity = new DataTypeEntity();
+        entity.setId(101L);
+        entity.setPrimitiveInt(Integer.MIN_VALUE);
+        getEm().persist(entity);
+
+        DataTypeEntity foundEntity = getEm().find(DataTypeEntity.class, 101L);
+        Assert.assertNotNull(foundEntity, "Expected the entity to be found.");
+        Assert.assertEquals(foundEntity.getPrimitiveInt(), Integer.MIN_VALUE, "Expected the mapped value.");
+    }
+
 }
