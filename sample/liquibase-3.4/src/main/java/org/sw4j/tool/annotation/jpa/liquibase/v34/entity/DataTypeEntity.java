@@ -88,4 +88,14 @@ public class DataTypeEntity {
         this.shortObject = shortObject;
     }
 
+    private short primitiveShort;
+
+    public short getPrimitiveShort() {
+        return primitiveShort;
+    }
+
+    public void setPrimitiveShort(short primitiveShort) {
+        this.primitiveShort = primitiveShort;
+    }
+
 }
