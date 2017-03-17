@@ -48,4 +48,14 @@ public class DataTypeEntity {
         this.longObject = longObject;
     }
 
+    private long primitiveLong;
+
+    public long getPrimitiveLong() {
+        return primitiveLong;
+    }
+
+    public void setPrimitiveLong(long primitiveLong) {
+        this.primitiveLong = primitiveLong;
+    }
+
 }
