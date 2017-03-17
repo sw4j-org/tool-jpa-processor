@@ -38,4 +38,14 @@ public class DataTypeEntity {
         this.id = id;
     }
 
+    private Long longObject;
+
+    public Long getLongObject() {
+        return longObject;
+    }
+
+    public void setLongObject(Long longObject) {
+        this.longObject = longObject;
+    }
+
 }

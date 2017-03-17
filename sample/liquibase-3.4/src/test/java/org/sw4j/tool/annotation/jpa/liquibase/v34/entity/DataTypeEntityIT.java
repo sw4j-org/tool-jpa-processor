@@ -31,14 +31,14 @@ public class DataTypeEntityIT extends ITSuperclass {
     @BeforeClass()
     public static void setUpEntities() throws Exception {
         DataTypeEntity entity = new DataTypeEntity();
-        entity.setId(1);
+        entity.setId(1L);
         getEm().persist(entity);
     }
 
     @Test
     public void testCreateEntity() {
         DataTypeEntity entity = new DataTypeEntity();
-        entity.setId(100);
+        entity.setId(101L);
         getEm().persist(entity);
     }
 
@@ -46,7 +46,43 @@ public class DataTypeEntityIT extends ITSuperclass {
     public void testFindEntity() {
         DataTypeEntity entity = getEm().find(DataTypeEntity.class, 1L);
         Assert.assertNotNull(entity, "Expected the entity to be found.");
-        Assert.assertEquals(entity.getId(), 1, "Expected the entity to be found.");
+        Assert.assertEquals(entity.getId(), 1L, "Expected the entity to be found.");
+    }
+
+    @Test
+    public void testMappingLongObject() {
+        DataTypeEntity entity = new DataTypeEntity();
+        entity.setId(101L);
+        entity.setLongObject(102L);
+        getEm().persist(entity);
+
+        DataTypeEntity foundEntity = getEm().find(DataTypeEntity.class, 101L);
+        Assert.assertNotNull(foundEntity, "Expected the entity to be found.");
+        Assert.assertEquals(foundEntity.getLongObject(), (Long)102L, "Expected the mapped value.");
+    }
+
+    @Test
+    public void testMappingLongObjectMaxValue() {
+        DataTypeEntity entity = new DataTypeEntity();
+        entity.setId(101L);
+        entity.setLongObject(Long.MAX_VALUE);
+        getEm().persist(entity);
+
+        DataTypeEntity foundEntity = getEm().find(DataTypeEntity.class, 101L);
+        Assert.assertNotNull(foundEntity, "Expected the entity to be found.");
+        Assert.assertEquals(foundEntity.getLongObject(), (Long)Long.MAX_VALUE, "Expected the mapped value.");
+    }
+
+    @Test
+    public void testMappingLongObjectMinValue() {
+        DataTypeEntity entity = new DataTypeEntity();
+        entity.setId(101L);
+        entity.setLongObject(Long.MIN_VALUE);
+        getEm().persist(entity);
+
+        DataTypeEntity foundEntity = getEm().find(DataTypeEntity.class, 101L);
+        Assert.assertNotNull(foundEntity, "Expected the entity to be found.");
+        Assert.assertEquals(foundEntity.getLongObject(), (Long)Long.MIN_VALUE, "Expected the mapped value.");
     }
 
 }
