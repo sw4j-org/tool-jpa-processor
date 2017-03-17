@@ -17,6 +17,7 @@
 package org.sw4j.tool.annotation.jpa.liquibase.v34.entity;
 
 import org.sw4j.tool.annotation.jpa.util.ITSuperclass;
+import static org.sw4j.tool.annotation.jpa.util.ITSuperclass.getEm;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -25,25 +26,25 @@ import org.testng.annotations.Test;
  *
  * @author Uwe Plonus
  */
-public class SampleEntityIT extends ITSuperclass {
+public class DataTypeEntityIT extends ITSuperclass {
 
     @BeforeClass()
     public static void setUpEntities() throws Exception {
-        SampleEntity entity = new SampleEntity();
+        DataTypeEntity entity = new DataTypeEntity();
         entity.setId(1);
         getEm().persist(entity);
     }
 
     @Test
     public void testCreateEntity() {
-        SampleEntity entity = new SampleEntity();
+        DataTypeEntity entity = new DataTypeEntity();
         entity.setId(100);
-        this.getEm().persist(entity);
+        getEm().persist(entity);
     }
 
     @Test
     public void testFindEntity() {
-        SampleEntity entity = this.getEm().find(SampleEntity.class, 1);
+        DataTypeEntity entity = getEm().find(DataTypeEntity.class, 1L);
         Assert.assertNotNull(entity, "Expected the entity to be found.");
         Assert.assertEquals(entity.getId(), 1, "Expected the entity to be found.");
     }
