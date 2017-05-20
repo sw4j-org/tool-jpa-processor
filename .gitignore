@@ -26,3 +26,4 @@
 /aggregator/generator/nb-configuration.xml
 /aggregator/processor/nb-configuration.xml
 /sample/liquibase-3.4/derby.log
+/aggregator/nb-configuration.xml

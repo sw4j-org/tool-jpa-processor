@@ -265,4 +265,76 @@ public class DataTypeEntityIT extends ITSuperclass {
         Assert.assertEquals(foundEntity.getPrimitiveShort(), Short.MIN_VALUE, "Expected the mapped value.");
     }
 
+    @Test
+    public void testMappingByteObject() {
+        DataTypeEntity entity = new DataTypeEntity();
+        entity.setId(101L);
+        entity.setByteObject((byte)102);
+        getEm().persist(entity);
+
+        DataTypeEntity foundEntity = getEm().find(DataTypeEntity.class, 101L);
+        Assert.assertNotNull(foundEntity, "Expected the entity to be found.");
+        Assert.assertEquals(foundEntity.getByteObject(), Byte.valueOf((byte)102), "Expected the mapped value.");
+    }
+
+    @Test
+    public void testMappingByteObjectMaxValue() {
+        DataTypeEntity entity = new DataTypeEntity();
+        entity.setId(101L);
+        entity.setByteObject(Byte.MAX_VALUE);
+        getEm().persist(entity);
+
+        DataTypeEntity foundEntity = getEm().find(DataTypeEntity.class, 101L);
+        Assert.assertNotNull(foundEntity, "Expected the entity to be found.");
+        Assert.assertEquals(foundEntity.getByteObject(), Byte.valueOf(Byte.MAX_VALUE), "Expected the mapped value.");
+    }
+
+    @Test
+    public void testMappingByteObjectMinValue() {
+        DataTypeEntity entity = new DataTypeEntity();
+        entity.setId(101L);
+        entity.setByteObject(Byte.MIN_VALUE);
+        getEm().persist(entity);
+
+        DataTypeEntity foundEntity = getEm().find(DataTypeEntity.class, 101L);
+        Assert.assertNotNull(foundEntity, "Expected the entity to be found.");
+        Assert.assertEquals(foundEntity.getByteObject(), Byte.valueOf(Byte.MIN_VALUE), "Expected the mapped value.");
+    }
+
+    @Test
+    public void testMappingBytePrimitive() {
+        DataTypeEntity entity = new DataTypeEntity();
+        entity.setId(101L);
+        entity.setPrimitiveByte((byte)102);
+        getEm().persist(entity);
+
+        DataTypeEntity foundEntity = getEm().find(DataTypeEntity.class, 101L);
+        Assert.assertNotNull(foundEntity, "Expected the entity to be found.");
+        Assert.assertEquals(foundEntity.getPrimitiveByte(), (byte)102, "Expected the mapped value.");
+    }
+
+    @Test
+    public void testMappingBytePrimitiveMaxValue() {
+        DataTypeEntity entity = new DataTypeEntity();
+        entity.setId(101L);
+        entity.setPrimitiveByte(Byte.MAX_VALUE);
+        getEm().persist(entity);
+
+        DataTypeEntity foundEntity = getEm().find(DataTypeEntity.class, 101L);
+        Assert.assertNotNull(foundEntity, "Expected the entity to be found.");
+        Assert.assertEquals(foundEntity.getPrimitiveByte(), Byte.MAX_VALUE, "Expected the mapped value.");
+    }
+
+    @Test
+    public void testMappingBytePrimitiveMinValue() {
+        DataTypeEntity entity = new DataTypeEntity();
+        entity.setId(101L);
+        entity.setPrimitiveByte(Byte.MIN_VALUE);
+        getEm().persist(entity);
+
+        DataTypeEntity foundEntity = getEm().find(DataTypeEntity.class, 101L);
+        Assert.assertNotNull(foundEntity, "Expected the entity to be found.");
+        Assert.assertEquals(foundEntity.getPrimitiveByte(), Byte.MIN_VALUE, "Expected the mapped value.");
+    }
+
 }

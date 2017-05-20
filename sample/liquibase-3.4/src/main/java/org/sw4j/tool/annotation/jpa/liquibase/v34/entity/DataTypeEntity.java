@@ -98,4 +98,24 @@ public class DataTypeEntity {
         this.primitiveShort = primitiveShort;
     }
 
+    private Byte byteObject;
+
+    public Byte getByteObject() {
+        return byteObject;
+    }
+
+    public void setByteObject(Byte byteObject) {
+        this.byteObject = byteObject;
+    }
+
+    private byte primitiveByte;
+
+    public byte getPrimitiveByte() {
+        return primitiveByte;
+    }
+
+    public void setPrimitiveByte(byte primitiveByte) {
+        this.primitiveByte = primitiveByte;
+    }
+
 }
