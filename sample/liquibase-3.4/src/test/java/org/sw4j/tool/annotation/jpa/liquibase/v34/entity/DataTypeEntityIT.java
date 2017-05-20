@@ -337,4 +337,28 @@ public class DataTypeEntityIT extends ITSuperclass {
         Assert.assertEquals(foundEntity.getPrimitiveByte(), Byte.MIN_VALUE, "Expected the mapped value.");
     }
 
+    @Test
+    public void testMappingBooleanObjectFalse() {
+        DataTypeEntity entity = new DataTypeEntity();
+        entity.setId(101L);
+        entity.setBooleanObject(Boolean.FALSE);
+        getEm().persist(entity);
+
+        DataTypeEntity foundEntity = getEm().find(DataTypeEntity.class, 101L);
+        Assert.assertNotNull(foundEntity, "Expected the entity to be found.");
+        Assert.assertEquals(foundEntity.getBooleanObject(), Boolean.FALSE, "Expected the mapped value.");
+    }
+
+    @Test
+    public void testMappingBooleanObjectTrue() {
+        DataTypeEntity entity = new DataTypeEntity();
+        entity.setId(101L);
+        entity.setBooleanObject(Boolean.TRUE);
+        getEm().persist(entity);
+
+        DataTypeEntity foundEntity = getEm().find(DataTypeEntity.class, 101L);
+        Assert.assertNotNull(foundEntity, "Expected the entity to be found.");
+        Assert.assertEquals(foundEntity.getBooleanObject(), Boolean.TRUE, "Expected the mapped value.");
+    }
+
 }

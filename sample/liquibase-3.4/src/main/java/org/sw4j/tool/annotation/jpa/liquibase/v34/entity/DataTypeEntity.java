@@ -118,4 +118,14 @@ public class DataTypeEntity {
         this.primitiveByte = primitiveByte;
     }
 
+    private Boolean booleanObject;
+
+    public Boolean getBooleanObject() {
+        return booleanObject;
+    }
+
+    public void setBooleanObject(Boolean booleanObject) {
+        this.booleanObject = booleanObject;
+    }
+
 }
