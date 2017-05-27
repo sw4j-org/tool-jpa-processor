@@ -38,12 +38,12 @@ public class SampleEntityIT extends ITSuperclass {
     public void testCreateEntity() {
         SampleEntity entity = new SampleEntity();
         entity.setId(100);
-        this.getEm().persist(entity);
+        getEm().persist(entity);
     }
 
     @Test
     public void testFindEntity() {
-        SampleEntity entity = this.getEm().find(SampleEntity.class, 1);
+        SampleEntity entity = getEm().find(SampleEntity.class, 1);
         Assert.assertNotNull(entity, "Expected the entity to be found.");
         Assert.assertEquals(entity.getId(), 1, "Expected the entity to be found.");
     }
