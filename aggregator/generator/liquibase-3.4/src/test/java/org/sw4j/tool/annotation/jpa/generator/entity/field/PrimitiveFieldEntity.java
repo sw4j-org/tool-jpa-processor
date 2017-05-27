@@ -37,16 +37,6 @@ public class PrimitiveFieldEntity {
         this.primitiveLong = primitiveLong;
     }
 
-    private Long objectLong;
-
-    public Long getObjectLong() {
-        return objectLong;
-    }
-
-    public void setObjectLong(Long objectLong) {
-        this.objectLong = objectLong;
-    }
-
     private int primitiveInt;
 
     public int getPrimitiveInt() {
@@ -55,16 +45,6 @@ public class PrimitiveFieldEntity {
 
     public void setPrimitiveInt(int primitiveInt) {
         this.primitiveInt = primitiveInt;
-    }
-
-    private Integer objectInteger;
-
-    public Integer getObjectInteger() {
-        return objectInteger;
-    }
-
-    public void setObjectInteger(Integer objectInteger) {
-        this.objectInteger = objectInteger;
     }
 
     private short primitiveShort;
@@ -77,16 +57,6 @@ public class PrimitiveFieldEntity {
         this.primitiveShort = primitiveShort;
     }
 
-    private Short objectShort;
-
-    public Short getObjectShort() {
-        return objectShort;
-    }
-
-    public void setObjectShort(Short objectShort) {
-        this.objectShort = objectShort;
-    }
-
     private byte primitiveByte;
 
     public byte getPrimitiveByte() {
@@ -97,16 +67,6 @@ public class PrimitiveFieldEntity {
         this.primitiveByte = primitiveByte;
     }
 
-    private Byte objectByte;
-
-    public Byte getObjectByte() {
-        return objectByte;
-    }
-
-    public void setObjectByte(Byte objectByte) {
-        this.objectByte = objectByte;
-    }
-
     private boolean primitiveBoolean;
 
     public boolean isPrimitiveBoolean() {
@@ -115,16 +75,6 @@ public class PrimitiveFieldEntity {
 
     public void setPrimitiveBoolean(boolean primitiveBoolean) {
         this.primitiveBoolean = primitiveBoolean;
-    }
-
-    private Boolean objectBoolean;
-
-    public Boolean getObjectBoolean() {
-        return objectBoolean;
-    }
-
-    public void setObjectBoolean(Boolean objectBoolean) {
-        this.objectBoolean = objectBoolean;
     }
 
 }
