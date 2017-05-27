@@ -5,5 +5,6 @@
     <non-jta-data-source>java:comp/env/jdbc/ds</non-jta-data-source>
     <class>org.sw4j.tool.annotation.jpa.liquibase.v34.entity.DataTypeEntity</class>
     <class>org.sw4j.tool.annotation.jpa.liquibase.v34.entity.SampleEntity</class>
+    <class>org.sw4j.tool.annotation.jpa.liquibase.v34.entity.TableEntity</class>
   </persistence-unit>
 </persistence>
