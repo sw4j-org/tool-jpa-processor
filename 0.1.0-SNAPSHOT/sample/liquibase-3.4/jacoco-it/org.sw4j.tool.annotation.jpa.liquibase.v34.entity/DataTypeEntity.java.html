@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>DataTypeEntity.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">JPA Annotation Processor Sample (Liquibase 3.4)</a> &gt; <a href="index.source.html" class="el_package">org.sw4j.tool.annotation.jpa.liquibase.v34.entity</a> &gt; <span class="el_source">DataTypeEntity.java</span></div><h1>DataTypeEntity.java</h1><pre class="source lang-java linenums">/*
+ * Copyright (C) 2017 uwe
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see &lt;http://www.gnu.org/licenses/&gt;.
+ */
+package org.sw4j.tool.annotation.jpa.liquibase.v34.entity;
+
+import javax.persistence.Entity;
+import javax.persistence.Id;
+
+/**
+ * This entity is used to test the data type mapping.
+ *
+ * @author Uwe Plonus
+ */
+@Entity
+<span class="fc" id="L28">public class DataTypeEntity {</span>
+
+    @Id
+    private long id;
+
+    public long getId() {
+<span class="fc" id="L34">        return id;</span>
+    }
+
+    public void setId(long id) {
+<span class="fc" id="L38">        this.id = id;</span>
+<span class="fc" id="L39">    }</span>
+
+    private Long longObject;
+
+    public Long getLongObject() {
+<span class="fc" id="L44">        return longObject;</span>
+    }
+
+    public void setLongObject(Long longObject) {
+<span class="fc" id="L48">        this.longObject = longObject;</span>
+<span class="fc" id="L49">    }</span>
+
+    private long primitiveLong;
+
+    public long getPrimitiveLong() {
+<span class="fc" id="L54">        return primitiveLong;</span>
+    }
+
+    public void setPrimitiveLong(long primitiveLong) {
+<span class="fc" id="L58">        this.primitiveLong = primitiveLong;</span>
+<span class="fc" id="L59">    }</span>
+
+    private Integer intObject;
+
+    public Integer getIntObject() {
+<span class="fc" id="L64">        return intObject;</span>
+    }
+
+    public void setIntObject(Integer intObject) {
+<span class="fc" id="L68">        this.intObject = intObject;</span>
+<span class="fc" id="L69">    }</span>
+
+    private int primitiveInt;
+
+    public int getPrimitiveInt() {
+<span class="fc" id="L74">        return primitiveInt;</span>
+    }
+
+    public void setPrimitiveInt(int primitiveInt) {
+<span class="fc" id="L78">        this.primitiveInt = primitiveInt;</span>
+<span class="fc" id="L79">    }</span>
+
+    private Short shortObject;
+
+    public Short getShortObject() {
+<span class="fc" id="L84">        return shortObject;</span>
+    }
+
+    public void setShortObject(Short shortObject) {
+<span class="fc" id="L88">        this.shortObject = shortObject;</span>
+<span class="fc" id="L89">    }</span>
+
+    private short primitiveShort;
+
+    public short getPrimitiveShort() {
+<span class="fc" id="L94">        return primitiveShort;</span>
+    }
+
+    public void setPrimitiveShort(short primitiveShort) {
+<span class="fc" id="L98">        this.primitiveShort = primitiveShort;</span>
+<span class="fc" id="L99">    }</span>
+
+    private Byte byteObject;
+
+    public Byte getByteObject() {
+<span class="fc" id="L104">        return byteObject;</span>
+    }
+
+    public void setByteObject(Byte byteObject) {
+<span class="fc" id="L108">        this.byteObject = byteObject;</span>
+<span class="fc" id="L109">    }</span>
+
+    private byte primitiveByte;
+
+    public byte getPrimitiveByte() {
+<span class="fc" id="L114">        return primitiveByte;</span>
+    }
+
+    public void setPrimitiveByte(byte primitiveByte) {
+<span class="fc" id="L118">        this.primitiveByte = primitiveByte;</span>
+<span class="fc" id="L119">    }</span>
+
+    private Boolean booleanObject;
+
+    public Boolean getBooleanObject() {
+<span class="fc" id="L124">        return booleanObject;</span>
+    }
+
+    public void setBooleanObject(Boolean booleanObject) {
+<span class="fc" id="L128">        this.booleanObject = booleanObject;</span>
+<span class="fc" id="L129">    }</span>
+
+    private boolean primitiveBoolean;
+
+    public boolean getPrimitiveBoolean() {
+<span class="fc" id="L134">        return primitiveBoolean;</span>
+    }
+
+    public void setPrimitiveBoolean(boolean primitiveBoolean) {
+<span class="fc" id="L138">        this.primitiveBoolean = primitiveBoolean;</span>
+<span class="fc" id="L139">    }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.7.201606060606</span></div></body></html>
