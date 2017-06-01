@@ -25,25 +25,25 @@ import org.testng.annotations.Test;
  *
  * @author Uwe Plonus
  */
-public class SampleEntityIT extends ITSuperclass {
+public class TableEntityIT extends ITSuperclass {
 
     @BeforeClass()
     public static void setUpEntities() throws Exception {
-        SampleEntity entity = new SampleEntity();
+        TableEntity entity = new TableEntity();
         entity.setId(1);
         getEm().persist(entity);
     }
 
     @Test
-    public void testCreateEntity() {
-        SampleEntity entity = new SampleEntity();
+    public void testTableEntity() {
+        TableEntity entity = new TableEntity();
         entity.setId(100);
         getEm().persist(entity);
     }
 
     @Test
     public void testFindEntity() {
-        SampleEntity entity = getEm().find(SampleEntity.class, 1);
+        TableEntity entity = getEm().find(TableEntity.class, 1);
         Assert.assertNotNull(entity, "Expected the entity to be found.");
         Assert.assertEquals(entity.getId(), 1, "Expected the entity to be found.");
     }
