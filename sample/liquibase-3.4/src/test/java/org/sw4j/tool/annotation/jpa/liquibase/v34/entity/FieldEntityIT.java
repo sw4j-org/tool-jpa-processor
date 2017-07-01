@@ -92,7 +92,7 @@ public class FieldEntityIT extends ITSuperclass {
         getEm().persist(entity);
 
         FieldEntity foundEntity = getEm().find(FieldEntity.class, 101L);
-        Assert.assertNotNull(foundEntity, "Expected the entity to be found.");
+        Assert.assertNotNull(foundEntity, "Expected an entity to be found.");
         Assert.assertEquals(foundEntity.getPrimitiveLong(), 102L, "Expected the mapped value.");
     }
 
@@ -116,7 +116,7 @@ public class FieldEntityIT extends ITSuperclass {
         getEm().persist(entity);
 
         FieldEntity foundEntity = getEm().find(FieldEntity.class, 101L);
-        Assert.assertNotNull(foundEntity, "Expected the entity to be found.");
+        Assert.assertNotNull(foundEntity, "Expected an entity to be found.");
         Assert.assertEquals(foundEntity.getPrimitiveLong(), Long.MIN_VALUE, "Expected the mapped value.");
     }
 

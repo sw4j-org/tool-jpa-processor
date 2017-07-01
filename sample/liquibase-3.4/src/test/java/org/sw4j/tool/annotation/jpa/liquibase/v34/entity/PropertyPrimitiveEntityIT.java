@@ -48,4 +48,40 @@ public class PropertyPrimitiveEntityIT extends ITSuperclass {
         Assert.assertEquals(entity.getId(), 1L, "Expected the entity to be found.");
     }
 
+    @Test
+    public void testMappingLongPrimitive() {
+        PropertyPrimitiveEntity entity = new PropertyPrimitiveEntity();
+        entity.setId(101L);
+        entity.setPrimitiveLong(102L);
+        getEm().persist(entity);
+
+        PropertyPrimitiveEntity foundEntity = getEm().find(PropertyPrimitiveEntity.class, 101L);
+        Assert.assertNotNull(foundEntity, "Expected an entity to be found.");
+        Assert.assertEquals(foundEntity.getPrimitiveLong(), 102L, "Expected the mapped value.");
+    }
+
+    @Test
+    public void testMappingLongPrimitiveMaxValue() {
+        PropertyPrimitiveEntity entity = new PropertyPrimitiveEntity();
+        entity.setId(101L);
+        entity.setPrimitiveLong(Long.MAX_VALUE);
+        getEm().persist(entity);
+
+        PropertyPrimitiveEntity foundEntity = getEm().find(PropertyPrimitiveEntity.class, 101L);
+        Assert.assertNotNull(foundEntity, "Expected an entity to be found.");
+        Assert.assertEquals(foundEntity.getPrimitiveLong(), Long.MAX_VALUE, "Expected the mapped value.");
+    }
+
+    @Test
+    public void testMappingLongPrimitiveMinValue() {
+        PropertyPrimitiveEntity entity = new PropertyPrimitiveEntity();
+        entity.setId(101L);
+        entity.setPrimitiveLong(Long.MIN_VALUE);
+        getEm().persist(entity);
+
+        PropertyPrimitiveEntity foundEntity = getEm().find(PropertyPrimitiveEntity.class, 101L);
+        Assert.assertNotNull(foundEntity, "Expected an entity to be found");
+        Assert.assertEquals(foundEntity.getPrimitiveLong(), Long.MIN_VALUE, "Expected the mapped value.");
+    }
+
 }

@@ -38,4 +38,14 @@ public class PropertyPrimitiveEntity {
         this.id = id;
     }
 
+    private long primitiveLong;
+
+    public long getPrimitiveLong() {
+        return primitiveLong;
+    }
+
+    public void setPrimitiveLong(long primitiveLong) {
+        this.primitiveLong = primitiveLong;
+    }
+
 }
