@@ -44,7 +44,7 @@ public class FieldEntityIT extends ITSuperclass {
     @Test
     public void testFindEntity() {
         FieldEntity entity = getEm().find(FieldEntity.class, 1L);
-        Assert.assertNotNull(entity, "Expected the entity to be found.");
+        Assert.assertNotNull(entity, "Expected an entity to be found.");
         Assert.assertEquals(entity.getId(), 1L, "Expected the entity to be found.");
     }
 

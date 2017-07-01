@@ -17,6 +17,7 @@
 package org.sw4j.tool.annotation.jpa.liquibase.v34.entity;
 
 import org.sw4j.tool.annotation.jpa.util.ITSuperclass;
+import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -38,6 +39,13 @@ public class PropertyEntityIT extends ITSuperclass {
         PropertyEntity entity = new PropertyEntity();
         entity.setId(10L);
         getEm().persist(entity);
+    }
+
+    @Test
+    public void testFindEntity() {
+        PropertyEntity entity = getEm().find(PropertyEntity.class, 1L);
+        Assert.assertNotNull(entity, "Expected an entity to be found.");
+        Assert.assertEquals(entity.getId(), 1L, "Expected the entity to be found.");
     }
 
 }
