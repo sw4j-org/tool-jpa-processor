@@ -20,7 +20,7 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 
 /**
- * This entity is used to test the data type mapping.
+ * This entity is used to test the data type mapping on fields.
  *
  * @author Uwe Plonus
  */

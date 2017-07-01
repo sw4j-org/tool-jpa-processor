@@ -6,5 +6,6 @@
     <class>org.sw4j.tool.annotation.jpa.liquibase.v34.entity.SampleEntity</class>
     <class>org.sw4j.tool.annotation.jpa.liquibase.v34.entity.TableEntity</class>
     <class>org.sw4j.tool.annotation.jpa.liquibase.v34.entity.FieldEntity</class>
+    <class>org.sw4j.tool.annotation.jpa.liquibase.v34.entity.PropertyEntity</class>
   </persistence-unit>
 </persistence>
