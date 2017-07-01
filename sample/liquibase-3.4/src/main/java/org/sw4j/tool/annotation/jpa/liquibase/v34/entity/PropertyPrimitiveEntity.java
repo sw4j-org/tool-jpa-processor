@@ -25,7 +25,7 @@ import javax.persistence.Id;
  * @author Uwe Plonus
  */
 @Entity
-public class PropertyEntity {
+public class PropertyPrimitiveEntity {
 
     private long id;
 
