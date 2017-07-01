@@ -25,7 +25,7 @@ import javax.persistence.Id;
  * @author Uwe Plonus
  */
 @Entity
-public class DataTypeEntity {
+public class FieldEntity {
 
     @Id
     private long id;

@@ -24,8 +24,8 @@ import liquibase.database.jvm.DerbyConnection;
 import liquibase.resource.ClassLoaderResourceAccessor;
 import org.apache.derby.jdbc.EmbeddedConnectionPoolDataSource;
 import org.apache.derby.jdbc.EmbeddedDataSource;
-import org.sw4j.tool.annotation.jpa.liquibase.v34.entity.DataTypeEntity;
-import org.sw4j.tool.annotation.jpa.liquibase.v34.entity.DataTypeEntityIT;
+import org.sw4j.tool.annotation.jpa.liquibase.v34.entity.FieldEntity;
+import org.sw4j.tool.annotation.jpa.liquibase.v34.entity.FieldEntityIT;
 import org.testng.annotations.BeforeSuite;
 
 /**
