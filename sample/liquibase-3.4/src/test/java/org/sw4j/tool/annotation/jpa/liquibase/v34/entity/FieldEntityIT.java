@@ -17,7 +17,6 @@
 package org.sw4j.tool.annotation.jpa.liquibase.v34.entity;
 
 import org.sw4j.tool.annotation.jpa.util.ITSuperclass;
-import static org.sw4j.tool.annotation.jpa.util.ITSuperclass.getEm;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
