@@ -58,4 +58,14 @@ public class PropertyPrimitiveEntity {
         this.primitiveInt = primitiveInt;
     }
 
+    private short primitiveShort;
+
+    public short getPrimitiveShort() {
+        return primitiveShort;
+    }
+
+    public void setPrimitiveShort(short primitiveShort) {
+        this.primitiveShort = primitiveShort;
+    }
+
 }
