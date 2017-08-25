@@ -1,7 +1,9 @@
 GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
-JPA Annotation Processor Sample (Liquibase 3.4),org.sw4j.tool.annotation.jpa.liquibase.v34.entity,DataTypeEntity_,3,0,0,0,1,0,1,0,1,0
+JPA Annotation Processor Sample (Liquibase 3.4),org.sw4j.tool.annotation.jpa.liquibase.v34.entity,FieldEntity_,3,0,0,0,1,0,1,0,1,0
+JPA Annotation Processor Sample (Liquibase 3.4),org.sw4j.tool.annotation.jpa.liquibase.v34.entity,PropertyPrimitiveEntity,0,31,0,0,0,13,0,9,0,9
 JPA Annotation Processor Sample (Liquibase 3.4),org.sw4j.tool.annotation.jpa.liquibase.v34.entity,SampleEntity,0,10,0,0,0,4,0,3,0,3
 JPA Annotation Processor Sample (Liquibase 3.4),org.sw4j.tool.annotation.jpa.liquibase.v34.entity,TableEntity_,3,0,0,0,1,0,1,0,1,0
 JPA Annotation Processor Sample (Liquibase 3.4),org.sw4j.tool.annotation.jpa.liquibase.v34.entity,TableEntity,0,10,0,0,0,4,0,3,0,3
-JPA Annotation Processor Sample (Liquibase 3.4),org.sw4j.tool.annotation.jpa.liquibase.v34.entity,DataTypeEntity,0,80,0,0,0,34,0,23,0,23
+JPA Annotation Processor Sample (Liquibase 3.4),org.sw4j.tool.annotation.jpa.liquibase.v34.entity,PropertyPrimitiveEntity_,3,0,0,0,1,0,1,0,1,0
 JPA Annotation Processor Sample (Liquibase 3.4),org.sw4j.tool.annotation.jpa.liquibase.v34.entity,SampleEntity_,3,0,0,0,1,0,1,0,1,0
+JPA Annotation Processor Sample (Liquibase 3.4),org.sw4j.tool.annotation.jpa.liquibase.v34.entity,FieldEntity,0,80,0,0,0,34,0,23,0,23
