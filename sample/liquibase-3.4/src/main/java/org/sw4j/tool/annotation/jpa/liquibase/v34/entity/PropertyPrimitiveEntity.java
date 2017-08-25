@@ -20,32 +20,22 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 
 /**
- * This entity is used to test the data type mapping.
+ * This entity is used to test the data type mapping on properties.
  *
  * @author Uwe Plonus
  */
 @Entity
-public class DataTypeEntity {
+public class PropertyPrimitiveEntity {
 
-    @Id
     private long id;
 
+    @Id
     public long getId() {
         return id;
     }
 
     public void setId(long id) {
         this.id = id;
-    }
-
-    private Long longObject;
-
-    public Long getLongObject() {
-        return longObject;
-    }
-
-    public void setLongObject(Long longObject) {
-        this.longObject = longObject;
     }
 
     private long primitiveLong;
@@ -58,16 +48,6 @@ public class DataTypeEntity {
         this.primitiveLong = primitiveLong;
     }
 
-    private Integer intObject;
-
-    public Integer getIntObject() {
-        return intObject;
-    }
-
-    public void setIntObject(Integer intObject) {
-        this.intObject = intObject;
-    }
-
     private int primitiveInt;
 
     public int getPrimitiveInt() {
@@ -78,16 +58,6 @@ public class DataTypeEntity {
         this.primitiveInt = primitiveInt;
     }
 
-    private Short shortObject;
-
-    public Short getShortObject() {
-        return shortObject;
-    }
-
-    public void setShortObject(Short shortObject) {
-        this.shortObject = shortObject;
-    }
-
     private short primitiveShort;
 
     public short getPrimitiveShort() {
@@ -96,46 +66,6 @@ public class DataTypeEntity {
 
     public void setPrimitiveShort(short primitiveShort) {
         this.primitiveShort = primitiveShort;
-    }
-
-    private Byte byteObject;
-
-    public Byte getByteObject() {
-        return byteObject;
-    }
-
-    public void setByteObject(Byte byteObject) {
-        this.byteObject = byteObject;
-    }
-
-    private byte primitiveByte;
-
-    public byte getPrimitiveByte() {
-        return primitiveByte;
-    }
-
-    public void setPrimitiveByte(byte primitiveByte) {
-        this.primitiveByte = primitiveByte;
-    }
-
-    private Boolean booleanObject;
-
-    public Boolean getBooleanObject() {
-        return booleanObject;
-    }
-
-    public void setBooleanObject(Boolean booleanObject) {
-        this.booleanObject = booleanObject;
-    }
-
-    private boolean primitiveBoolean;
-
-    public boolean getPrimitiveBoolean() {
-        return primitiveBoolean;
-    }
-
-    public void setPrimitiveBoolean(boolean primitiveBoolean) {
-        this.primitiveBoolean = primitiveBoolean;
     }
 
 }
