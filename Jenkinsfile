@@ -69,7 +69,7 @@ pipeline {
         checkstyle canComputeNew: false, pattern: '**/checkstyle-result.xml'
         findbugs canComputeNew: false, pattern: '**/findbugsXml.xml'
         jacoco exclusionPattern: '**/jaxb/*.class'
-        pmd canComputeNew: false, pattern: '**/pmd.xml',
+        pmd canComputeNew: false, pattern: '**/pmd.xml'
       }
     }
     stage('Set GitHub Status End') {
