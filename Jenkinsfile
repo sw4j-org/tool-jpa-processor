@@ -53,12 +53,14 @@ pipeline {
             maven: 'Current Maven 3',
             mavenLocalRepo: '${JENKINS_HOME}/repositories/${EXECUTOR_NUMBER}/') {
           sh "mvn checkstyle:checkstyle"
+          sh "mvn findbugs:findbugs"
         }
       }
     }
     stage('Publish Reports') {
       steps {
         checkstyle canComputeNew: false, pattern: '**/checkstyle-result.xml'
+        findbugs canComputeNew: false
       }
     }
   }
