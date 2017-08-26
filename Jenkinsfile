@@ -61,7 +61,7 @@ pipeline {
       steps {
         checkstyle canComputeNew: false, pattern: '**/checkstyle-result.xml'
         findbugs canComputeNew: false, pattern: '**/findbugsXml.xml'
-        jacoco()
+        jacoco exclusionPattern: '**/jaxb/*.class'
       }
     }
   }
