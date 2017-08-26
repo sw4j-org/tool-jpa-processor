@@ -1,6 +1,12 @@
 pipeline {
   agent any
   stages {
+    stage('Set GitHub Status Start') {
+      steps {
+        step([$class: 'GitHubPRStatusBuilder',
+         statusMessage: [content: '${GITHUB_PR_COND_REF} run started']])
+      }
+    }
     stage('Clean') {
       steps {
         deleteDir()
@@ -64,6 +70,17 @@ pipeline {
         findbugs canComputeNew: false, pattern: '**/findbugsXml.xml'
         jacoco exclusionPattern: '**/jaxb/*.class'
         pmd canComputeNew: false, pattern: '**/pmd.xml',
+      }
+    }
+    stage('Set GitHub Status End') {
+      steps {
+        step([$class: 'GitHubPRBuildStatusPublisher',
+          buildMessage: [
+            failureMsg: [content: 'Can\'t set status; build failed.'],
+            successMsg: [content: 'Can\'t set status; build succeeded.']],
+          errorHandler: [buildStatus: 'UNSTABLE'],
+          statusMsg: [content: '${GITHUB_PR_COND_REF} run ended'],
+          unstableAs: 'FAILURE'])
       }
     }
   }
