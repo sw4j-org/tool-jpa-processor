@@ -54,6 +54,7 @@ pipeline {
             mavenLocalRepo: '${JENKINS_HOME}/repositories/${EXECUTOR_NUMBER}/') {
           sh "mvn checkstyle:checkstyle"
           sh "mvn findbugs:findbugs"
+          sh "mvn pmd:pmd"
         }
       }
     }
@@ -62,6 +63,7 @@ pipeline {
         checkstyle canComputeNew: false, pattern: '**/checkstyle-result.xml'
         findbugs canComputeNew: false, pattern: '**/findbugsXml.xml'
         jacoco exclusionPattern: '**/jaxb/*.class'
+        pmd canComputeNew: false, pattern: '**/pmd.xml',
       }
     }
   }
