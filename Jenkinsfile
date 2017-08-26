@@ -38,5 +38,19 @@ pipeline {
         }
       }
     }
+    stage('Build Reports') {
+      steps {
+        withMaven(jdk: 'Current JDK 7',
+            maven: 'Current Maven 3',
+            mavenLocalRepo: '${JENKINS_HOME}/repositories/${EXECUTOR_NUMBER}/') {
+          sh "mvn checkstyle:checkstyle"
+        }
+      }
+    }
+    stage('Publish Reports') {
+      steps {
+        checkstyle canComputeNew: false, pattern: '**/checkstyle-result.xml'
+      }
+    }
   }
 }
