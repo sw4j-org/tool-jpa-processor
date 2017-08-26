@@ -60,7 +60,8 @@ pipeline {
     stage('Publish Reports') {
       steps {
         checkstyle canComputeNew: false, pattern: '**/checkstyle-result.xml'
-        findbugs canComputeNew: false
+        findbugs canComputeNew: false, pattern: '**/findbugsXml.xml'
+        jacoco()
       }
     }
   }
