@@ -38,6 +38,15 @@ pipeline {
         }
       }
     }
+    stage('Artifact Install (for Reports)') {
+      steps {
+        withMaven(jdk: 'Current JDK 7',
+            maven: 'Current Maven 3',
+            mavenLocalRepo: '${JENKINS_HOME}/repositories/${EXECUTOR_NUMBER}/') {
+          sh "mvn install"
+        }
+      }
+    }
     stage('Build Reports') {
       steps {
         withMaven(jdk: 'Current JDK 7',
