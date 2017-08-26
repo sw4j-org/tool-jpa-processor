@@ -61,7 +61,8 @@ pipeline {
     stage('Publish Reports') {
       steps {
         checkstyle canComputeNew: false, pattern: '**/checkstyle-result.xml'
-        findbugs canComputeNew: false, pattern: '**/findbugsXml.xml'
+        findbugs canComputeNew: false,
+            pattern: 'sample/**/target/findbugsXml.xml aggregator/processor/target/findbugsXml.xml aggregator/generator/**/target/findbugsXml.xml aggregator/test-util/target/findbugsXml.xml'
         jacoco exclusionPattern: '**/jaxb/*.class'
         pmd canComputeNew: false, pattern: '**/pmd.xml'
       }
