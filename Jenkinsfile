@@ -75,12 +75,8 @@ pipeline {
     stage('Set GitHub Status End') {
       steps {
         step([$class: 'GitHubPRBuildStatusPublisher',
-          buildMessage: [
-            failureMsg: [content: 'Can\'t set status; build failed.'],
-            successMsg: [content: 'Can\'t set status; build succeeded.']],
-          errorHandler: [buildStatus: 'UNSTABLE'],
-          statusMsg: [content: '${GITHUB_PR_COND_REF} run ended'],
-          unstableAs: 'FAILURE'])
+            statusMsg: [content: '${GITHUB_PR_COND_REF} run ended'],
+            unstableAs: 'FAILURE'])
       }
     }
   }
