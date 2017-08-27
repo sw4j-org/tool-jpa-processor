@@ -16,6 +16,7 @@ pipeline {
         withMaven(jdk: 'Current JDK 7',
             maven: 'Current Maven 3',
             mavenLocalRepo: '${JENKINS_HOME}/repositories/${EXECUTOR_NUMBER}/') {
+          sh "mvn verify"
           sh "mvn -Dscmpublish.skipCheckin=true post-site scm-publish:publish-scm"
         }
         withCredentials([string(credentialsId: "${TOKEN}", variable: 'GH_TOKEN')]) {
