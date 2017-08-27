@@ -60,7 +60,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://sw4j-org.github.io/tool-jpa-processor/0.1.0-SNAPSHOT/aggregator/processor//checkstyle.html#org.sw4j.tool.annotation.jpa.processor.package-info.java">org/sw4j/tool/annotation/jpa/processor/package-info.java</a>
+                  <a href="https://sw4j-org.github.io/tool-jpa-processor/0.1.0-SNAPSHOT/aggregator/processor//checkstyle.html#org.sw4j.tool.annotation.jpa.generator.package-info.java">org/sw4j/tool/annotation/jpa/generator/package-info.java</a>
                 </td>
                 <td>
                   0
@@ -74,7 +74,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://sw4j-org.github.io/tool-jpa-processor/0.1.0-SNAPSHOT/aggregator/processor//checkstyle.html#org.sw4j.tool.annotation.jpa.generator.package-info.java">org/sw4j/tool/annotation/jpa/generator/package-info.java</a>
+                  <a href="https://sw4j-org.github.io/tool-jpa-processor/0.1.0-SNAPSHOT/aggregator/processor//checkstyle.html#org.sw4j.tool.annotation.jpa.processor.package-info.java">org/sw4j/tool/annotation/jpa/processor/package-info.java</a>
                 </td>
                 <td>
                   0
@@ -144,6 +144,20 @@ under the License.
               </tr>
                           <tr>
                 <td>
+                  <a href="https://sw4j-org.github.io/tool-jpa-processor/0.1.0-SNAPSHOT/aggregator/processor//checkstyle.html#org.sw4j.tool.annotation.jpa.generator.model.Model.java">org/sw4j/tool/annotation/jpa/generator/model/Model.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
                   <a href="https://sw4j-org.github.io/tool-jpa-processor/0.1.0-SNAPSHOT/aggregator/processor//checkstyle.html#org.sw4j.tool.annotation.jpa.processor.EntityProcessor.java">org/sw4j/tool/annotation/jpa/processor/EntityProcessor.java</a>
                 </td>
                 <td>
@@ -158,7 +172,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://sw4j-org.github.io/tool-jpa-processor/0.1.0-SNAPSHOT/aggregator/processor//checkstyle.html#org.sw4j.tool.annotation.jpa.generator.model.Model.java">org/sw4j/tool/annotation/jpa/generator/model/Model.java</a>
+                  <a href="https://sw4j-org.github.io/tool-jpa-processor/0.1.0-SNAPSHOT/aggregator/processor//checkstyle.html#org.sw4j.tool.annotation.jpa.generator.model.Entity.java">org/sw4j/tool/annotation/jpa/generator/model/Entity.java</a>
                 </td>
                 <td>
                   0
@@ -179,20 +193,6 @@ under the License.
                 </td>
                 <td>
                   3
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="https://sw4j-org.github.io/tool-jpa-processor/0.1.0-SNAPSHOT/aggregator/processor//checkstyle.html#org.sw4j.tool.annotation.jpa.generator.model.Entity.java">org/sw4j/tool/annotation/jpa/generator/model/Entity.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
                 </td>
                 <td>
                   0
