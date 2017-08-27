@@ -5,4 +5,4 @@ $h1 Quick Start
 
 To start quickly with the generation of your schema scripts use a sample. The following samples exist
 
-* [Liquibase 3.4](./sample/liquibase3.4/index.html)
+* [Liquibase 3.4](./sample/liquibase-3.4/index.html)

@@ -11,6 +11,15 @@ pipeline {
         checkout scm
       }
     }
+    stage('Build') {
+      steps {
+        withMaven(jdk: 'Current JDK 7',
+            maven: 'Current Maven 3',
+            mavenLocalRepo: '${JENKINS_HOME}/repositories/${EXECUTOR_NUMBER}/') {
+          sh "mvn verify"
+        }
+      }
+    }
     stage('Create Site') {
       steps {
         withMaven(jdk: 'Current JDK 7',
@@ -18,6 +27,10 @@ pipeline {
             mavenLocalRepo: '${JENKINS_HOME}/repositories/${EXECUTOR_NUMBER}/') {
           sh "mvn -Dscmpublish.skipCheckin=true post-site scm-publish:publish-scm"
         }
+      }
+    }
+    stage('Upload Site') {
+      steps {
         withCredentials([string(credentialsId: "${TOKEN}", variable: 'GH_TOKEN')]) {
           sh """
             cd target/scmpublish-checkout
