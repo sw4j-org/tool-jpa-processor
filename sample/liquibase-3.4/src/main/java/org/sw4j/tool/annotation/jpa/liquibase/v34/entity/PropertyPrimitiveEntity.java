@@ -79,4 +79,14 @@ public class PropertyPrimitiveEntity implements Serializable {
         this.primitiveByte = primitiveByte;
     }
 
+    private boolean primitiveBoolean;
+
+    public boolean getPrimitiveBoolean() {
+        return primitiveBoolean;
+    }
+
+    public void setPrimitiveBoolean(boolean primitiveBoolean) {
+        this.primitiveBoolean = primitiveBoolean;
+    }
+
 }
