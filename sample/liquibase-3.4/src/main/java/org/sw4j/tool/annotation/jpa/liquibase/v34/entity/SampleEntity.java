@@ -16,6 +16,7 @@
  */
 package org.sw4j.tool.annotation.jpa.liquibase.v34.entity;
 
+import java.io.Serializable;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
@@ -24,7 +25,7 @@ import javax.persistence.Id;
  * @author Uwe Plonus
  */
 @Entity
-public class SampleEntity {
+public class SampleEntity implements Serializable {
 
     @Id
     private int id;

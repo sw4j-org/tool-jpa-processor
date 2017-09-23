@@ -16,6 +16,7 @@
  */
 package org.sw4j.tool.annotation.jpa.liquibase.v34.entity;
 
+import java.io.Serializable;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
@@ -26,7 +27,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "TEST_TABLE")
-public class TableEntity {
+public class TableEntity implements Serializable {
 
     @Id
     private int id;
