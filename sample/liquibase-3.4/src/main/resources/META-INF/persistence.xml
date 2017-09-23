@@ -5,7 +5,8 @@
     <non-jta-data-source>java:comp/env/jdbc/ds</non-jta-data-source>
     <class>org.sw4j.tool.annotation.jpa.liquibase.v34.entity.SampleEntity</class>
     <class>org.sw4j.tool.annotation.jpa.liquibase.v34.entity.TableEntity</class>
-    <class>org.sw4j.tool.annotation.jpa.liquibase.v34.entity.FieldEntity</class>
+    <class>org.sw4j.tool.annotation.jpa.liquibase.v34.entity.FieldPrimitiveEntity</class>
+    <class>org.sw4j.tool.annotation.jpa.liquibase.v34.entity.FieldObjectEntity</class>
     <class>org.sw4j.tool.annotation.jpa.liquibase.v34.entity.PropertyPrimitiveEntity</class>
   </persistence-unit>
 </persistence>
