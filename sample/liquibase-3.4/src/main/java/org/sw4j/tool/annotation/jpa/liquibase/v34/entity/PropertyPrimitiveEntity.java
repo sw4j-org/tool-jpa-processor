@@ -69,4 +69,14 @@ public class PropertyPrimitiveEntity implements Serializable {
         this.primitiveShort = primitiveShort;
     }
 
+    private byte primitiveByte;
+
+    public byte getPrimitiveByte() {
+        return primitiveByte;
+    }
+
+    public void setPrimitiveByte(byte primitiveByte) {
+        this.primitiveByte = primitiveByte;
+    }
+
 }
