@@ -16,6 +16,7 @@
  */
 package org.sw4j.tool.annotation.jpa.liquibase.v34.entity;
 
+import java.io.Serializable;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
@@ -26,18 +27,18 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = &quot;TEST_TABLE&quot;)
-<span class="fc" id="L29">public class TableEntity {</span>
+<span class="fc" id="L30">public class TableEntity implements Serializable {</span>
 
     @Id
     private int id;
 
     public int getId() {
-<span class="fc" id="L35">        return id;</span>
+<span class="fc" id="L36">        return id;</span>
     }
 
     public void setId(int id) {
-<span class="fc" id="L39">        this.id = id;</span>
-<span class="fc" id="L40">    }</span>
+<span class="fc" id="L40">        this.id = id;</span>
+<span class="fc" id="L41">    }</span>
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.7.201606060606</span></div></body></html>
