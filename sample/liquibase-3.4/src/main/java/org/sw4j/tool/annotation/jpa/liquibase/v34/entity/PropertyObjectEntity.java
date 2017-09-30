@@ -26,7 +26,7 @@ import javax.persistence.Id;
  * @author Uwe Plonus
  */
 @Entity
-public class PropertyPrimitiveEntity implements Serializable {
+public class PropertyObjectEntity implements Serializable {
 
     private long id;
 
@@ -39,54 +39,54 @@ public class PropertyPrimitiveEntity implements Serializable {
         this.id = id;
     }
 
-    private long primitiveLong;
+    private Long objectLong;
 
-    public long getPrimitiveLong() {
-        return primitiveLong;
+    public Long getObjectLong() {
+        return objectLong;
     }
 
-    public void setPrimitiveLong(long primitiveLong) {
-        this.primitiveLong = primitiveLong;
+    public void setObjectLong(Long objectLong) {
+        this.objectLong = objectLong;
     }
 
-    private int primitiveInt;
+    private Integer objectInt;
 
-    public int getPrimitiveInt() {
-        return primitiveInt;
+    public Integer getObjectInt() {
+        return objectInt;
     }
 
-    public void setPrimitiveInt(int primitiveInt) {
-        this.primitiveInt = primitiveInt;
+    public void setObjectInt(Integer objectInt) {
+        this.objectInt = objectInt;
     }
 
-    private short primitiveShort;
+    private Short objectShort;
 
-    public short getPrimitiveShort() {
-        return primitiveShort;
+    public Short getObjectShort() {
+        return objectShort;
     }
 
-    public void setPrimitiveShort(short primitiveShort) {
-        this.primitiveShort = primitiveShort;
+    public void setObjectShort(Short objectShort) {
+        this.objectShort = objectShort;
     }
 
-    private byte primitiveByte;
+    private Byte objectByte;
 
-    public byte getPrimitiveByte() {
-        return primitiveByte;
+    public Byte getObjectByte() {
+        return objectByte;
     }
 
-    public void setPrimitiveByte(byte primitiveByte) {
-        this.primitiveByte = primitiveByte;
+    public void setObjectByte(Byte objectByte) {
+        this.objectByte = objectByte;
     }
 
-    private boolean primitiveBoolean;
+    private Boolean objectBoolean;
 
-    public boolean getPrimitiveBoolean() {
-        return primitiveBoolean;
+    public Boolean getObjectBoolean() {
+        return objectBoolean;
     }
 
-    public void setPrimitiveBoolean(boolean primitiveBoolean) {
-        this.primitiveBoolean = primitiveBoolean;
+    public void setObjectBoolean(Boolean objectBoolean) {
+        this.objectBoolean = objectBoolean;
     }
 
 }
