@@ -644,8 +644,8 @@
   </distributionManagement>
 
   <ciManagement>
-    <system>travis-ci</system>
-    <url>https://travis-ci.org/sw4j-org/tool-jpa-processor</url>
+    <system>jenkins</system>
+    <url>https://ci.sw4j.net/jenkins/job/GitHub%20sw4j-org/job/tool-jpa-processor/</url>
   </ciManagement>
 
 </project>
