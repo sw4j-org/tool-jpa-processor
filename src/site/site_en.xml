@@ -28,12 +28,16 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
   <body>
 
-    <menu name="">
+    <menu name="Introduction">
       <item name="Introduction" href="index.html"/>
       <item name="Quick Start" href="quickstart.html"/>
     </menu>
 
     <menu ref="modules"/>
+
+    <menu name="Samples">
+      <item name="Samples" href="sample/index.html"/>
+    </menu>
 
     <menu ref="reports"/>
 
