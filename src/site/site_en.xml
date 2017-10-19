@@ -35,10 +35,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
     <menu ref="modules"/>
 
-    <menu name="Samples">
-      <item name="Samples" href="sample/index.html"/>
-    </menu>
-
     <menu ref="reports"/>
 
   </body>

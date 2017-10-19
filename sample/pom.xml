@@ -4,11 +4,12 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <!--<parent>
+  <parent>
     <groupId>org.sw4j.tool.annotation.jpa</groupId>
     <artifactId>parent</artifactId>
     <version>0.1.0-SNAPSHOT</version>
-  </parent>-->
+    <relativePath>../</relativePath>
+  </parent>
 
   <groupId>org.sw4j.tool.annotation.jpa</groupId>
   <artifactId>sample</artifactId>
