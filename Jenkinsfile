@@ -11,39 +11,12 @@ pipeline {
         checkout scm
       }
     }
-    stage('Build') {
+    stage('Build and Install') {
       steps {
         withMaven(jdk: 'Current JDK 7',
             maven: 'Current Maven 3',
-            mavenLocalRepo: '${JENKINS_HOME}/repositories/${EXECUTOR_NUMBER}/') {
-          sh "mvn clean compile"
-        }
-      }
-    }
-    stage('Test') {
-      steps {
-        withMaven(jdk: 'Current JDK 7',
-            maven: 'Current Maven 3',
-            mavenLocalRepo: '${JENKINS_HOME}/repositories/${EXECUTOR_NUMBER}/') {
-          sh "mvn test"
-        }
-      }
-    }
-    stage('Integration Test') {
-      steps {
-        withMaven(jdk: 'Current JDK 7',
-            maven: 'Current Maven 3',
-            mavenLocalRepo: '${JENKINS_HOME}/repositories/${EXECUTOR_NUMBER}/') {
-          sh "mvn verify"
-        }
-      }
-    }
-    stage('Artifact Install (for Reports)') {
-      steps {
-        withMaven(jdk: 'Current JDK 7',
-            maven: 'Current Maven 3',
-            mavenLocalRepo: '${JENKINS_HOME}/repositories/${EXECUTOR_NUMBER}/') {
-          sh "mvn install"
+            mavenLocalRepo: '${JENKINS_HOME}/maven-repositories/${EXECUTOR_NUMBER}/') {
+          sh "mvn clean install"
         }
       }
     }
@@ -51,7 +24,7 @@ pipeline {
       steps {
         withMaven(jdk: 'Current JDK 7',
             maven: 'Current Maven 3',
-            mavenLocalRepo: '${JENKINS_HOME}/repositories/${EXECUTOR_NUMBER}/') {
+            mavenLocalRepo: '${JENKINS_HOME}/maven-repositories/${EXECUTOR_NUMBER}/') {
           sh "mvn checkstyle:checkstyle"
           sh "mvn findbugs:findbugs"
           sh "mvn pmd:pmd"
@@ -61,7 +34,7 @@ pipeline {
     stage('Publish Reports') {
       steps {
         checkstyle canComputeNew: false, pattern: '**/checkstyle-result.xml'
-        findbugs canComputeNew: false,
+        findbugs canComputeNew: false, shouldDetectModules: true,
             pattern: '**/target/findbugsXml.xml'
         jacoco exclusionPattern: '**/jaxb/*.class'
         pmd canComputeNew: false, pattern: '**/pmd.xml'

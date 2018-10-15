@@ -8,9 +8,12 @@
     <groupId>org.sw4j.tool.annotation.jpa</groupId>
     <artifactId>parent</artifactId>
     <version>0.1.0-SNAPSHOT</version>
+    <relativePath>../</relativePath>
   </parent>
 
+  <groupId>org.sw4j.tool.annotation.jpa</groupId>
   <artifactId>sample</artifactId>
+  <version>0.1.0-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <name>JPA Annotation Processor (Samples)</name>
@@ -21,12 +24,23 @@
   </modules>
 
   <properties>
+    <!-- General properties -->
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    <maven.compiler.source>1.7</maven.compiler.source>
+    <maven.compiler.target>1.7</maven.compiler.target>
+
     <!-- Netbeans Hints -->
     <netbeans.hint.license>gpl30</netbeans.hint.license>
 
     <!-- Dependency versions -->
     <derby.version>10.12.1.1</derby.version>
     <eclipselink.version>2.6.4</eclipselink.version>
+    <javax.persistence.version>2.1.1</javax.persistence.version>
+    <testng.version>6.9.13.6</testng.version>
+
+    <!-- Plugin versions -->
+    <fluido.skin.version>1.5</fluido.skin.version>
   </properties>
 
   <dependencies>
@@ -54,9 +68,19 @@
         <version>${eclipselink.version}</version>
       </dependency>
       <dependency>
+        <groupId>org.eclipse.persistence</groupId>
+        <artifactId>javax.persistence</artifactId>
+        <version>${javax.persistence.version}</version>
+      </dependency>
+      <dependency>
         <groupId>org.apache.derby</groupId>
         <artifactId>derby</artifactId>
         <version>${derby.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.testng</groupId>
+        <artifactId>testng</artifactId>
+        <version>${testng.version}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
@@ -115,7 +139,37 @@
           </execution>
         </executions>
       </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-site-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>attach-descriptor</id>
+            <goals>
+              <goal>attach-descriptor</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>stage-for-publish</id>
+            <phase>post-site</phase>
+            <goals>
+              <goal>stage</goal>
+            </goals>
+            <configuration>
+              <skipDeploy>false</skipDeploy>
+              <stagingDirectory>${session.topLevelProject.basedir}/../target/staging/${project.version}/sample</stagingDirectory>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
     </plugins>
   </build>
+
+  <distributionManagement>
+    <site>
+      <id>github</id>
+      <url>scm:git:https://github.com/sw4j-org/tool-jpa-processor.git</url>
+    </site>
+  </distributionManagement>
 
 </project>

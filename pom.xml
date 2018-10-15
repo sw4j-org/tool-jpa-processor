@@ -88,17 +88,6 @@
     </license>
   </licenses>
 
-  <dependencies>
-    <dependency>
-      <groupId>com.google.code.findbugs</groupId>
-      <artifactId>findbugs-annotations</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>com.google.code.findbugs</groupId>
-      <artifactId>jsr305</artifactId>
-    </dependency>
-  </dependencies>
-
   <dependencyManagement>
     <dependencies>
       <dependency>
@@ -205,7 +194,7 @@
             </goals>
           </execution>
           <execution>
-            <id>stage-for-scm-publish</id>
+            <id>stage-for-publish</id>
             <phase>post-site</phase>
             <goals>
               <goal>stage</goal>
@@ -644,8 +633,8 @@
   </distributionManagement>
 
   <ciManagement>
-    <system>travis-ci</system>
-    <url>https://travis-ci.org/sw4j-org/tool-jpa-processor</url>
+    <system>jenkins</system>
+    <url>https://ci.sw4j.net/jenkins/job/GitHub%20sw4j-org/job/tool-jpa-processor/</url>
   </ciManagement>
 
 </project>

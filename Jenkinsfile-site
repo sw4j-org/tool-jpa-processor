@@ -15,7 +15,7 @@ pipeline {
       steps {
         withMaven(jdk: 'Current JDK 7',
             maven: 'Current Maven 3',
-            mavenLocalRepo: '${JENKINS_HOME}/repositories/${EXECUTOR_NUMBER}/') {
+            mavenLocalRepo: '${JENKINS_HOME}/maven-repositories/${EXECUTOR_NUMBER}/') {
           sh "mvn verify"
         }
       }
@@ -24,8 +24,10 @@ pipeline {
       steps {
         withMaven(jdk: 'Current JDK 7',
             maven: 'Current Maven 3',
-            mavenLocalRepo: '${JENKINS_HOME}/repositories/${EXECUTOR_NUMBER}/') {
-          sh "mvn -Dscmpublish.skipCheckin=true post-site scm-publish:publish-scm"
+            mavenLocalRepo: '${JENKINS_HOME}/maven-repositories/${EXECUTOR_NUMBER}/') {
+          sh "mvn post-site"
+          sh "mvn -f sample/pom.xml post-site"
+          sh "mvn -Dscmpublish.skipCheckin=true scm-publish:publish-scm"
         }
       }
     }
