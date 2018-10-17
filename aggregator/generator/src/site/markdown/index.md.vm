@@ -1,6 +1,0 @@
-#set($h1 = '#')
-#set($h2 = '##')
-
-$h1 Introduction
-
-This module aggregates all generator modules.

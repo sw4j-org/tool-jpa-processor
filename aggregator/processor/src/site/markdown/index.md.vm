@@ -1,8 +1,0 @@
-#set($h1 = '#')
-#set($h2 = '##')
-
-$h1 Overview
-
-This module is the annotation processor itself. It handles the JPA annotations, creates a model and
-forwards this model to the generators which in turn create some scripts which are used to create the
-schema.

@@ -1,7 +1,0 @@
-#set($h1 = '#')
-#set($h2 = '##')
-
-$h1 Introduction
-
-This module contains common classes that are needed by all liquibase generators. This includes e.g. mappings between
-Java data types and database data types.
